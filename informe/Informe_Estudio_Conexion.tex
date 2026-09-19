@@ -177,7 +177,28 @@ detalle se desarrolla en la Secci\'on~\ref{sec:conclusiones}.
 \section{Descripci\'on y ubicaci\'on del proyecto}
 \label{sec:descripcion}
 % CREG 174, numeral 6.2
-\parcial{Falta texto descriptivo (antecedentes) y figura de ubicaci\'on geogr\'afica.}
+El proyecto consiste en un \textbf{sistema solar fotovoltaico on-grid} destinado
+a suplir parcialmente el consumo diario de energ\'ia el\'ectrica de las
+instalaciones del interesado, bajo el esquema de \textbf{Generaci\'on Distribuida
+(GD)} y en el marco normativo del Operador de Red EBSA. Se desarrolla en el
+\textbf{Sector 2, V\'ia Puerto Libre}, en el municipio de Puerto Boyac\'a,
+departamento de Boyac\'a.
+
+El alcance del dise\~no comprende desde los m\'odulos solares fotovoltaicos hasta
+la interconexi\'on en media tensi\'on (13.2\,kV, Nivel de Tensi\'on II),
+integr\'andose directamente a la red de distribuci\'on del Operador de Red. La
+planta est\'a conformada por \textbf{1456 m\'odulos Trina Solar TSM-NEG21C.20 de
+720\,Wp} (1190.89\,kWp en DC con ganancia por bifacialidad) y \textbf{3
+inversores Huawei SUN2000-330KTL-H1 de 330\,kW} (990\,kW en AC), con factor de
+potencia unitario.
+
+El dise\~no se desarroll\'o conforme al Reglamento T\'ecnico de Instalaciones
+El\'ectricas (RETIE 2024), el C\'odigo El\'ectrico Colombiano (NTC 2050), las
+Resoluciones CREG 174 de 2021 y 038 de 2014, la Ley 1715 de 2014 y el Acuerdo
+CNO 1862. Las condiciones ambientales del sitio corresponden a una temperatura
+m\'inima hist\'orica de 20\,\textdegree{}C y una altura de 130\,m.s.n.m.
+
+\emph{Fuente: Memoria de C\'alculo del proyecto, Secciones 1 a 3.}
 
 \subsection*{Descripci\'on general}
 \begin{itemize}
@@ -195,13 +216,38 @@ Se reportan dos coordenadas, correspondientes a dos puntos distintos del proyect
     \item \textbf{Punto de conexi\'on a la red EBSA} (ficha de insumos, solicitud 16869): Latitud 5.962244, Longitud $-74.565052$.
     \item \textbf{Ubicaci\'on f\'isica de la planta} (paneles/inversores, seg\'un memoria de c\'alculo): Latitud 5.963004, Longitud $-74.5664488$, altura 130\,msnm.
 \end{itemize}
-\pendiente{Insertar imagen satelital/mapa de ubicaci\'on (idealmente mostrando ambos puntos: conexi\'on y planta).}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{ubicacion_proyecto.jpg}
+\caption{Localizaci\'on del proyecto. El pol\'igono rojo delimita el predio donde
+se implantar\'a la planta fotovoltaica, en el Sector 2, V\'ia Puerto Libre,
+municipio de Puerto Boyac\'a. Coordenadas del predio: 5.963004, $-$74.5664488
+(130\,m.s.n.m.); coordenadas del punto de conexi\'on reportadas por el OR:
+5.962244, $-$74.565052.}
+\label{fig:ubicacion}
+\end{figure}
+
+\emph{Fuente: Memoria de C\'alculo, Ilustraci\'on 1 (cartograf\'ia digital Google Maps).}
 
 \subsection*{Diagrama unifilar general}
-\pendiente{Insertar el diagrama unifilar exportado por \texttt{Flujo\_carga.py} / \texttt{Cortocircuito.py} (carpeta \texttt{resultados/graficos\_red/} o \texttt{graficos\_red\_corto/}). Los diagramas se exportan en formato SVG; para incluirlos en pdfLaTeX conv\'ertalos primero a PDF (por ejemplo con Inkscape: \texttt{inkscape archivo.svg --export-type=pdf}) y use:}
-\begin{verbatim}
+\begin{figure}[H]
+\centering
 \includegraphics[width=\textwidth]{diagrama_unifilar.pdf}
-\end{verbatim}
+\caption{Diagrama unifilar del \'area de influencia modelada, con el proyecto
+conectado, en la condici\'on de m\'axima generaci\'on (a\~no $t$, hora 12). Se
+aprecian la subestaci\'on Puerto Boyac\'a, los cuatro circuitos de 13.2\,kV, los
+generadores distribuidos ya existentes y el centro de transformaci\'on del
+proyecto.}
+\label{fig:unifilar}
+\end{figure}
+
+El diagrama lo exporta autom\'aticamente la rutina de simulaci\'on por cada
+escenario calculado, de modo que existe una versi\'on para cada combinaci\'on de
+a\~no, caso de red y hora --- 72 en flujo de carga y 93 en cortocircuito. Los
+correspondientes a los escenarios del numeral 8.2 y a las barras de mayor nivel
+de falla se reproducen en los Anexos A y B; el conjunto completo est\'a
+disponible en las carpetas \texttt{resultados/graficos\_red/} y
+\texttt{resultados/graficos\_red\_corto/}.
 
 % ============================================================================
 \section{Par\'ametros el\'ectricos de los equipos del proyecto}
@@ -514,10 +560,44 @@ La Figura~\ref{fig:demanda-generacion} muestra las curvas de demanda agregada y 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{curva_demanda_generacion.png}
-\caption{Curvas de demanda y generaci\'on solar, horas 6-17 (a\~no $t=2026$), con los escenarios 8.2.1/8.2.2/8.2.3 identificados}
+\includegraphics[width=\textwidth]{fig_demanda_generacion.png}
+\caption{Demanda agregada del \'area de influencia frente a la generaci\'on, para los dos a\~nos del horizonte, con las horas de los tres escenarios del numeral 8.2 marcadas. Ambas magnitudes se expresan en MW sobre un \'unico eje, que es lo que permite compararlas directamente.}
 \label{fig:demanda-generacion}
 \end{figure}
+
+\textbf{Lectura de la Figura~\ref{fig:demanda-generacion}.} La comparaci\'on deja
+ver el hecho que gobierna todo el estudio: \textbf{la generaci\'on nunca se
+acerca a la demanda}. En su punto m\'aximo (hora 12) la generaci\'on total del
+circuito --- el proyecto m\'as los dos generadores ya existentes --- alcanza
+1.65\,MW frente a una demanda de 7.09\,MW. Adem\'as, las dos curvas tienen formas
+distintas: la demanda crece de forma sostenida hasta el pico de la tarde,
+mientras que la generaci\'on describe una campana centrada al mediod\'ia y vuelve
+a cero al atardecer. No existe ninguna hora en la que la generaci\'on pueda
+cubrir la demanda del \'area, lo que sustenta el an\'alisis de la
+Secci\'on~\ref{sec:isla}.
+
+\subsubsection*{Curvas de demanda por carga}
+
+La demanda del \'area de influencia est\'a compuesta por ocho cargas
+--- dos por cada uno de los cuatro circuitos de la subestaci\'on --- cuyos
+perfiles horarios entrega el Operador de Red en su documento de insumos. La
+Figura~\ref{fig:demanda-cargas} las presenta individualmente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig_demanda_cargas.png}
+\caption{Curvas de demanda de cada una de las ocho cargas del \'area de influencia, agrupadas por circuito, para el a\~no $t$. Para el a\~no $t+x$ todas se escalan de forma uniforme un $+$1.04\,\%.}
+\label{fig:demanda-cargas}
+\end{figure}
+
+Las ocho cargas comparten la misma forma general --- m\'inimo a primera hora de
+la ma\~nana y crecimiento hasta la tarde --- pero difieren notablemente en
+magnitud. Los circuitos 15302, 15303 y 15340 concentran la mayor parte de la
+demanda, con cargas de entre 0.5 y 1.9\,MW. El circuito \textbf{15344}, que es
+donde se conecta el proyecto, es con diferencia el menos cargado: sus dos cargas
+no superan los 0.35\,MW en ninguna hora. Esto explica por qu\'e la influencia del
+proyecto se concentra en su propio tramo de conexi\'on y apenas se percibe en el
+resto del \'area.
 
 Cruzando \texttt{inputs/Parametros\_Demanda.xlsx} (demanda agregada de las 8 cargas del \'area de influencia) con la Tabla 16 de la memoria de c\'alculo (generaci\'on solar m\'axima por hora, Secci\'on~\ref{sec:parametros}):
 
@@ -955,6 +1035,24 @@ La protecci\'on propuesta para el punto de conexi\'on mantiene un margen de
 selectividad de 0.406\,s frente a la de cabecera, holgadamente por encima del
 criterio habitual de 0.2--0.3\,s.
 \end{enumerate}
+
+\subsection*{Anexos}
+
+El detalle completo de cada an\'alisis, con sus tablas de resultados escenario
+por escenario y los diagramas unifilares correspondientes, se recoge en tres
+anexos independientes que acompa\~nan a este informe:
+
+\begin{itemize}
+\item \textbf{Anexo A --- Simulaci\'on de Flujo de Carga:} metodolog\'ia, los 72
+escenarios simulados, curvas de demanda por carga, resultados gr\'aficos y
+tablas completas de tensi\'on, cargabilidad, corrientes y p\'erdidas.
+\item \textbf{Anexo B --- An\'alisis de Cortocircuito:} m\'etodo IEC 60909,
+parametrizaci\'on de secuencia cero, niveles de falla en las 16 barras para los
+tres tipos de falla, y diagramas de las barras m\'as representativas.
+\item \textbf{Anexo C --- Coordinaci\'on de Protecciones:} ajustes evaluados,
+curva tiempo-corriente, verificaci\'on de selectividad y margen frente al
+recierre de cabecera.
+\end{itemize}
 
 \subsection*{Recomendaciones}
 

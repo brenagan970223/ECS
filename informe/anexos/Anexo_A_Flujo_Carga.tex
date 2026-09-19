@@ -1,0 +1,2426 @@
+% ============================================================================
+% Anexo A --- Simulaci\'on de Flujo de Carga
+% Proyecto: Generacion Distribuida 990 kW - Puerto Boyaca (EBSA), circuito 15344
+% Generado automaticamente por scripts/Anexos.py - no editar a mano.
+% Compilador recomendado: pdfLaTeX.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker={,}, group-separator={.}}
+
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=NavyBlue,citecolor=NavyBlue,urlcolor=NavyBlue]{hyperref}
+
+\graphicspath{{figuras/}{../}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Anexo A --- Flujo de Carga}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\small Confidencial -- Uso exclusivo tr\'amite de conexi\'on ante EBSA}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{0.6em}{}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Large\bfseries Estudio de Conexi\'on Simplificado\par}
+\vspace{0.4cm}
+{\large Generaci\'on Distribuida 990\,kW --- Puerto Boyac\'a\par}
+\vspace{0.2cm}
+{\large Circuito 15344 --- EBSA --- Solicitud N.\textdegree{} 16869\par}
+\vspace{2.5cm}
+{\Huge\bfseries Anexo A --- Simulaci\'on de Flujo de Carga\par}
+\vspace{2cm}
+{\large Resoluci\'on CREG 174 de 2021\par}
+\vfill
+{\small Documento generado autom\'aticamente a partir de los resultados de simulaci\'on.\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+
+\section{Alcance y metodolog\'ia}
+
+Este anexo recoge el detalle completo de las simulaciones de flujo de carga que
+sustentan las Secciones 8.1, 8.3 y 8.6 del informe principal. El cuerpo del
+informe presenta las conclusiones; aqu\'i est\'an los resultados que las
+respaldan, escenario por escenario y elemento por elemento.
+
+\subsection{Herramienta y procedimiento}
+
+Los c\'alculos se ejecutaron en \textbf{DIgSILENT PowerFactory 2024}, mediante
+una rutina propia en Python que recorre autom\'aticamente todas las
+combinaciones de a\~no, caso de red y hora. Por cada combinaci\'on la rutina:
+
+\begin{enumerate}
+\item activa el caso de red correspondiente y \emph{a continuaci\'on} relee los
+elementos calc-relevantes --- el orden importa, porque una variaci\'on de red
+puede agregar o quitar equipos;
+\item fija la demanda de cada carga a su valor horario multiplicado por el
+factor de crecimiento del a\~no simulado;
+\item despacha cada generador a su potencia nominal multiplicada por el factor
+solar de esa hora;
+\item ejecuta el flujo de carga y exporta el diagrama unifilar resultante;
+\item registra tensi\'on, \'angulo, cargabilidad, corrientes y p\'erdidas de
+cada elemento.
+\end{enumerate}
+
+Al terminar cada caso, la demanda y el despacho vuelven a su valor original, de
+modo que el modelo no queda alterado por la corrida.
+
+\subsection{Escenarios simulados}
+
+Se simularon \textbf{72 escenarios}: 2 a\~nos $\times$ 3 casos de red $\times$ 12 horas. \textbf{Todos convergieron.}
+
+
+
+\small
+\begin{longtable}{llrrrl}
+\toprule
+\textbf{Año} & \textbf{Caso de red} & \textbf{Horas} & \textbf{Factor demanda} & \textbf{Factor generación} & \textbf{Convergencia} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Año} & \textbf{Caso de red} & \textbf{Horas} & \textbf{Factor demanda} & \textbf{Factor generación} & \textbf{Convergencia} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+2026 & CargaPura & 12 & 1.0000 & 0.000--0.000 & todos \\
+2026 & CasoBase & 12 & 1.0000 & 0.056--1.000 & todos \\
+2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0000 & 0.056--1.000 & todos \\
+2028 & CargaPura & 12 & 1.0104 & 0.000--0.000 & todos \\
+2028 & CasoBase & 12 & 1.0104 & 0.056--1.000 & todos \\
+2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0104 & 0.056--1.000 & todos \\
+\end{longtable}
+\vspace{-0.5em}
+{\small\itshape El factor de generaci\'on es el del perfil solar gaussiano: 0 en el escenario de carga pura y entre 0.056 y 1.000 en los dem\'as.}
+
+
+\newpage\section{Curvas de demanda y generaci\'on}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_demanda_cargas.png}
+\caption{Curvas de demanda de cada una de las 8 cargas del \'area de influencia, agrupadas por circuito.}
+\label{fig:anexoA-demanda-cargas}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_demanda_generacion.png}
+\caption{Demanda agregada del \'area frente a la generaci\'on, con los escenarios del numeral 8.2 marcados.}
+\label{fig:anexoA-demanda-generacion}
+\end{figure}
+
+\newpage\section{Resultados gr\'aficos}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_tension.png}
+\caption{Perfiles de tensi\'on en el punto de conexi\'on y en el extremo del circuito.}
+\label{fig:anexoA-tension}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_cargabilidad.png}
+\caption{Nivel de carga del tramo de evacuaci\'on y del transformador del proyecto.}
+\label{fig:anexoA-cargabilidad}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_perdidas.png}
+\caption{P\'erdidas activas totales y balance del proyecto frente al escenario de carga pura.}
+\label{fig:anexoA-perdidas}
+\end{figure}
+
+\newpage\section{Diagramas unifilares por escenario}
+
+La rutina de simulaci\'on export\'o \textbf{72 diagramas unifilares}, uno por cada combinaci\'on de a\~no, caso y hora, disponibles en \texttt{resultados/graficos\_red/}. A continuaci\'on se reproducen los correspondientes a los tres escenarios del numeral 8.2 en el a\~no base.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{unifilar_Anio2026_Hora15_CasoBase.pdf}
+\caption{Escenario 8.2.1 --- carga pura, hora de m\'axima demanda}
+\label{fig:uni-Anio2026_Hora15_CasoBase}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{unifilar_Anio2026_Hora12_NetworkVariation.pdf}
+\caption{Escenario 8.2.2 --- m\'axima generaci\'on (hora 12)}
+\label{fig:uni-Anio2026_Hora12_NetworkVariation}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{unifilar_Anio2026_Hora15_NetworkVariation.pdf}
+\caption{Escenario 8.2.3 --- m\'axima demanda con generaci\'on}
+\label{fig:uni-Anio2026_Hora15_NetworkVariation}
+\end{figure}
+
+\newpage\section{Resultados num\'ericos}
+
+\subsection{Tensiones por barra}
+
+Tensi\'on en cada barra del sistema, para todas las combinaciones simuladas.
+
+\small
+\begin{longtable}{llllrrr}
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{U pu} & \textbf{U kV} & \textbf{Angulo deg} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{U pu} & \textbf{U kV} & \textbf{Angulo deg} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+P1 15302 13.2kV & 2026 & CargaPura & 6 & 0.9697 & 12.7997 & -1.7909 \\
+P1 15303 13.2kV & 2026 & CargaPura & 6 & 0.9770 & 12.8959 & -1.7527 \\
+P1 15340 13.2kV & 2026 & CargaPura & 6 & 0.9807 & 12.9446 & -1.7334 \\
+P1 15344 13.2kV & 2026 & CargaPura & 6 & 0.9824 & 12.9672 & -1.7241 \\
+P2 15302 13.2kV & 2026 & CargaPura & 6 & 0.9541 & 12.5939 & -1.8745 \\
+P2 15303 13.2kV & 2026 & CargaPura & 6 & 0.9689 & 12.7892 & -1.7958 \\
+P2 15340 13.2kV & 2026 & CargaPura & 6 & 0.9762 & 12.8856 & -1.7570 \\
+P2 15344 13.2kV & 2026 & CargaPura & 6 & 0.9770 & 12.8960 & -1.7524 \\
+P3 15344 13.2kV & 2026 & CargaPura & 6 & 0.9722 & 12.8329 & -1.7778 \\
+P4 153344 13.2kV & 2026 & CargaPura & 6 & 0.9693 & 12.7948 & -1.7930 \\
+P5 15344 13.2kV & 2026 & CargaPura & 6 & 0.9692 & 12.7940 & -1.7934 \\
+P6 15344 13.2kV & 2026 & CargaPura & 6 & 0.9590 & 12.6594 & -1.8481 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 6 & 0.9851 & 13.0028 & -1.7101 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 6 & 0.9839 & 33.9440 & -1.8519 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 6 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 7 & 0.9709 & 12.8159 & -1.7593 \\
+P1 15303 13.2kV & 2026 & CargaPura & 7 & 0.9767 & 12.8929 & -1.7287 \\
+P1 15340 13.2kV & 2026 & CargaPura & 7 & 0.9810 & 12.9492 & -1.7063 \\
+P1 15344 13.2kV & 2026 & CargaPura & 7 & 0.9827 & 12.9711 & -1.6974 \\
+P2 15302 13.2kV & 2026 & CargaPura & 7 & 0.9563 & 12.6233 & -1.8374 \\
+P2 15303 13.2kV & 2026 & CargaPura & 7 & 0.9682 & 12.7801 & -1.7742 \\
+P2 15340 13.2kV & 2026 & CargaPura & 7 & 0.9766 & 12.8917 & -1.7294 \\
+P2 15344 13.2kV & 2026 & CargaPura & 7 & 0.9774 & 12.9014 & -1.7251 \\
+P3 15344 13.2kV & 2026 & CargaPura & 7 & 0.9727 & 12.8396 & -1.7499 \\
+P4 153344 13.2kV & 2026 & CargaPura & 7 & 0.9699 & 12.8023 & -1.7648 \\
+P5 15344 13.2kV & 2026 & CargaPura & 7 & 0.9698 & 12.8015 & -1.7651 \\
+P6 15344 13.2kV & 2026 & CargaPura & 7 & 0.9598 & 12.6698 & -1.8187 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 7 & 0.9853 & 13.0060 & -1.6837 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 7 & 0.9841 & 33.9529 & -1.8233 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 7 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 8 & 0.9682 & 12.7808 & -1.9439 \\
+P1 15303 13.2kV & 2026 & CargaPura & 8 & 0.9730 & 12.8439 & -1.9188 \\
+P1 15340 13.2kV & 2026 & CargaPura & 8 & 0.9794 & 12.9277 & -1.8854 \\
+P1 15344 13.2kV & 2026 & CargaPura & 8 & 0.9805 & 12.9424 & -1.8793 \\
+P2 15302 13.2kV & 2026 & CargaPura & 8 & 0.9526 & 12.5743 & -2.0279 \\
+P2 15303 13.2kV & 2026 & CargaPura & 8 & 0.9624 & 12.7033 & -1.9758 \\
+P2 15340 13.2kV & 2026 & CargaPura & 8 & 0.9750 & 12.8701 & -1.9086 \\
+P2 15344 13.2kV & 2026 & CargaPura & 8 & 0.9741 & 12.8578 & -1.9129 \\
+P3 15344 13.2kV & 2026 & CargaPura & 8 & 0.9684 & 12.7829 & -1.9431 \\
+P4 153344 13.2kV & 2026 & CargaPura & 8 & 0.9650 & 12.7375 & -1.9613 \\
+P5 15344 13.2kV & 2026 & CargaPura & 8 & 0.9649 & 12.7366 & -1.9616 \\
+P6 15344 13.2kV & 2026 & CargaPura & 8 & 0.9528 & 12.5765 & -2.0270 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 8 & 0.9837 & 12.9846 & -1.8627 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 8 & 0.9824 & 33.8928 & -2.0174 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 8 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 9 & 0.9669 & 12.7635 & -2.0859 \\
+P1 15303 13.2kV & 2026 & CargaPura & 9 & 0.9703 & 12.8077 & -2.0684 \\
+P1 15340 13.2kV & 2026 & CargaPura & 9 & 0.9780 & 12.9094 & -2.0278 \\
+P1 15344 13.2kV & 2026 & CargaPura & 9 & 0.9779 & 12.9084 & -2.0277 \\
+P2 15302 13.2kV & 2026 & CargaPura & 9 & 0.9513 & 12.5567 & -2.1702 \\
+P2 15303 13.2kV & 2026 & CargaPura & 9 & 0.9582 & 12.6478 & -2.1333 \\
+P2 15340 13.2kV & 2026 & CargaPura & 9 & 0.9735 & 12.8505 & -2.0515 \\
+P2 15344 13.2kV & 2026 & CargaPura & 9 & 0.9689 & 12.7899 & -2.0746 \\
+P3 15344 13.2kV & 2026 & CargaPura & 9 & 0.9610 & 12.6849 & -2.1170 \\
+P4 153344 13.2kV & 2026 & CargaPura & 9 & 0.9561 & 12.6211 & -2.1427 \\
+P5 15344 13.2kV & 2026 & CargaPura & 9 & 0.9560 & 12.6198 & -2.1432 \\
+P6 15344 13.2kV & 2026 & CargaPura & 9 & 0.9390 & 12.3945 & -2.2361 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 9 & 0.9824 & 12.9676 & -2.0045 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 9 & 0.9810 & 33.8449 & -2.1712 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 9 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 10 & 0.9655 & 12.7443 & -2.1615 \\
+P1 15303 13.2kV & 2026 & CargaPura & 10 & 0.9689 & 12.7900 & -2.1434 \\
+P1 15340 13.2kV & 2026 & CargaPura & 10 & 0.9771 & 12.8984 & -2.1001 \\
+P1 15344 13.2kV & 2026 & CargaPura & 10 & 0.9779 & 12.9083 & -2.0957 \\
+P2 15302 13.2kV & 2026 & CargaPura & 10 & 0.9490 & 12.5265 & -2.2504 \\
+P2 15303 13.2kV & 2026 & CargaPura & 10 & 0.9561 & 12.6209 & -2.2121 \\
+P2 15340 13.2kV & 2026 & CargaPura & 10 & 0.9725 & 12.8369 & -2.1249 \\
+P2 15344 13.2kV & 2026 & CargaPura & 10 & 0.9702 & 12.8069 & -2.1360 \\
+P3 15344 13.2kV & 2026 & CargaPura & 10 & 0.9634 & 12.7170 & -2.1723 \\
+P4 153344 13.2kV & 2026 & CargaPura & 10 & 0.9593 & 12.6626 & -2.1943 \\
+P5 15344 13.2kV & 2026 & CargaPura & 10 & 0.9592 & 12.6614 & -2.1947 \\
+P6 15344 13.2kV & 2026 & CargaPura & 10 & 0.9446 & 12.4690 & -2.2738 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 10 & 0.9817 & 12.9590 & -2.0758 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 10 & 0.9803 & 33.8208 & -2.2486 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 10 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 11 & 0.9637 & 12.7206 & -2.2567 \\
+P1 15303 13.2kV & 2026 & CargaPura & 11 & 0.9679 & 12.7762 & -2.2346 \\
+P1 15340 13.2kV & 2026 & CargaPura & 11 & 0.9760 & 12.8836 & -2.1917 \\
+P1 15344 13.2kV & 2026 & CargaPura & 11 & 0.9770 & 12.8965 & -2.1861 \\
+P2 15302 13.2kV & 2026 & CargaPura & 11 & 0.9462 & 12.4896 & -2.3512 \\
+P2 15303 13.2kV & 2026 & CargaPura & 11 & 0.9549 & 12.6041 & -2.3047 \\
+P2 15340 13.2kV & 2026 & CargaPura & 11 & 0.9711 & 12.8183 & -2.2181 \\
+P2 15344 13.2kV & 2026 & CargaPura & 11 & 0.9692 & 12.7931 & -2.2273 \\
+P3 15344 13.2kV & 2026 & CargaPura & 11 & 0.9622 & 12.7014 & -2.2643 \\
+P4 153344 13.2kV & 2026 & CargaPura & 11 & 0.9580 & 12.6459 & -2.2867 \\
+P5 15344 13.2kV & 2026 & CargaPura & 11 & 0.9579 & 12.6447 & -2.2872 \\
+P6 15344 13.2kV & 2026 & CargaPura & 11 & 0.9431 & 12.4485 & -2.3679 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 11 & 0.9809 & 12.9482 & -2.1658 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 11 & 0.9794 & 33.7903 & -2.3462 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 11 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 12 & 0.9631 & 12.7126 & -2.2355 \\
+P1 15303 13.2kV & 2026 & CargaPura & 12 & 0.9691 & 12.7917 & -2.2041 \\
+P1 15340 13.2kV & 2026 & CargaPura & 12 & 0.9762 & 12.8857 & -2.1665 \\
+P1 15344 13.2kV & 2026 & CargaPura & 12 & 0.9776 & 12.9046 & -2.1586 \\
+P2 15302 13.2kV & 2026 & CargaPura & 12 & 0.9447 & 12.4703 & -2.3347 \\
+P2 15303 13.2kV & 2026 & CargaPura & 12 & 0.9570 & 12.6321 & -2.2690 \\
+P2 15340 13.2kV & 2026 & CargaPura & 12 & 0.9712 & 12.8193 & -2.1934 \\
+P2 15344 13.2kV & 2026 & CargaPura & 12 & 0.9706 & 12.8114 & -2.1957 \\
+P3 15344 13.2kV & 2026 & CargaPura & 12 & 0.9643 & 12.7288 & -2.2291 \\
+P4 153344 13.2kV & 2026 & CargaPura & 12 & 0.9605 & 12.6788 & -2.2492 \\
+P5 15344 13.2kV & 2026 & CargaPura & 12 & 0.9604 & 12.6777 & -2.2497 \\
+P6 15344 13.2kV & 2026 & CargaPura & 12 & 0.9470 & 12.5010 & -2.3222 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 12 & 0.9812 & 12.9513 & -2.1403 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 12 & 0.9797 & 33.7990 & -2.3185 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 12 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 13 & 0.9599 & 12.6710 & -2.3983 \\
+P1 15303 13.2kV & 2026 & CargaPura & 13 & 0.9674 & 12.7694 & -2.3592 \\
+P1 15340 13.2kV & 2026 & CargaPura & 13 & 0.9745 & 12.8630 & -2.3218 \\
+P1 15344 13.2kV & 2026 & CargaPura & 13 & 0.9753 & 12.8743 & -2.3167 \\
+P2 15302 13.2kV & 2026 & CargaPura & 13 & 0.9398 & 12.4049 & -2.5076 \\
+P2 15303 13.2kV & 2026 & CargaPura & 13 & 0.9550 & 12.6060 & -2.4258 \\
+P2 15340 13.2kV & 2026 & CargaPura & 13 & 0.9691 & 12.7924 & -2.3503 \\
+P2 15344 13.2kV & 2026 & CargaPura & 13 & 0.9665 & 12.7576 & -2.3631 \\
+P3 15344 13.2kV & 2026 & CargaPura & 13 & 0.9586 & 12.6542 & -2.4050 \\
+P4 153344 13.2kV & 2026 & CargaPura & 13 & 0.9539 & 12.5913 & -2.4304 \\
+P5 15344 13.2kV & 2026 & CargaPura & 13 & 0.9538 & 12.5900 & -2.4309 \\
+P6 15344 13.2kV & 2026 & CargaPura & 13 & 0.9370 & 12.3682 & -2.5226 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 13 & 0.9797 & 12.9326 & -2.2938 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 13 & 0.9782 & 33.7467 & -2.4851 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 13 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 14 & 0.9582 & 12.6488 & -2.5299 \\
+P1 15303 13.2kV & 2026 & CargaPura & 14 & 0.9644 & 12.7298 & -2.4977 \\
+P1 15340 13.2kV & 2026 & CargaPura & 14 & 0.9732 & 12.8460 & -2.4512 \\
+P1 15344 13.2kV & 2026 & CargaPura & 14 & 0.9743 & 12.8609 & -2.4447 \\
+P2 15302 13.2kV & 2026 & CargaPura & 14 & 0.9376 & 12.3760 & -2.6422 \\
+P2 15303 13.2kV & 2026 & CargaPura & 14 & 0.9502 & 12.5422 & -2.5744 \\
+P2 15340 13.2kV & 2026 & CargaPura & 14 & 0.9677 & 12.7740 & -2.4803 \\
+P2 15344 13.2kV & 2026 & CargaPura & 14 & 0.9658 & 12.7488 & -2.4894 \\
+P3 15344 13.2kV & 2026 & CargaPura & 14 & 0.9583 & 12.6495 & -2.5296 \\
+P4 153344 13.2kV & 2026 & CargaPura & 14 & 0.9537 & 12.5892 & -2.5540 \\
+P5 15344 13.2kV & 2026 & CargaPura & 14 & 0.9536 & 12.5880 & -2.5545 \\
+P6 15344 13.2kV & 2026 & CargaPura & 14 & 0.9375 & 12.3750 & -2.6426 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 14 & 0.9786 & 12.9170 & -2.4226 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 14 & 0.9769 & 33.7026 & -2.6250 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 14 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 15 & 0.9581 & 12.6471 & -2.5431 \\
+P1 15303 13.2kV & 2026 & CargaPura & 15 & 0.9634 & 12.7171 & -2.5153 \\
+P1 15340 13.2kV & 2026 & CargaPura & 15 & 0.9732 & 12.8460 & -2.4636 \\
+P1 15344 13.2kV & 2026 & CargaPura & 15 & 0.9747 & 12.8661 & -2.4552 \\
+P2 15302 13.2kV & 2026 & CargaPura & 15 & 0.9374 & 12.3743 & -2.6554 \\
+P2 15303 13.2kV & 2026 & CargaPura & 15 & 0.9484 & 12.5184 & -2.5966 \\
+P2 15340 13.2kV & 2026 & CargaPura & 15 & 0.9679 & 12.7758 & -2.4921 \\
+P2 15344 13.2kV & 2026 & CargaPura & 15 & 0.9672 & 12.7675 & -2.4946 \\
+P3 15344 13.2kV & 2026 & CargaPura & 15 & 0.9606 & 12.6801 & -2.5300 \\
+P4 153344 13.2kV & 2026 & CargaPura & 15 & 0.9566 & 12.6271 & -2.5514 \\
+P5 15344 13.2kV & 2026 & CargaPura & 15 & 0.9565 & 12.6260 & -2.5518 \\
+P6 15344 13.2kV & 2026 & CargaPura & 15 & 0.9424 & 12.4390 & -2.6290 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 15 & 0.9784 & 12.9154 & -2.4358 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 15 & 0.9768 & 33.6981 & -2.6392 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 15 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 16 & 0.9581 & 12.6474 & -2.5407 \\
+P1 15303 13.2kV & 2026 & CargaPura & 16 & 0.9634 & 12.7173 & -2.5129 \\
+P1 15340 13.2kV & 2026 & CargaPura & 16 & 0.9734 & 12.8485 & -2.4604 \\
+P1 15344 13.2kV & 2026 & CargaPura & 16 & 0.9742 & 12.8590 & -2.4557 \\
+P2 15302 13.2kV & 2026 & CargaPura & 16 & 0.9375 & 12.3746 & -2.6531 \\
+P2 15303 13.2kV & 2026 & CargaPura & 16 & 0.9484 & 12.5186 & -2.5942 \\
+P2 15340 13.2kV & 2026 & CargaPura & 16 & 0.9682 & 12.7806 & -2.4879 \\
+P2 15344 13.2kV & 2026 & CargaPura & 16 & 0.9656 & 12.7458 & -2.5008 \\
+P3 15344 13.2kV & 2026 & CargaPura & 16 & 0.9580 & 12.6454 & -2.5415 \\
+P4 153344 13.2kV & 2026 & CargaPura & 16 & 0.9534 & 12.5845 & -2.5662 \\
+P5 15344 13.2kV & 2026 & CargaPura & 16 & 0.9533 & 12.5832 & -2.5667 \\
+P6 15344 13.2kV & 2026 & CargaPura & 16 & 0.9370 & 12.3681 & -2.6557 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 16 & 0.9785 & 12.9156 & -2.4334 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 16 & 0.9768 & 33.6988 & -2.6367 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 16 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CargaPura & 17 & 0.9588 & 12.6558 & -2.4735 \\
+P1 15303 13.2kV & 2026 & CargaPura & 17 & 0.9642 & 12.7279 & -2.4448 \\
+P1 15340 13.2kV & 2026 & CargaPura & 17 & 0.9740 & 12.8568 & -2.3933 \\
+P1 15344 13.2kV & 2026 & CargaPura & 17 & 0.9764 & 12.8881 & -2.3805 \\
+P2 15302 13.2kV & 2026 & CargaPura & 17 & 0.9381 & 12.3831 & -2.5857 \\
+P2 15303 13.2kV & 2026 & CargaPura & 17 & 0.9494 & 12.5316 & -2.5251 \\
+P2 15340 13.2kV & 2026 & CargaPura & 17 & 0.9689 & 12.7889 & -2.4208 \\
+P2 15344 13.2kV & 2026 & CargaPura & 17 & 0.9710 & 12.8166 & -2.4091 \\
+P3 15344 13.2kV & 2026 & CargaPura & 17 & 0.9662 & 12.7532 & -2.4347 \\
+P4 153344 13.2kV & 2026 & CargaPura & 17 & 0.9633 & 12.7149 & -2.4502 \\
+P5 15344 13.2kV & 2026 & CargaPura & 17 & 0.9632 & 12.7141 & -2.4505 \\
+P6 15344 13.2kV & 2026 & CargaPura & 17 & 0.9530 & 12.5790 & -2.5058 \\
+PTO BOYACA 13.2kV & 2026 & CargaPura & 17 & 0.9791 & 12.9238 & -2.3663 \\
+PTO BOYACA 34.5kV & 2026 & CargaPura & 17 & 0.9774 & 33.7218 & -2.5639 \\
+PTO BOYACA HV 115 & 2026 & CargaPura & 17 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 6 & 0.9697 & 12.7999 & -1.7796 \\
+P1 15303 13.2kV & 2026 & CasoBase & 6 & 0.9770 & 12.8960 & -1.7414 \\
+P1 15340 13.2kV & 2026 & CasoBase & 6 & 0.9807 & 12.9447 & -1.7220 \\
+P1 15344 13.2kV & 2026 & CasoBase & 6 & 0.9826 & 12.9707 & -1.7044 \\
+P2 15302 13.2kV & 2026 & CasoBase & 6 & 0.9541 & 12.5940 & -1.8632 \\
+P2 15303 13.2kV & 2026 & CasoBase & 6 & 0.9689 & 12.7894 & -1.7844 \\
+P2 15340 13.2kV & 2026 & CasoBase & 6 & 0.9762 & 12.8858 & -1.7457 \\
+P2 15344 13.2kV & 2026 & CasoBase & 6 & 0.9777 & 12.9060 & -1.7157 \\
+P3 15344 13.2kV & 2026 & CasoBase & 6 & 0.9734 & 12.8487 & -1.7259 \\
+P4 153344 13.2kV & 2026 & CasoBase & 6 & 0.9713 & 12.8210 & -1.7137 \\
+P5 15344 13.2kV & 2026 & CasoBase & 6 & 0.9712 & 12.8204 & -1.7135 \\
+P6 15344 13.2kV & 2026 & CasoBase & 6 & 0.9625 & 12.7045 & -1.7190 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 6 & 0.9851 & 13.0030 & -1.6988 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 6 & 0.9839 & 33.9444 & -1.8397 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 6 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 7 & 0.9709 & 12.8162 & -1.7321 \\
+P1 15303 13.2kV & 2026 & CasoBase & 7 & 0.9768 & 12.8932 & -1.7016 \\
+P1 15340 13.2kV & 2026 & CasoBase & 7 & 0.9810 & 12.9495 & -1.6792 \\
+P1 15344 13.2kV & 2026 & CasoBase & 7 & 0.9833 & 12.9793 & -1.6500 \\
+P2 15302 13.2kV & 2026 & CasoBase & 7 & 0.9563 & 12.6236 & -1.8102 \\
+P2 15303 13.2kV & 2026 & CasoBase & 7 & 0.9682 & 12.7804 & -1.7471 \\
+P2 15340 13.2kV & 2026 & CasoBase & 7 & 0.9767 & 12.8919 & -1.7023 \\
+P2 15344 13.2kV & 2026 & CasoBase & 7 & 0.9792 & 12.9254 & -1.6369 \\
+P3 15344 13.2kV & 2026 & CasoBase & 7 & 0.9756 & 12.8776 & -1.6252 \\
+P4 153344 13.2kV & 2026 & CasoBase & 7 & 0.9746 & 12.8652 & -1.5744 \\
+P5 15344 13.2kV & 2026 & CasoBase & 7 & 0.9746 & 12.8649 & -1.5734 \\
+P6 15344 13.2kV & 2026 & CasoBase & 7 & 0.9680 & 12.7778 & -1.5094 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 7 & 0.9853 & 13.0063 & -1.6565 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 7 & 0.9842 & 33.9537 & -1.7938 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 7 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 8 & 0.9683 & 12.7815 & -1.8879 \\
+P1 15303 13.2kV & 2026 & CasoBase & 8 & 0.9731 & 12.8445 & -1.8629 \\
+P1 15340 13.2kV & 2026 & CasoBase & 8 & 0.9794 & 12.9283 & -1.8295 \\
+P1 15344 13.2kV & 2026 & CasoBase & 8 & 0.9818 & 12.9592 & -1.7817 \\
+P2 15302 13.2kV & 2026 & CasoBase & 8 & 0.9526 & 12.5749 & -1.9720 \\
+P2 15303 13.2kV & 2026 & CasoBase & 8 & 0.9624 & 12.7040 & -1.9198 \\
+P2 15340 13.2kV & 2026 & CasoBase & 8 & 0.9751 & 12.8707 & -1.8527 \\
+P2 15344 13.2kV & 2026 & CasoBase & 8 & 0.9778 & 12.9072 & -1.7312 \\
+P3 15344 13.2kV & 2026 & CasoBase & 8 & 0.9743 & 12.8611 & -1.6861 \\
+P4 153344 13.2kV & 2026 & CasoBase & 8 & 0.9748 & 12.8670 & -1.5691 \\
+P5 15344 13.2kV & 2026 & CasoBase & 8 & 0.9748 & 12.8671 & -1.5667 \\
+P6 15344 13.2kV & 2026 & CasoBase & 8 & 0.9696 & 12.7991 & -1.3908 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 8 & 0.9837 & 12.9853 & -1.8068 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 8 & 0.9824 & 33.8945 & -1.9568 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 8 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 9 & 0.9670 & 12.7648 & -1.9873 \\
+P1 15303 13.2kV & 2026 & CasoBase & 9 & 0.9704 & 12.8089 & -1.9697 \\
+P1 15340 13.2kV & 2026 & CasoBase & 9 & 0.9781 & 12.9106 & -1.9292 \\
+P1 15344 13.2kV & 2026 & CasoBase & 9 & 0.9802 & 12.9383 & -1.8558 \\
+P2 15302 13.2kV & 2026 & CasoBase & 9 & 0.9514 & 12.5579 & -2.0715 \\
+P2 15303 13.2kV & 2026 & CasoBase & 9 & 0.9583 & 12.6490 & -2.0347 \\
+P2 15340 13.2kV & 2026 & CasoBase & 9 & 0.9736 & 12.8517 & -1.9529 \\
+P2 15344 13.2kV & 2026 & CasoBase & 9 & 0.9756 & 12.8773 & -1.7548 \\
+P3 15344 13.2kV & 2026 & CasoBase & 9 & 0.9715 & 12.8233 & -1.6646 \\
+P4 153344 13.2kV & 2026 & CasoBase & 9 & 0.9735 & 12.8497 & -1.4523 \\
+P5 15344 13.2kV & 2026 & CasoBase & 9 & 0.9735 & 12.8503 & -1.4479 \\
+P6 15344 13.2kV & 2026 & CasoBase & 9 & 0.9688 & 12.7884 & -1.1162 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 9 & 0.9825 & 12.9688 & -1.9059 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 9 & 0.9811 & 33.8482 & -2.0644 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 9 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 10 & 0.9656 & 12.7457 & -2.0172 \\
+P1 15303 13.2kV & 2026 & CasoBase & 10 & 0.9690 & 12.7914 & -1.9990 \\
+P1 15340 13.2kV & 2026 & CasoBase & 10 & 0.9773 & 12.8998 & -1.9558 \\
+P1 15344 13.2kV & 2026 & CasoBase & 10 & 0.9812 & 12.9515 & -1.8421 \\
+P2 15302 13.2kV & 2026 & CasoBase & 10 & 0.9491 & 12.5279 & -2.1061 \\
+P2 15303 13.2kV & 2026 & CasoBase & 10 & 0.9562 & 12.6223 & -2.0678 \\
+P2 15340 13.2kV & 2026 & CasoBase & 10 & 0.9726 & 12.8384 & -1.9806 \\
+P2 15344 13.2kV & 2026 & CasoBase & 10 & 0.9798 & 12.9337 & -1.6631 \\
+P3 15344 13.2kV & 2026 & CasoBase & 10 & 0.9786 & 12.9181 & -1.5040 \\
+P4 153344 13.2kV & 2026 & CasoBase & 10 & 0.9845 & 12.9954 & -1.1777 \\
+P5 15344 13.2kV & 2026 & CasoBase & 10 & 0.9846 & 12.9970 & -1.1709 \\
+P6 15344 13.2kV & 2026 & CasoBase & 10 & 0.9880 & 13.0417 & -0.6370 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 10 & 0.9819 & 12.9605 & -1.9315 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 10 & 0.9804 & 33.8246 & -2.0922 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 10 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 11 & 0.9638 & 12.7223 & -2.0746 \\
+P1 15303 13.2kV & 2026 & CasoBase & 11 & 0.9680 & 12.7779 & -2.0525 \\
+P1 15340 13.2kV & 2026 & CasoBase & 11 & 0.9762 & 12.8853 & -2.0096 \\
+P1 15344 13.2kV & 2026 & CasoBase & 11 & 0.9811 & 12.9507 & -1.8650 \\
+P2 15302 13.2kV & 2026 & CasoBase & 11 & 0.9463 & 12.4913 & -2.1690 \\
+P2 15303 13.2kV & 2026 & CasoBase & 11 & 0.9550 & 12.6058 & -2.1225 \\
+P2 15340 13.2kV & 2026 & CasoBase & 11 & 0.9712 & 12.8199 & -2.0360 \\
+P2 15344 13.2kV & 2026 & CasoBase & 11 & 0.9813 & 12.9525 & -1.6277 \\
+P3 15344 13.2kV & 2026 & CasoBase & 11 & 0.9814 & 12.9544 & -1.4173 \\
+P4 153344 13.2kV & 2026 & CasoBase & 11 & 0.9898 & 13.0650 & -1.0006 \\
+P5 15344 13.2kV & 2026 & CasoBase & 11 & 0.9899 & 13.0673 & -0.9920 \\
+P6 15344 13.2kV & 2026 & CasoBase & 11 & 0.9977 & 13.1693 & -0.3051 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 11 & 0.9810 & 12.9498 & -1.9837 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 11 & 0.9796 & 33.7946 & -2.1490 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 11 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 12 & 0.9632 & 12.7141 & -2.0399 \\
+P1 15303 13.2kV & 2026 & CasoBase & 12 & 0.9692 & 12.7932 & -2.0085 \\
+P1 15340 13.2kV & 2026 & CasoBase & 12 & 0.9763 & 12.8872 & -1.9709 \\
+P1 15344 13.2kV & 2026 & CasoBase & 12 & 0.9820 & 12.9625 & -1.8126 \\
+P2 15302 13.2kV & 2026 & CasoBase & 12 & 0.9448 & 12.4718 & -2.1390 \\
+P2 15303 13.2kV & 2026 & CasoBase & 12 & 0.9571 & 12.6337 & -2.0734 \\
+P2 15340 13.2kV & 2026 & CasoBase & 12 & 0.9713 & 12.8208 & -1.9977 \\
+P2 15344 13.2kV & 2026 & CasoBase & 12 & 0.9835 & 12.9820 & -1.5491 \\
+P3 15344 13.2kV & 2026 & CasoBase & 12 & 0.9848 & 12.9996 & -1.3162 \\
+P4 153344 13.2kV & 2026 & CasoBase & 12 & 0.9945 & 13.1280 & -0.8647 \\
+P5 15344 13.2kV & 2026 & CasoBase & 12 & 0.9947 & 13.1307 & -0.8554 \\
+P6 15344 13.2kV & 2026 & CasoBase & 12 & 1.0055 & 13.2732 & -0.1077 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 12 & 0.9813 & 12.9528 & -1.9447 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 12 & 0.9798 & 33.8029 & -2.1066 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 12 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 13 & 0.9601 & 12.6729 & -2.2148 \\
+P1 15303 13.2kV & 2026 & CasoBase & 13 & 0.9675 & 12.7713 & -2.1757 \\
+P1 15340 13.2kV & 2026 & CasoBase & 13 & 0.9746 & 12.8649 & -2.1383 \\
+P1 15344 13.2kV & 2026 & CasoBase & 13 & 0.9795 & 12.9292 & -1.9938 \\
+P2 15302 13.2kV & 2026 & CasoBase & 13 & 0.9399 & 12.4069 & -2.3240 \\
+P2 15303 13.2kV & 2026 & CasoBase & 13 & 0.9552 & 12.6080 & -2.2422 \\
+P2 15340 13.2kV & 2026 & CasoBase & 13 & 0.9693 & 12.7943 & -2.1668 \\
+P2 15344 13.2kV & 2026 & CasoBase & 13 & 0.9787 & 12.9188 & -1.7604 \\
+P3 15344 13.2kV & 2026 & CasoBase & 13 & 0.9780 & 12.9097 & -1.5533 \\
+P4 153344 13.2kV & 2026 & CasoBase & 13 & 0.9859 & 13.0143 & -1.1361 \\
+P5 15344 13.2kV & 2026 & CasoBase & 13 & 0.9861 & 13.0164 & -1.1275 \\
+P6 15344 13.2kV & 2026 & CasoBase & 13 & 0.9921 & 13.0960 & -0.4433 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 13 & 0.9799 & 12.9345 & -2.1103 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 13 & 0.9783 & 33.7517 & -2.2863 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 13 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 14 & 0.9584 & 12.6505 & -2.3843 \\
+P1 15303 13.2kV & 2026 & CasoBase & 14 & 0.9645 & 12.7315 & -2.3520 \\
+P1 15340 13.2kV & 2026 & CasoBase & 14 & 0.9733 & 12.8477 & -2.3055 \\
+P1 15344 13.2kV & 2026 & CasoBase & 14 & 0.9776 & 12.9048 & -2.1890 \\
+P2 15302 13.2kV & 2026 & CasoBase & 14 & 0.9377 & 12.3778 & -2.4965 \\
+P2 15303 13.2kV & 2026 & CasoBase & 14 & 0.9503 & 12.5440 & -2.4287 \\
+P2 15340 13.2kV & 2026 & CasoBase & 14 & 0.9679 & 12.7758 & -2.3347 \\
+P2 15344 13.2kV & 2026 & CasoBase & 14 & 0.9755 & 12.8772 & -2.0125 \\
+P3 15344 13.2kV & 2026 & CasoBase & 14 & 0.9737 & 12.8528 & -1.8554 \\
+P4 153344 13.2kV & 2026 & CasoBase & 14 & 0.9792 & 12.9254 & -1.5277 \\
+P5 15344 13.2kV & 2026 & CasoBase & 14 & 0.9793 & 12.9270 & -1.5210 \\
+P6 15344 13.2kV & 2026 & CasoBase & 14 & 0.9813 & 12.9536 & -0.9879 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 14 & 0.9787 & 12.9187 & -2.2770 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 14 & 0.9770 & 33.7072 & -2.4672 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 14 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 15 & 0.9582 & 12.6484 & -2.4449 \\
+P1 15303 13.2kV & 2026 & CasoBase & 15 & 0.9635 & 12.7184 & -2.4171 \\
+P1 15340 13.2kV & 2026 & CasoBase & 15 & 0.9733 & 12.8473 & -2.3655 \\
+P1 15344 13.2kV & 2026 & CasoBase & 15 & 0.9770 & 12.8958 & -2.2832 \\
+P2 15302 13.2kV & 2026 & CasoBase & 15 & 0.9375 & 12.3756 & -2.5572 \\
+P2 15303 13.2kV & 2026 & CasoBase & 15 & 0.9485 & 12.5197 & -2.4984 \\
+P2 15340 13.2kV & 2026 & CasoBase & 15 & 0.9680 & 12.7771 & -2.3939 \\
+P2 15344 13.2kV & 2026 & CasoBase & 15 & 0.9738 & 12.8542 & -2.1740 \\
+P3 15344 13.2kV & 2026 & CasoBase & 15 & 0.9710 & 12.8173 & -2.0766 \\
+P4 153344 13.2kV & 2026 & CasoBase & 15 & 0.9738 & 12.8541 & -1.8601 \\
+P5 15344 13.2kV & 2026 & CasoBase & 15 & 0.9739 & 12.8548 & -1.8556 \\
+P6 15344 13.2kV & 2026 & CasoBase & 15 & 0.9719 & 12.8294 & -1.5105 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 15 & 0.9785 & 12.9166 & -2.3376 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 15 & 0.9769 & 33.7014 & -2.5328 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 15 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 16 & 0.9582 & 12.6483 & -2.4836 \\
+P1 15303 13.2kV & 2026 & CasoBase & 16 & 0.9635 & 12.7182 & -2.4558 \\
+P1 15340 13.2kV & 2026 & CasoBase & 16 & 0.9734 & 12.8494 & -2.4033 \\
+P1 15344 13.2kV & 2026 & CasoBase & 16 & 0.9755 & 12.8765 & -2.3564 \\
+P2 15302 13.2kV & 2026 & CasoBase & 16 & 0.9375 & 12.3755 & -2.5959 \\
+P2 15303 13.2kV & 2026 & CasoBase & 16 & 0.9484 & 12.5195 & -2.5371 \\
+P2 15340 13.2kV & 2026 & CasoBase & 16 & 0.9683 & 12.7815 & -2.4308 \\
+P2 15344 13.2kV & 2026 & CasoBase & 16 & 0.9694 & 12.7966 & -2.3161 \\
+P3 15344 13.2kV & 2026 & CasoBase & 16 & 0.9641 & 12.7258 & -2.2799 \\
+P4 153344 13.2kV & 2026 & CasoBase & 16 & 0.9634 & 12.7171 & -2.1662 \\
+P5 15344 13.2kV & 2026 & CasoBase & 16 & 0.9634 & 12.7169 & -2.1638 \\
+P6 15344 13.2kV & 2026 & CasoBase & 16 & 0.9543 & 12.5964 & -2.0041 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 16 & 0.9785 & 12.9165 & -2.3763 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 16 & 0.9768 & 33.7012 & -2.5748 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 16 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & CasoBase & 17 & 0.9588 & 12.6561 & -2.4461 \\
+P1 15303 13.2kV & 2026 & CasoBase & 17 & 0.9643 & 12.7283 & -2.4174 \\
+P1 15340 13.2kV & 2026 & CasoBase & 17 & 0.9740 & 12.8571 & -2.3659 \\
+P1 15344 13.2kV & 2026 & CasoBase & 17 & 0.9770 & 12.8964 & -2.3326 \\
+P2 15302 13.2kV & 2026 & CasoBase & 17 & 0.9381 & 12.3835 & -2.5582 \\
+P2 15303 13.2kV & 2026 & CasoBase & 17 & 0.9494 & 12.5320 & -2.4977 \\
+P2 15340 13.2kV & 2026 & CasoBase & 17 & 0.9689 & 12.7892 & -2.3934 \\
+P2 15344 13.2kV & 2026 & CasoBase & 17 & 0.9728 & 12.8408 & -2.3199 \\
+P3 15344 13.2kV & 2026 & CasoBase & 17 & 0.9691 & 12.7915 & -2.3085 \\
+P4 153344 13.2kV & 2026 & CasoBase & 17 & 0.9681 & 12.7784 & -2.2573 \\
+P5 15344 13.2kV & 2026 & CasoBase & 17 & 0.9680 & 12.7781 & -2.2563 \\
+P6 15344 13.2kV & 2026 & CasoBase & 17 & 0.9612 & 12.6880 & -2.1924 \\
+PTO BOYACA 13.2kV & 2026 & CasoBase & 17 & 0.9791 & 12.9242 & -2.3389 \\
+PTO BOYACA 34.5kV & 2026 & CasoBase & 17 & 0.9775 & 33.7228 & -2.5342 \\
+PTO BOYACA HV 115 & 2026 & CasoBase & 17 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9697 & 12.8000 & -1.7630 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9770 & 12.8961 & -1.7249 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9807 & 12.9448 & -1.7055 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9830 & 12.9755 & -1.6752 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9541 & 12.5941 & -1.8467 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9689 & 12.7895 & -1.7679 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9762 & 12.8859 & -1.7292 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9781 & 12.9109 & -1.6866 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9738 & 12.8536 & -1.6967 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9717 & 12.8259 & -1.6846 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9716 & 12.8254 & -1.6843 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9628 & 12.7095 & -1.6898 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9851 & 13.0031 & -1.6823 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9839 & 33.9446 & -1.8218 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9830 & 0.7864 & -1.5171 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9709 & 12.8164 & -1.6924 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9768 & 12.8934 & -1.6618 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9810 & 12.9497 & -1.6394 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9842 & 12.9910 & -1.5796 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9563 & 12.6238 & -1.7705 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9682 & 12.7806 & -1.7073 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9767 & 12.8922 & -1.6625 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9801 & 12.9371 & -1.5665 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9765 & 12.8893 & -1.5548 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9755 & 12.8769 & -1.5042 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9755 & 12.8766 & -1.5031 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9689 & 12.7897 & -1.4393 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9853 & 13.0065 & -1.6168 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9842 & 33.9542 & -1.7508 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9841 & 0.7873 & -1.1992 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9683 & 12.7818 & -1.8063 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9731 & 12.8449 & -1.7812 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9794 & 12.9287 & -1.7479 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9836 & 12.9829 & -1.6362 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9527 & 12.5752 & -1.8903 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9624 & 12.7043 & -1.8382 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9751 & 12.8711 & -1.7710 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9796 & 12.9310 & -1.5859 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9761 & 12.8850 & -1.5410 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9766 & 12.8908 & -1.4244 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9766 & 12.8910 & -1.4220 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9715 & 12.8232 & -1.2468 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9838 & 12.9856 & -1.7251 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9825 & 33.8953 & -1.8684 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9835 & 0.7868 & -0.8536 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9670 & 12.7649 & -1.8443 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9704 & 12.8091 & -1.8268 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9781 & 12.9108 & -1.7863 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9833 & 12.9792 & -1.5992 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9514 & 12.5581 & -1.9285 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9583 & 12.6492 & -1.8917 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9736 & 12.8519 & -1.8100 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9787 & 12.9184 & -1.4989 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9746 & 12.8645 & -1.4092 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9766 & 12.8909 & -1.1983 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9766 & 12.8914 & -1.1939 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9719 & 12.8297 & -0.8643 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9825 & 12.9690 & -1.7630 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9811 & 33.8485 & -1.9096 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9830 & 0.7864 & -0.2279 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9656 & 12.7453 & -1.8049 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9690 & 12.7910 & -1.7868 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9772 & 12.8994 & -1.7436 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9857 & 13.0111 & -1.4577 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9490 & 12.5274 & -1.8937 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9562 & 12.6219 & -1.8555 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9726 & 12.8379 & -1.7683 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9843 & 12.9934 & -1.2803 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9832 & 12.9778 & -1.1226 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9890 & 13.0548 & -0.7993 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9891 & 13.0564 & -0.7926 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9925 & 13.1008 & -0.2635 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9818 & 12.9601 & -1.7193 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9804 & 33.8231 & -1.8624 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9851 & 0.7881 & 0.5789 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9637 & 12.7210 & -1.8054 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9679 & 12.7766 & -1.7833 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9761 & 12.8841 & -1.7405 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9867 & 13.0250 & -1.3738 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9462 & 12.4900 & -1.8997 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9549 & 12.6045 & -1.8533 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9711 & 12.8187 & -1.7668 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9869 & 13.0269 & -1.1391 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9870 & 13.0288 & -0.9312 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9954 & 13.1388 & -0.5192 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9955 & 13.1410 & -0.5107 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 1.0032 & 13.2425 & 0.1685 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9810 & 12.9486 & -1.7146 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9794 & 33.7907 & -1.8574 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9857 & 0.7886 & 1.2111 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9631 & 12.7124 & -1.7489 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9691 & 12.7915 & -1.7175 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9762 & 12.8855 & -1.6800 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9881 & 13.0423 & -1.2801 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9447 & 12.4700 & -1.8480 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9570 & 12.6319 & -1.7823 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9711 & 12.8191 & -1.7068 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9895 & 13.0618 & -1.0198 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9909 & 13.0792 & -0.7897 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0005 & 13.2069 & -0.3437 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0007 & 13.2095 & -0.3345 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0115 & 13.3513 & 0.4044 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9811 & 12.9511 & -1.6537 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9796 & 33.7976 & -1.7915 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9869 & 0.7895 & 1.5132 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9600 & 12.6718 & -1.9451 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9674 & 12.7702 & -1.9060 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9745 & 12.8638 & -1.8686 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9851 & 13.0039 & -1.5014 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9398 & 12.4056 & -2.0542 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9551 & 12.6068 & -1.9725 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9692 & 12.7932 & -1.8971 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9844 & 12.9935 & -1.2707 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9837 & 12.9845 & -1.0659 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9916 & 13.0885 & -0.6535 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9917 & 13.0906 & -0.6450 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9977 & 13.1698 & 0.0315 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9798 & 12.9335 & -1.8407 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9782 & 33.7481 & -1.9942 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9841 & 0.7873 & 1.0919 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9584 & 12.6503 & -2.1711 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9645 & 12.7313 & -2.1390 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9733 & 12.8475 & -2.0925 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9822 & 12.9649 & -1.8025 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9377 & 12.3774 & -2.2832 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9503 & 12.5438 & -2.2155 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9678 & 12.7756 & -2.1216 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9801 & 12.9374 & -1.6276 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9783 & 12.9131 & -1.4720 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9837 & 12.9854 & -1.1473 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9839 & 12.9869 & -1.1407 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9859 & 13.0135 & -0.6124 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9787 & 12.9185 & -2.0640 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9770 & 33.7063 & -2.2364 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9816 & 0.7852 & 0.2487 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9582 & 12.6487 & -2.3015 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9635 & 12.7187 & -2.2737 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9733 & 12.8477 & -2.2222 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9801 & 12.9369 & -2.0255 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9376 & 12.3758 & -2.4136 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9485 & 12.5200 & -2.3549 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9680 & 12.7775 & -2.2506 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9769 & 12.8954 & -1.9169 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9741 & 12.8587 & -1.8201 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9769 & 12.8954 & -1.6050 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9770 & 12.8961 & -1.6006 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9751 & 12.8708 & -1.2576 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9786 & 12.9170 & -2.1944 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9769 & 33.7022 & -2.3777 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9798 & 0.7838 & -0.6452 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9582 & 12.6486 & -2.4013 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9635 & 12.7186 & -2.3736 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9735 & 12.8498 & -2.3212 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9773 & 12.9005 & -2.2096 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9376 & 12.3757 & -2.5134 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9485 & 12.5199 & -2.4547 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9683 & 12.7819 & -2.3486 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9713 & 12.8207 & -2.1694 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9659 & 12.7500 & -2.1334 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9653 & 12.7413 & -2.0201 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9652 & 12.7411 & -2.0177 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9561 & 12.6209 & -1.8586 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9786 & 12.9169 & -2.2942 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9769 & 33.7022 & -2.4858 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9772 & 0.7818 & -1.4170 \\
+P1 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9588 & 12.6563 & -2.4061 \\
+P1 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9643 & 12.7285 & -2.3774 \\
+P1 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9740 & 12.8573 & -2.3260 \\
+P1 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9779 & 12.9081 & -2.2617 \\
+P2 15302 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9381 & 12.3835 & -2.5181 \\
+P2 15303 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9494 & 12.5321 & -2.4576 \\
+P2 15340 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9689 & 12.7894 & -2.3534 \\
+P2 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9737 & 12.8525 & -2.2490 \\
+P3 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9699 & 12.8033 & -2.2376 \\
+P4 153344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9690 & 12.7902 & -2.1865 \\
+P5 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9689 & 12.7899 & -2.1854 \\
+P6 15344 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9621 & 12.6999 & -2.1217 \\
+PTO BOYACA 13.2kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9791 & 12.9244 & -2.2991 \\
+PTO BOYACA 34.5kV & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9775 & 33.7233 & -2.4910 \\
+PTO BOYACA HV 115 & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9779 & 0.7823 & -1.8764 \\
+P1 15302 13.2kV & 2028 & CargaPura & 6 & 0.9693 & 12.7954 & -1.8101 \\
+P1 15303 13.2kV & 2028 & CargaPura & 6 & 0.9767 & 12.8926 & -1.7715 \\
+P1 15340 13.2kV & 2028 & CargaPura & 6 & 0.9804 & 12.9418 & -1.7519 \\
+P1 15344 13.2kV & 2028 & CargaPura & 6 & 0.9822 & 12.9647 & -1.7426 \\
+P2 15302 13.2kV & 2028 & CargaPura & 6 & 0.9536 & 12.5873 & -1.8946 \\
+P2 15303 13.2kV & 2028 & CargaPura & 6 & 0.9685 & 12.7848 & -1.8150 \\
+P2 15340 13.2kV & 2028 & CargaPura & 6 & 0.9759 & 12.8822 & -1.7759 \\
+P2 15344 13.2kV & 2028 & CargaPura & 6 & 0.9767 & 12.8927 & -1.7712 \\
+P3 15344 13.2kV & 2028 & CargaPura & 6 & 0.9719 & 12.8289 & -1.7968 \\
+P4 153344 13.2kV & 2028 & CargaPura & 6 & 0.9690 & 12.7903 & -1.8123 \\
+P5 15344 13.2kV & 2028 & CargaPura & 6 & 0.9689 & 12.7895 & -1.8126 \\
+P6 15344 13.2kV & 2028 & CargaPura & 6 & 0.9586 & 12.6535 & -1.8679 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 6 & 0.9849 & 13.0007 & -1.7284 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 6 & 0.9837 & 33.9379 & -1.8718 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 6 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 7 & 0.9706 & 12.8117 & -1.7781 \\
+P1 15303 13.2kV & 2028 & CargaPura & 7 & 0.9765 & 12.8896 & -1.7472 \\
+P1 15340 13.2kV & 2028 & CargaPura & 7 & 0.9808 & 12.9464 & -1.7246 \\
+P1 15344 13.2kV & 2028 & CargaPura & 7 & 0.9825 & 12.9686 & -1.7156 \\
+P2 15302 13.2kV & 2028 & CargaPura & 7 & 0.9558 & 12.6170 & -1.8571 \\
+P2 15303 13.2kV & 2028 & CargaPura & 7 & 0.9678 & 12.7755 & -1.7933 \\
+P2 15340 13.2kV & 2028 & CargaPura & 7 & 0.9764 & 12.8883 & -1.7480 \\
+P2 15344 13.2kV & 2028 & CargaPura & 7 & 0.9771 & 12.8981 & -1.7436 \\
+P3 15344 13.2kV & 2028 & CargaPura & 7 & 0.9724 & 12.8357 & -1.7686 \\
+P4 153344 13.2kV & 2028 & CargaPura & 7 & 0.9695 & 12.7979 & -1.7837 \\
+P5 15344 13.2kV & 2028 & CargaPura & 7 & 0.9695 & 12.7972 & -1.7841 \\
+P6 15344 13.2kV & 2028 & CargaPura & 7 & 0.9594 & 12.6640 & -1.8382 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 7 & 0.9851 & 13.0039 & -1.7017 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 7 & 0.9840 & 33.9469 & -1.8428 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 7 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 8 & 0.9679 & 12.7762 & -1.9648 \\
+P1 15303 13.2kV & 2028 & CargaPura & 8 & 0.9727 & 12.8400 & -1.9395 \\
+P1 15340 13.2kV & 2028 & CargaPura & 8 & 0.9791 & 12.9247 & -1.9057 \\
+P1 15344 13.2kV & 2028 & CargaPura & 8 & 0.9803 & 12.9395 & -1.8995 \\
+P2 15302 13.2kV & 2028 & CargaPura & 8 & 0.9521 & 12.5674 & -2.0498 \\
+P2 15303 13.2kV & 2028 & CargaPura & 8 & 0.9620 & 12.6979 & -1.9970 \\
+P2 15340 13.2kV & 2028 & CargaPura & 8 & 0.9747 & 12.8665 & -1.9291 \\
+P2 15344 13.2kV & 2028 & CargaPura & 8 & 0.9738 & 12.8540 & -1.9335 \\
+P3 15344 13.2kV & 2028 & CargaPura & 8 & 0.9681 & 12.7783 & -1.9640 \\
+P4 153344 13.2kV & 2028 & CargaPura & 8 & 0.9646 & 12.7325 & -1.9824 \\
+P5 15344 13.2kV & 2028 & CargaPura & 8 & 0.9645 & 12.7315 & -1.9827 \\
+P6 15344 13.2kV & 2028 & CargaPura & 8 & 0.9522 & 12.5697 & -2.0489 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 8 & 0.9835 & 12.9822 & -1.8827 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 8 & 0.9822 & 33.8861 & -2.0391 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 8 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 9 & 0.9666 & 12.7587 & -2.1084 \\
+P1 15303 13.2kV & 2028 & CargaPura & 9 & 0.9700 & 12.8034 & -2.0907 \\
+P1 15340 13.2kV & 2028 & CargaPura & 9 & 0.9777 & 12.9062 & -2.0497 \\
+P1 15344 13.2kV & 2028 & CargaPura & 9 & 0.9777 & 12.9051 & -2.0495 \\
+P2 15302 13.2kV & 2028 & CargaPura & 9 & 0.9507 & 12.5496 & -2.1937 \\
+P2 15303 13.2kV & 2028 & CargaPura & 9 & 0.9577 & 12.6417 & -2.1564 \\
+P2 15340 13.2kV & 2028 & CargaPura & 9 & 0.9732 & 12.8466 & -2.0737 \\
+P2 15344 13.2kV & 2028 & CargaPura & 9 & 0.9686 & 12.7854 & -2.0970 \\
+P3 15344 13.2kV & 2028 & CargaPura & 9 & 0.9605 & 12.6792 & -2.1399 \\
+P4 153344 13.2kV & 2028 & CargaPura & 9 & 0.9557 & 12.6147 & -2.1659 \\
+P5 15344 13.2kV & 2028 & CargaPura & 9 & 0.9556 & 12.6134 & -2.1664 \\
+P6 15344 13.2kV & 2028 & CargaPura & 9 & 0.9383 & 12.3856 & -2.2603 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 9 & 0.9822 & 12.9650 & -2.0261 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 9 & 0.9808 & 33.8376 & -2.1946 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 9 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 10 & 0.9651 & 12.7392 & -2.1849 \\
+P1 15303 13.2kV & 2028 & CargaPura & 10 & 0.9686 & 12.7855 & -2.1665 \\
+P1 15340 13.2kV & 2028 & CargaPura & 10 & 0.9769 & 12.8950 & -2.1228 \\
+P1 15344 13.2kV & 2028 & CargaPura & 10 & 0.9777 & 12.9051 & -2.1183 \\
+P2 15302 13.2kV & 2028 & CargaPura & 10 & 0.9484 & 12.5190 & -2.2748 \\
+P2 15303 13.2kV & 2028 & CargaPura & 10 & 0.9556 & 12.6145 & -2.2361 \\
+P2 15340 13.2kV & 2028 & CargaPura & 10 & 0.9722 & 12.8329 & -2.1478 \\
+P2 15344 13.2kV & 2028 & CargaPura & 10 & 0.9699 & 12.8026 & -2.1591 \\
+P3 15344 13.2kV & 2028 & CargaPura & 10 & 0.9630 & 12.7117 & -2.1958 \\
+P4 153344 13.2kV & 2028 & CargaPura & 10 & 0.9588 & 12.6566 & -2.2180 \\
+P5 15344 13.2kV & 2028 & CargaPura & 10 & 0.9587 & 12.6555 & -2.2184 \\
+P6 15344 13.2kV & 2028 & CargaPura & 10 & 0.9440 & 12.4610 & -2.2984 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 10 & 0.9815 & 12.9563 & -2.0982 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 10 & 0.9801 & 33.8132 & -2.2729 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 10 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 11 & 0.9633 & 12.7153 & -2.2811 \\
+P1 15303 13.2kV & 2028 & CargaPura & 11 & 0.9675 & 12.7715 & -2.2588 \\
+P1 15340 13.2kV & 2028 & CargaPura & 11 & 0.9758 & 12.8801 & -2.2154 \\
+P1 15344 13.2kV & 2028 & CargaPura & 11 & 0.9767 & 12.8931 & -2.2098 \\
+P2 15302 13.2kV & 2028 & CargaPura & 11 & 0.9456 & 12.4818 & -2.3767 \\
+P2 15303 13.2kV & 2028 & CargaPura & 11 & 0.9544 & 12.5975 & -2.3296 \\
+P2 15340 13.2kV & 2028 & CargaPura & 11 & 0.9708 & 12.8140 & -2.2421 \\
+P2 15344 13.2kV & 2028 & CargaPura & 11 & 0.9688 & 12.7886 & -2.2514 \\
+P3 15344 13.2kV & 2028 & CargaPura & 11 & 0.9618 & 12.6959 & -2.2888 \\
+P4 153344 13.2kV & 2028 & CargaPura & 11 & 0.9576 & 12.6397 & -2.3115 \\
+P5 15344 13.2kV & 2028 & CargaPura & 11 & 0.9575 & 12.6386 & -2.3119 \\
+P6 15344 13.2kV & 2028 & CargaPura & 11 & 0.9424 & 12.4402 & -2.3936 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 11 & 0.9807 & 12.9453 & -2.1892 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 11 & 0.9792 & 33.7823 & -2.3716 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 11 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 12 & 0.9627 & 12.7072 & -2.2597 \\
+P1 15303 13.2kV & 2028 & CargaPura & 12 & 0.9687 & 12.7872 & -2.2279 \\
+P1 15340 13.2kV & 2028 & CargaPura & 12 & 0.9759 & 12.8822 & -2.1900 \\
+P1 15344 13.2kV & 2028 & CargaPura & 12 & 0.9774 & 12.9013 & -2.1819 \\
+P2 15302 13.2kV & 2028 & CargaPura & 12 & 0.9441 & 12.4622 & -2.3600 \\
+P2 15303 13.2kV & 2028 & CargaPura & 12 & 0.9565 & 12.6259 & -2.2935 \\
+P2 15340 13.2kV & 2028 & CargaPura & 12 & 0.9708 & 12.8151 & -2.2171 \\
+P2 15344 13.2kV & 2028 & CargaPura & 12 & 0.9702 & 12.8071 & -2.2195 \\
+P3 15344 13.2kV & 2028 & CargaPura & 12 & 0.9639 & 12.7236 & -2.2532 \\
+P4 153344 13.2kV & 2028 & CargaPura & 12 & 0.9601 & 12.6730 & -2.2736 \\
+P5 15344 13.2kV & 2028 & CargaPura & 12 & 0.9600 & 12.6719 & -2.2740 \\
+P6 15344 13.2kV & 2028 & CargaPura & 12 & 0.9465 & 12.4933 & -2.3474 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 12 & 0.9809 & 12.9485 & -2.1634 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 12 & 0.9795 & 33.7911 & -2.3436 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 12 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 13 & 0.9595 & 12.6651 & -2.4244 \\
+P1 15303 13.2kV & 2028 & CargaPura & 13 & 0.9670 & 12.7646 & -2.3848 \\
+P1 15340 13.2kV & 2028 & CargaPura & 13 & 0.9742 & 12.8592 & -2.3469 \\
+P1 15344 13.2kV & 2028 & CargaPura & 13 & 0.9750 & 12.8706 & -2.3418 \\
+P2 15302 13.2kV & 2028 & CargaPura & 13 & 0.9391 & 12.3961 & -2.5349 \\
+P2 15303 13.2kV & 2028 & CargaPura & 13 & 0.9545 & 12.5995 & -2.4521 \\
+P2 15340 13.2kV & 2028 & CargaPura & 13 & 0.9688 & 12.7879 & -2.3758 \\
+P2 15344 13.2kV & 2028 & CargaPura & 13 & 0.9661 & 12.7526 & -2.3888 \\
+P3 15344 13.2kV & 2028 & CargaPura & 13 & 0.9582 & 12.6481 & -2.4311 \\
+P4 153344 13.2kV & 2028 & CargaPura & 13 & 0.9534 & 12.5846 & -2.4568 \\
+P5 15344 13.2kV & 2028 & CargaPura & 13 & 0.9533 & 12.5832 & -2.4573 \\
+P6 15344 13.2kV & 2028 & CargaPura & 13 & 0.9363 & 12.3589 & -2.5501 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 13 & 0.9795 & 12.9296 & -2.3186 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 13 & 0.9779 & 33.7382 & -2.5121 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 13 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 14 & 0.9578 & 12.6426 & -2.5575 \\
+P1 15303 13.2kV & 2028 & CargaPura & 14 & 0.9640 & 12.7245 & -2.5249 \\
+P1 15340 13.2kV & 2028 & CargaPura & 14 & 0.9729 & 12.8420 & -2.4778 \\
+P1 15344 13.2kV & 2028 & CargaPura & 14 & 0.9740 & 12.8571 & -2.4712 \\
+P2 15302 13.2kV & 2028 & CargaPura & 14 & 0.9369 & 12.3668 & -2.6711 \\
+P2 15303 13.2kV & 2028 & CargaPura & 14 & 0.9496 & 12.5349 & -2.6024 \\
+P2 15340 13.2kV & 2028 & CargaPura & 14 & 0.9674 & 12.7693 & -2.5073 \\
+P2 15344 13.2kV & 2028 & CargaPura & 14 & 0.9654 & 12.7438 & -2.5164 \\
+P3 15344 13.2kV & 2028 & CargaPura & 14 & 0.9578 & 12.6434 & -2.5572 \\
+P4 153344 13.2kV & 2028 & CargaPura & 14 & 0.9532 & 12.5824 & -2.5818 \\
+P5 15344 13.2kV & 2028 & CargaPura & 14 & 0.9531 & 12.5811 & -2.5823 \\
+P6 15344 13.2kV & 2028 & CargaPura & 14 & 0.9368 & 12.3658 & -2.6715 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 14 & 0.9783 & 12.9138 & -2.4490 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 14 & 0.9766 & 33.6936 & -2.6535 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 14 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 15 & 0.9576 & 12.6409 & -2.5708 \\
+P1 15303 13.2kV & 2028 & CargaPura & 15 & 0.9630 & 12.7117 & -2.5426 \\
+P1 15340 13.2kV & 2028 & CargaPura & 15 & 0.9729 & 12.8421 & -2.4904 \\
+P1 15344 13.2kV & 2028 & CargaPura & 15 & 0.9744 & 12.8623 & -2.4819 \\
+P2 15302 13.2kV & 2028 & CargaPura & 15 & 0.9367 & 12.3651 & -2.6844 \\
+P2 15303 13.2kV & 2028 & CargaPura & 15 & 0.9478 & 12.5108 & -2.6249 \\
+P2 15340 13.2kV & 2028 & CargaPura & 15 & 0.9675 & 12.7711 & -2.5192 \\
+P2 15344 13.2kV & 2028 & CargaPura & 15 & 0.9669 & 12.7626 & -2.5217 \\
+P3 15344 13.2kV & 2028 & CargaPura & 15 & 0.9602 & 12.6743 & -2.5575 \\
+P4 153344 13.2kV & 2028 & CargaPura & 15 & 0.9561 & 12.6207 & -2.5792 \\
+P5 15344 13.2kV & 2028 & CargaPura & 15 & 0.9560 & 12.6196 & -2.5796 \\
+P6 15344 13.2kV & 2028 & CargaPura & 15 & 0.9417 & 12.4306 & -2.6576 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 15 & 0.9782 & 12.9121 & -2.4622 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 15 & 0.9765 & 33.6890 & -2.6680 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 15 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 16 & 0.9577 & 12.6412 & -2.5684 \\
+P1 15303 13.2kV & 2028 & CargaPura & 16 & 0.9630 & 12.7120 & -2.5403 \\
+P1 15340 13.2kV & 2028 & CargaPura & 16 & 0.9731 & 12.8446 & -2.4872 \\
+P1 15344 13.2kV & 2028 & CargaPura & 16 & 0.9739 & 12.8552 & -2.4824 \\
+P2 15302 13.2kV & 2028 & CargaPura & 16 & 0.9368 & 12.3653 & -2.6820 \\
+P2 15303 13.2kV & 2028 & CargaPura & 16 & 0.9478 & 12.5111 & -2.6225 \\
+P2 15340 13.2kV & 2028 & CargaPura & 16 & 0.9679 & 12.7759 & -2.5150 \\
+P2 15344 13.2kV & 2028 & CargaPura & 16 & 0.9652 & 12.7407 & -2.5280 \\
+P3 15344 13.2kV & 2028 & CargaPura & 16 & 0.9575 & 12.6392 & -2.5692 \\
+P4 153344 13.2kV & 2028 & CargaPura & 16 & 0.9529 & 12.5776 & -2.5941 \\
+P5 15344 13.2kV & 2028 & CargaPura & 16 & 0.9528 & 12.5763 & -2.5946 \\
+P6 15344 13.2kV & 2028 & CargaPura & 16 & 0.9363 & 12.3588 & -2.6847 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 16 & 0.9782 & 12.9124 & -2.4599 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 16 & 0.9765 & 33.6898 & -2.6654 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 16 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CargaPura & 17 & 0.9583 & 12.6497 & -2.5004 \\
+P1 15303 13.2kV & 2028 & CargaPura & 17 & 0.9638 & 12.7226 & -2.4714 \\
+P1 15340 13.2kV & 2028 & CargaPura & 17 & 0.9737 & 12.8529 & -2.4193 \\
+P1 15344 13.2kV & 2028 & CargaPura & 17 & 0.9761 & 12.8845 & -2.4064 \\
+P2 15302 13.2kV & 2028 & CargaPura & 17 & 0.9374 & 12.3740 & -2.6139 \\
+P2 15303 13.2kV & 2028 & CargaPura & 17 & 0.9488 & 12.5242 & -2.5526 \\
+P2 15340 13.2kV & 2028 & CargaPura & 17 & 0.9685 & 12.7843 & -2.4471 \\
+P2 15344 13.2kV & 2028 & CargaPura & 17 & 0.9706 & 12.8123 & -2.4353 \\
+P3 15344 13.2kV & 2028 & CargaPura & 17 & 0.9658 & 12.7482 & -2.4612 \\
+P4 153344 13.2kV & 2028 & CargaPura & 17 & 0.9628 & 12.7095 & -2.4768 \\
+P5 15344 13.2kV & 2028 & CargaPura & 17 & 0.9628 & 12.7087 & -2.4771 \\
+P6 15344 13.2kV & 2028 & CargaPura & 17 & 0.9524 & 12.5721 & -2.5331 \\
+PTO BOYACA 13.2kV & 2028 & CargaPura & 17 & 0.9788 & 12.9207 & -2.3920 \\
+PTO BOYACA 34.5kV & 2028 & CargaPura & 17 & 0.9772 & 33.7130 & -2.5917 \\
+PTO BOYACA HV 115 & 2028 & CargaPura & 17 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 6 & 0.9694 & 12.7955 & -1.7988 \\
+P1 15303 13.2kV & 2028 & CasoBase & 6 & 0.9767 & 12.8927 & -1.7602 \\
+P1 15340 13.2kV & 2028 & CasoBase & 6 & 0.9804 & 12.9419 & -1.7406 \\
+P1 15344 13.2kV & 2028 & CasoBase & 6 & 0.9824 & 12.9681 & -1.7229 \\
+P2 15302 13.2kV & 2028 & CasoBase & 6 & 0.9536 & 12.5874 & -1.8833 \\
+P2 15303 13.2kV & 2028 & CasoBase & 6 & 0.9686 & 12.7849 & -1.8037 \\
+P2 15340 13.2kV & 2028 & CasoBase & 6 & 0.9759 & 12.8823 & -1.7645 \\
+P2 15344 13.2kV & 2028 & CasoBase & 6 & 0.9775 & 12.9027 & -1.7345 \\
+P3 15344 13.2kV & 2028 & CasoBase & 6 & 0.9731 & 12.8447 & -1.7449 \\
+P4 153344 13.2kV & 2028 & CasoBase & 6 & 0.9710 & 12.8166 & -1.7329 \\
+P5 15344 13.2kV & 2028 & CasoBase & 6 & 0.9709 & 12.8160 & -1.7327 \\
+P6 15344 13.2kV & 2028 & CasoBase & 6 & 0.9620 & 12.6986 & -1.7388 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 6 & 0.9849 & 13.0008 & -1.7171 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 6 & 0.9837 & 33.9382 & -1.8595 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 6 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 7 & 0.9706 & 12.8120 & -1.7509 \\
+P1 15303 13.2kV & 2028 & CasoBase & 7 & 0.9765 & 12.8898 & -1.7201 \\
+P1 15340 13.2kV & 2028 & CasoBase & 7 & 0.9808 & 12.9467 & -1.6974 \\
+P1 15344 13.2kV & 2028 & CasoBase & 7 & 0.9831 & 12.9768 & -1.6681 \\
+P2 15302 13.2kV & 2028 & CasoBase & 7 & 0.9559 & 12.6173 & -1.8299 \\
+P2 15303 13.2kV & 2028 & CasoBase & 7 & 0.9679 & 12.7758 & -1.7661 \\
+P2 15340 13.2kV & 2028 & CasoBase & 7 & 0.9764 & 12.8886 & -1.7208 \\
+P2 15344 13.2kV & 2028 & CasoBase & 7 & 0.9789 & 12.9221 & -1.6553 \\
+P3 15344 13.2kV & 2028 & CasoBase & 7 & 0.9753 & 12.8737 & -1.6439 \\
+P4 153344 13.2kV & 2028 & CasoBase & 7 & 0.9743 & 12.8609 & -1.5932 \\
+P5 15344 13.2kV & 2028 & CasoBase & 7 & 0.9743 & 12.8606 & -1.5922 \\
+P6 15344 13.2kV & 2028 & CasoBase & 7 & 0.9676 & 12.7721 & -1.5287 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 7 & 0.9852 & 13.0041 & -1.6745 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 7 & 0.9840 & 33.9476 & -1.8134 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 7 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 8 & 0.9679 & 12.7769 & -1.9088 \\
+P1 15303 13.2kV & 2028 & CasoBase & 8 & 0.9728 & 12.8406 & -1.8835 \\
+P1 15340 13.2kV & 2028 & CasoBase & 8 & 0.9792 & 12.9253 & -1.8498 \\
+P1 15344 13.2kV & 2028 & CasoBase & 8 & 0.9815 & 12.9564 & -1.8018 \\
+P2 15302 13.2kV & 2028 & CasoBase & 8 & 0.9521 & 12.5680 & -1.9938 \\
+P2 15303 13.2kV & 2028 & CasoBase & 8 & 0.9620 & 12.6985 & -1.9411 \\
+P2 15340 13.2kV & 2028 & CasoBase & 8 & 0.9748 & 12.8671 & -1.8732 \\
+P2 15344 13.2kV & 2028 & CasoBase & 8 & 0.9775 & 12.9035 & -1.7517 \\
+P3 15344 13.2kV & 2028 & CasoBase & 8 & 0.9740 & 12.8566 & -1.7068 \\
+P4 153344 13.2kV & 2028 & CasoBase & 8 & 0.9744 & 12.8620 & -1.5899 \\
+P5 15344 13.2kV & 2028 & CasoBase & 8 & 0.9744 & 12.8621 & -1.5875 \\
+P6 15344 13.2kV & 2028 & CasoBase & 8 & 0.9691 & 12.7925 & -1.4122 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 8 & 0.9836 & 12.9829 & -1.8268 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 8 & 0.9823 & 33.8877 & -1.9785 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 8 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 9 & 0.9667 & 12.7600 & -2.0097 \\
+P1 15303 13.2kV & 2028 & CasoBase & 9 & 0.9700 & 12.8046 & -1.9919 \\
+P1 15340 13.2kV & 2028 & CasoBase & 9 & 0.9778 & 12.9074 & -1.9509 \\
+P1 15344 13.2kV & 2028 & CasoBase & 9 & 0.9799 & 12.9351 & -1.8775 \\
+P2 15302 13.2kV & 2028 & CasoBase & 9 & 0.9508 & 12.5509 & -2.0949 \\
+P2 15303 13.2kV & 2028 & CasoBase & 9 & 0.9578 & 12.6430 & -2.0576 \\
+P2 15340 13.2kV & 2028 & CasoBase & 9 & 0.9733 & 12.8479 & -1.9749 \\
+P2 15344 13.2kV & 2028 & CasoBase & 9 & 0.9752 & 12.8729 & -1.7770 \\
+P3 15344 13.2kV & 2028 & CasoBase & 9 & 0.9710 & 12.8177 & -1.6871 \\
+P4 153344 13.2kV & 2028 & CasoBase & 9 & 0.9730 & 12.8436 & -1.4749 \\
+P5 15344 13.2kV & 2028 & CasoBase & 9 & 0.9730 & 12.8441 & -1.4705 \\
+P6 15344 13.2kV & 2028 & CasoBase & 9 & 0.9682 & 12.7799 & -1.1394 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 9 & 0.9823 & 12.9662 & -1.9274 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 9 & 0.9809 & 33.8409 & -2.0877 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 9 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 10 & 0.9652 & 12.7407 & -2.0404 \\
+P1 15303 13.2kV & 2028 & CasoBase & 10 & 0.9687 & 12.7869 & -2.0220 \\
+P1 15340 13.2kV & 2028 & CasoBase & 10 & 0.9770 & 12.8965 & -1.9783 \\
+P1 15344 13.2kV & 2028 & CasoBase & 10 & 0.9809 & 12.9483 & -1.8646 \\
+P2 15302 13.2kV & 2028 & CasoBase & 10 & 0.9485 & 12.5205 & -2.1303 \\
+P2 15303 13.2kV & 2028 & CasoBase & 10 & 0.9558 & 12.6160 & -2.0916 \\
+P2 15340 13.2kV & 2028 & CasoBase & 10 & 0.9723 & 12.8344 & -2.0034 \\
+P2 15344 13.2kV & 2028 & CasoBase & 10 & 0.9795 & 12.9295 & -1.6859 \\
+P3 15344 13.2kV & 2028 & CasoBase & 10 & 0.9783 & 12.9129 & -1.5270 \\
+P4 153344 13.2kV & 2028 & CasoBase & 10 & 0.9841 & 12.9898 & -1.2006 \\
+P5 15344 13.2kV & 2028 & CasoBase & 10 & 0.9842 & 12.9914 & -1.1939 \\
+P6 15344 13.2kV & 2028 & CasoBase & 10 & 0.9874 & 13.0341 & -0.6602 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 10 & 0.9817 & 12.9578 & -1.9538 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 10 & 0.9802 & 33.8171 & -2.1164 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 10 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 11 & 0.9634 & 12.7170 & -2.0988 \\
+P1 15303 13.2kV & 2028 & CasoBase & 11 & 0.9677 & 12.7732 & -2.0765 \\
+P1 15340 13.2kV & 2028 & CasoBase & 11 & 0.9759 & 12.8818 & -2.0331 \\
+P1 15344 13.2kV & 2028 & CasoBase & 11 & 0.9809 & 12.9474 & -1.8884 \\
+P2 15302 13.2kV & 2028 & CasoBase & 11 & 0.9457 & 12.4835 & -2.1944 \\
+P2 15303 13.2kV & 2028 & CasoBase & 11 & 0.9545 & 12.5992 & -2.1474 \\
+P2 15340 13.2kV & 2028 & CasoBase & 11 & 0.9709 & 12.8157 & -2.0598 \\
+P2 15344 13.2kV & 2028 & CasoBase & 11 & 0.9809 & 12.9482 & -1.6514 \\
+P3 15344 13.2kV & 2028 & CasoBase & 11 & 0.9810 & 12.9491 & -1.4413 \\
+P4 153344 13.2kV & 2028 & CasoBase & 11 & 0.9893 & 13.0592 & -1.0244 \\
+P5 15344 13.2kV & 2028 & CasoBase & 11 & 0.9895 & 13.0615 & -1.0158 \\
+P6 15344 13.2kV & 2028 & CasoBase & 11 & 0.9971 & 13.1617 & -0.3290 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 11 & 0.9808 & 12.9470 & -2.0070 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 11 & 0.9793 & 33.7867 & -2.1742 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 11 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 12 & 0.9628 & 12.7088 & -2.0639 \\
+P1 15303 13.2kV & 2028 & CasoBase & 12 & 0.9688 & 12.7887 & -2.0322 \\
+P1 15340 13.2kV & 2028 & CasoBase & 12 & 0.9760 & 12.8838 & -1.9942 \\
+P1 15344 13.2kV & 2028 & CasoBase & 12 & 0.9818 & 12.9592 & -1.8357 \\
+P2 15302 13.2kV & 2028 & CasoBase & 12 & 0.9442 & 12.4638 & -2.1642 \\
+P2 15303 13.2kV & 2028 & CasoBase & 12 & 0.9566 & 12.6274 & -2.0978 \\
+P2 15340 13.2kV & 2028 & CasoBase & 12 & 0.9710 & 12.8166 & -2.0213 \\
+P2 15344 13.2kV & 2028 & CasoBase & 12 & 0.9832 & 12.9779 & -1.5724 \\
+P3 15344 13.2kV & 2028 & CasoBase & 12 & 0.9844 & 12.9946 & -1.3397 \\
+P4 153344 13.2kV & 2028 & CasoBase & 12 & 0.9941 & 13.1226 & -0.8880 \\
+P5 15344 13.2kV & 2028 & CasoBase & 12 & 0.9943 & 13.1253 & -0.8788 \\
+P6 15344 13.2kV & 2028 & CasoBase & 12 & 1.0050 & 13.2662 & -0.1310 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 12 & 0.9811 & 12.9500 & -1.9677 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 12 & 0.9796 & 33.7951 & -2.1316 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 12 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 13 & 0.9596 & 12.6671 & -2.2407 \\
+P1 15303 13.2kV & 2028 & CasoBase & 13 & 0.9672 & 12.7665 & -2.2011 \\
+P1 15340 13.2kV & 2028 & CasoBase & 13 & 0.9743 & 12.8611 & -2.1633 \\
+P1 15344 13.2kV & 2028 & CasoBase & 13 & 0.9792 & 12.9257 & -2.0186 \\
+P2 15302 13.2kV & 2028 & CasoBase & 13 & 0.9392 & 12.3981 & -2.3512 \\
+P2 15303 13.2kV & 2028 & CasoBase & 13 & 0.9547 & 12.6015 & -2.2684 \\
+P2 15340 13.2kV & 2028 & CasoBase & 13 & 0.9689 & 12.7898 & -2.1921 \\
+P2 15344 13.2kV & 2028 & CasoBase & 13 & 0.9783 & 12.9140 & -1.7856 \\
+P3 15344 13.2kV & 2028 & CasoBase & 13 & 0.9776 & 12.9039 & -1.5787 \\
+P4 153344 13.2kV & 2028 & CasoBase & 13 & 0.9854 & 13.0079 & -1.1614 \\
+P5 15344 13.2kV & 2028 & CasoBase & 13 & 0.9856 & 13.0101 & -1.1528 \\
+P6 15344 13.2kV & 2028 & CasoBase & 13 & 0.9915 & 13.0876 & -0.4687 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 13 & 0.9797 & 12.9316 & -2.1350 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 13 & 0.9781 & 33.7433 & -2.3131 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 13 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 14 & 0.9579 & 12.6444 & -2.4117 \\
+P1 15303 13.2kV & 2028 & CasoBase & 14 & 0.9641 & 12.7263 & -2.3791 \\
+P1 15340 13.2kV & 2028 & CasoBase & 14 & 0.9730 & 12.8438 & -2.3321 \\
+P1 15344 13.2kV & 2028 & CasoBase & 14 & 0.9774 & 12.9011 & -2.2154 \\
+P2 15302 13.2kV & 2028 & CasoBase & 14 & 0.9370 & 12.3686 & -2.5252 \\
+P2 15303 13.2kV & 2028 & CasoBase & 14 & 0.9498 & 12.5368 & -2.4566 \\
+P2 15340 13.2kV & 2028 & CasoBase & 14 & 0.9675 & 12.7711 & -2.3615 \\
+P2 15344 13.2kV & 2028 & CasoBase & 14 & 0.9752 & 12.8723 & -2.0392 \\
+P3 15344 13.2kV & 2028 & CasoBase & 14 & 0.9732 & 12.8469 & -1.8824 \\
+P4 153344 13.2kV & 2028 & CasoBase & 14 & 0.9787 & 12.9190 & -1.5547 \\
+P5 15344 13.2kV & 2028 & CasoBase & 14 & 0.9788 & 12.9205 & -1.5479 \\
+P6 15344 13.2kV & 2028 & CasoBase & 14 & 0.9807 & 12.9450 & -1.0150 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 14 & 0.9784 & 12.9155 & -2.3032 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 14 & 0.9768 & 33.6983 & -2.4956 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 14 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 15 & 0.9577 & 12.6422 & -2.4725 \\
+P1 15303 13.2kV & 2028 & CasoBase & 15 & 0.9631 & 12.7130 & -2.4443 \\
+P1 15340 13.2kV & 2028 & CasoBase & 15 & 0.9730 & 12.8433 & -2.3922 \\
+P1 15344 13.2kV & 2028 & CasoBase & 15 & 0.9767 & 12.8921 & -2.3098 \\
+P2 15302 13.2kV & 2028 & CasoBase & 15 & 0.9368 & 12.3664 & -2.5861 \\
+P2 15303 13.2kV & 2028 & CasoBase & 15 & 0.9479 & 12.5121 & -2.5266 \\
+P2 15340 13.2kV & 2028 & CasoBase & 15 & 0.9676 & 12.7724 & -2.4209 \\
+P2 15344 13.2kV & 2028 & CasoBase & 15 & 0.9734 & 12.8494 & -2.2009 \\
+P3 15344 13.2kV & 2028 & CasoBase & 15 & 0.9706 & 12.8116 & -2.1038 \\
+P4 153344 13.2kV & 2028 & CasoBase & 15 & 0.9733 & 12.8479 & -1.8873 \\
+P5 15344 13.2kV & 2028 & CasoBase & 15 & 0.9734 & 12.8487 & -1.8828 \\
+P6 15344 13.2kV & 2028 & CasoBase & 15 & 0.9713 & 12.8213 & -1.5380 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 15 & 0.9783 & 12.9134 & -2.3640 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 15 & 0.9766 & 33.6924 & -2.5615 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 15 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 16 & 0.9577 & 12.6421 & -2.5112 \\
+P1 15303 13.2kV & 2028 & CasoBase & 16 & 0.9631 & 12.7129 & -2.4831 \\
+P1 15340 13.2kV & 2028 & CasoBase & 16 & 0.9731 & 12.8455 & -2.4300 \\
+P1 15344 13.2kV & 2028 & CasoBase & 16 & 0.9752 & 12.8727 & -2.3830 \\
+P2 15302 13.2kV & 2028 & CasoBase & 16 & 0.9368 & 12.3663 & -2.6248 \\
+P2 15303 13.2kV & 2028 & CasoBase & 16 & 0.9479 & 12.5120 & -2.5653 \\
+P2 15340 13.2kV & 2028 & CasoBase & 16 & 0.9679 & 12.7768 & -2.4578 \\
+P2 15344 13.2kV & 2028 & CasoBase & 16 & 0.9691 & 12.7916 & -2.3431 \\
+P3 15344 13.2kV & 2028 & CasoBase & 16 & 0.9636 & 12.7196 & -2.3074 \\
+P4 153344 13.2kV & 2028 & CasoBase & 16 & 0.9629 & 12.7103 & -2.1938 \\
+P5 15344 13.2kV & 2028 & CasoBase & 16 & 0.9629 & 12.7101 & -2.1914 \\
+P6 15344 13.2kV & 2028 & CasoBase & 16 & 0.9536 & 12.5874 & -2.0324 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 16 & 0.9783 & 12.9133 & -2.4027 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 16 & 0.9766 & 33.6921 & -2.6035 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 16 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & CasoBase & 17 & 0.9583 & 12.6501 & -2.4730 \\
+P1 15303 13.2kV & 2028 & CasoBase & 17 & 0.9639 & 12.7230 & -2.4440 \\
+P1 15340 13.2kV & 2028 & CasoBase & 17 & 0.9737 & 12.8533 & -2.3919 \\
+P1 15344 13.2kV & 2028 & CasoBase & 17 & 0.9767 & 12.8929 & -2.3584 \\
+P2 15302 13.2kV & 2028 & CasoBase & 17 & 0.9375 & 12.3744 & -2.5864 \\
+P2 15303 13.2kV & 2028 & CasoBase & 17 & 0.9488 & 12.5246 & -2.5252 \\
+P2 15340 13.2kV & 2028 & CasoBase & 17 & 0.9685 & 12.7847 & -2.4196 \\
+P2 15344 13.2kV & 2028 & CasoBase & 17 & 0.9725 & 12.8365 & -2.3460 \\
+P3 15344 13.2kV & 2028 & CasoBase & 17 & 0.9687 & 12.7866 & -2.3349 \\
+P4 153344 13.2kV & 2028 & CasoBase & 17 & 0.9677 & 12.7730 & -2.2838 \\
+P5 15344 13.2kV & 2028 & CasoBase & 17 & 0.9676 & 12.7727 & -2.2827 \\
+P6 15344 13.2kV & 2028 & CasoBase & 17 & 0.9607 & 12.6812 & -2.2194 \\
+PTO BOYACA 13.2kV & 2028 & CasoBase & 17 & 0.9789 & 12.9211 & -2.3646 \\
+PTO BOYACA 34.5kV & 2028 & CasoBase & 17 & 0.9772 & 33.7140 & -2.5620 \\
+PTO BOYACA HV 115 & 2028 & CasoBase & 17 & 1 & 115 & 0 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9694 & 12.7956 & -1.7822 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9767 & 12.8928 & -1.7437 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9805 & 12.9420 & -1.7241 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9828 & 12.9730 & -1.6937 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9536 & 12.5875 & -1.8668 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9686 & 12.7850 & -1.7872 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9759 & 12.8825 & -1.7480 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9778 & 12.9076 & -1.7053 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9735 & 12.8496 & -1.7157 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9713 & 12.8215 & -1.7037 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9713 & 12.8209 & -1.7035 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9624 & 12.7036 & -1.7096 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9849 & 13.0009 & -1.7006 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9837 & 33.9385 & -1.8416 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.9828 & 0.7862 & -1.5355 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9706 & 12.8122 & -1.7112 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9765 & 12.8901 & -1.6803 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9808 & 12.9469 & -1.6577 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9840 & 12.9884 & -1.5977 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9559 & 12.6175 & -1.7902 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9679 & 12.7760 & -1.7263 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9764 & 12.8888 & -1.6810 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9798 & 12.9338 & -1.5849 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9762 & 12.8854 & -1.5735 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9752 & 12.8726 & -1.5229 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9752 & 12.8724 & -1.5219 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9685 & 12.7840 & -1.4586 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9852 & 13.0044 & -1.6348 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9840 & 33.9482 & -1.7703 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.9840 & 0.7872 & -1.2171 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9680 & 12.7772 & -1.8271 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9728 & 12.8410 & -1.8018 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9792 & 12.9257 & -1.7681 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9833 & 12.9801 & -1.6563 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9522 & 12.5684 & -1.9121 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9620 & 12.6989 & -1.8594 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9748 & 12.8675 & -1.7915 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9793 & 12.9273 & -1.6063 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9758 & 12.8805 & -1.5617 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9762 & 12.8859 & -1.4452 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9762 & 12.8860 & -1.4428 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9709 & 12.8165 & -1.2681 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9836 & 12.9832 & -1.7451 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9823 & 33.8886 & -1.8900 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.9833 & 0.7866 & -0.8733 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9667 & 12.7602 & -1.8667 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9701 & 12.8048 & -1.8490 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9779 & 12.9076 & -1.8080 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9830 & 12.9760 & -1.6209 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9508 & 12.5510 & -1.9519 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9578 & 12.6431 & -1.9146 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9733 & 12.8481 & -1.8320 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9783 & 12.9140 & -1.5210 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9742 & 12.8590 & -1.4316 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9761 & 12.8848 & -1.2208 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9762 & 12.8853 & -1.2164 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9713 & 12.8213 & -0.8874 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9823 & 12.9665 & -1.7845 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9809 & 33.8413 & -1.9329 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.9827 & 0.7862 & -0.2489 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9652 & 12.7403 & -1.8281 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9687 & 12.7865 & -1.8097 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9770 & 12.8961 & -1.7661 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9854 & 13.0079 & -1.4800 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9485 & 12.5200 & -1.9179 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9557 & 12.6155 & -1.8792 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9723 & 12.8340 & -1.7911 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9840 & 12.9892 & -1.3029 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9828 & 12.9727 & -1.1455 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9886 & 13.0492 & -0.8221 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9887 & 13.0508 & -0.8154 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9919 & 13.0933 & -0.2866 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9816 & 12.9574 & -1.7415 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9802 & 33.8156 & -1.8865 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.9848 & 0.7879 & 0.5576 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9633 & 12.7157 & -1.8296 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9676 & 12.7720 & -1.8072 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9758 & 12.8806 & -1.7639 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9865 & 13.0218 & -1.3970 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9456 & 12.4822 & -1.9250 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9544 & 12.5980 & -1.8780 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9708 & 12.8145 & -1.7906 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9866 & 13.0226 & -1.1627 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9866 & 13.0235 & -0.9549 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9949 & 13.1330 & -0.5428 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9951 & 13.1353 & -0.5343 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 1.0026 & 13.2350 & 0.1449 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9807 & 12.9458 & -1.7378 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9792 & 33.7829 & -1.8826 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9855 & 0.7884 & 1.1891 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9627 & 12.7070 & -1.7728 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9687 & 12.7870 & -1.7411 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9759 & 12.8821 & -1.7032 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9878 & 13.0391 & -1.3031 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9441 & 12.4619 & -1.8730 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9565 & 12.6257 & -1.8067 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9708 & 12.8150 & -1.7303 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9892 & 13.0577 & -1.0430 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9905 & 13.0743 & -0.8131 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0001 & 13.2015 & -0.3668 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0003 & 13.2042 & -0.3577 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 1.0109 & 13.3443 & 0.3813 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9809 & 12.9484 & -1.6766 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9794 & 33.7899 & -1.8163 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9866 & 0.7893 & 1.4917 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9595 & 12.6659 & -1.9708 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9671 & 12.7655 & -1.9313 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9742 & 12.8601 & -1.8935 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9849 & 13.0004 & -1.5260 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9392 & 12.3968 & -2.0812 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9546 & 12.6003 & -1.9986 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9688 & 12.7887 & -1.9224 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9840 & 12.9888 & -1.2957 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9832 & 12.9787 & -1.0911 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9911 & 13.0822 & -0.6786 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9912 & 13.0843 & -0.6701 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9971 & 13.1614 & 0.0063 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9796 & 12.9305 & -1.8653 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9780 & 33.7398 & -2.0209 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9839 & 0.7871 & 1.0687 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9579 & 12.6442 & -2.1984 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9641 & 12.7261 & -2.1659 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9730 & 12.8436 & -2.1190 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9819 & 12.9611 & -1.8288 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9370 & 12.3683 & -2.3118 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9497 & 12.5365 & -2.2433 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9675 & 12.7709 & -2.1484 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9797 & 12.9325 & -1.6542 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9778 & 12.9072 & -1.4988 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9833 & 12.9790 & -1.1741 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9834 & 12.9805 & -1.1674 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9852 & 13.0049 & -0.6394 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9784 & 12.9154 & -2.0902 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9767 & 33.6974 & -2.2648 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.9813 & 0.7850 & 0.2236 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9578 & 12.6426 & -2.3290 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9631 & 12.7133 & -2.3010 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9730 & 12.8437 & -2.2489 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9798 & 12.9332 & -2.0520 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9369 & 12.3666 & -2.4425 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9479 & 12.5124 & -2.3831 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9676 & 12.7728 & -2.2776 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9766 & 12.8907 & -1.9437 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9737 & 12.8531 & -1.8472 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9765 & 12.8892 & -1.6321 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9765 & 12.8900 & -1.6277 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9744 & 12.8627 & -1.2850 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9783 & 12.9138 & -2.2207 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9766 & 33.6932 & -2.4063 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.9795 & 0.7836 & -0.6709 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9578 & 12.6425 & -2.4289 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9631 & 12.7133 & -2.4008 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9732 & 12.8459 & -2.3478 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9770 & 12.8967 & -2.2362 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9369 & 12.3665 & -2.5423 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9479 & 12.5123 & -2.4829 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9680 & 12.7772 & -2.3756 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9709 & 12.8157 & -2.1965 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9654 & 12.7439 & -2.1608 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9647 & 12.7346 & -2.0476 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9647 & 12.7344 & -2.0453 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9554 & 12.6119 & -1.8868 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9783 & 12.9137 & -2.3206 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9766 & 33.6932 & -2.5145 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.9769 & 0.7815 & -1.4431 \\
+P1 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9583 & 12.6502 & -2.4329 \\
+P1 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9639 & 12.7232 & -2.4040 \\
+P1 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9737 & 12.8535 & -2.3520 \\
+P1 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9776 & 12.9046 & -2.2875 \\
+P2 15302 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9375 & 12.3744 & -2.5462 \\
+P2 15303 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9488 & 12.5247 & -2.4851 \\
+P2 15340 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9685 & 12.7849 & -2.3797 \\
+P2 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9734 & 12.8483 & -2.2750 \\
+P3 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9696 & 12.7984 & -2.2639 \\
+P4 153344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9685 & 12.7848 & -2.2129 \\
+P5 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9685 & 12.7845 & -2.2119 \\
+P6 15344 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9616 & 12.6931 & -2.1486 \\
+PTO BOYACA 13.2kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9789 & 12.9213 & -2.3248 \\
+PTO BOYACA 34.5kV & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9772 & 33.7145 & -2.5189 \\
+PTO BOYACA HV 115 & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 1 & 115 & 0 \\
+Puerto Boyaca 800V & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.9776 & 0.7821 & -1.9019 \\
+\end{longtable}
+
+\subsection{Cargabilidad y p\'erdidas por l\'inea}
+
+Nivel de carga y p\'erdidas de cada l\'inea.
+
+\small
+\begin{longtable}{llllrrr}
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{Cargabilidad \%} & \textbf{P perdidas MW} & \textbf{Q perdidas Mvar} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{Cargabilidad \%} & \textbf{P perdidas MW} & \textbf{Q perdidas Mvar} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+AL 0.087km & 2026 & CargaPura & 6 & 2.9785 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 6 & 53.7594 & 0.0293 & 0.0176 \\
+AL 1.32km & 2026 & CargaPura & 6 & 8.8553 & 0.0008 & 0.0005 \\
+AL 2.34km & 2026 & CargaPura & 6 & 8.8553 & 0.0015 & 0.0009 \\
+AL 2.64km & 2026 & CargaPura & 6 & 8.8553 & 0.0017 & 0.0010 \\
+AL 4.2km & 2026 & CargaPura & 6 & 2.9785 & 0.0003 & 0.0002 \\
+Al 0.36km & 2026 & CargaPura & 6 & 53.1041 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & CargaPura & 6 & 42.8093 & 0.0123 & 0.0074 \\
+Al 1.09km & 2026 & CargaPura & 6 & 17.7551 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & CargaPura & 6 & 2.9785 & 0.0011 & 0.0006 \\
+Al 2.44km & 2026 & CargaPura & 6 & 14.3486 & 0.0041 & 0.0025 \\
+Al 3.73km & 2026 & CargaPura & 6 & 18.1130 & 0.0100 & 0.0060 \\
+AL 0.087km & 2026 & CargaPura & 7 & 2.9155 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 7 & 50.3258 & 0.0257 & 0.0154 \\
+AL 1.32km & 2026 & CargaPura & 7 & 8.6697 & 0.0008 & 0.0005 \\
+AL 2.34km & 2026 & CargaPura & 7 & 8.6697 & 0.0014 & 0.0009 \\
+AL 2.64km & 2026 & CargaPura & 7 & 8.6697 & 0.0016 & 0.0010 \\
+AL 4.2km & 2026 & CargaPura & 7 & 2.9155 & 0.0003 & 0.0002 \\
+Al 0.36km & 2026 & CargaPura & 7 & 51.8087 & 0.0079 & 0.0047 \\
+Al 0.82km & 2026 & CargaPura & 7 & 45.2700 & 0.0137 & 0.0083 \\
+Al 1.09km & 2026 & CargaPura & 7 & 17.3207 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & CargaPura & 7 & 2.9155 & 0.0010 & 0.0006 \\
+Al 2.44km & 2026 & CargaPura & 7 & 15.1783 & 0.0046 & 0.0028 \\
+Al 3.73km & 2026 & CargaPura & 7 & 16.9442 & 0.0088 & 0.0053 \\
+AL 0.087km & 2026 & CargaPura & 8 & 3.5419 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 8 & 53.9462 & 0.0295 & 0.0177 \\
+AL 1.32km & 2026 & CargaPura & 8 & 10.5120 & 0.0012 & 0.0007 \\
+AL 2.34km & 2026 & CargaPura & 8 & 10.5120 & 0.0021 & 0.0013 \\
+AL 2.64km & 2026 & CargaPura & 8 & 10.5120 & 0.0024 & 0.0014 \\
+AL 4.2km & 2026 & CargaPura & 8 & 3.5419 & 0.0004 & 0.0003 \\
+Al 0.36km & 2026 & CargaPura & 8 & 51.8946 & 0.0079 & 0.0048 \\
+Al 0.82km & 2026 & CargaPura & 8 & 56.3234 & 0.0213 & 0.0128 \\
+Al 1.09km & 2026 & CargaPura & 8 & 17.3496 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & CargaPura & 8 & 3.5419 & 0.0015 & 0.0009 \\
+Al 2.44km & 2026 & CargaPura & 8 & 18.9119 & 0.0071 & 0.0043 \\
+Al 3.73km & 2026 & CargaPura & 8 & 18.1768 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & CargaPura & 9 & 4.9846 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 9 & 54.0195 & 0.0296 & 0.0178 \\
+AL 1.32km & 2026 & CargaPura & 9 & 14.7275 & 0.0023 & 0.0014 \\
+AL 2.34km & 2026 & CargaPura & 9 & 14.7275 & 0.0041 & 0.0025 \\
+AL 2.64km & 2026 & CargaPura & 9 & 14.7275 & 0.0047 & 0.0028 \\
+AL 4.2km & 2026 & CargaPura & 9 & 4.9846 & 0.0009 & 0.0005 \\
+Al 0.36km & 2026 & CargaPura & 9 & 53.0711 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & CargaPura & 9 & 64.0090 & 0.0275 & 0.0165 \\
+Al 1.09km & 2026 & CargaPura & 9 & 17.7442 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & CargaPura & 9 & 4.9846 & 0.0030 & 0.0018 \\
+Al 2.44km & 2026 & CargaPura & 9 & 21.5145 & 0.0092 & 0.0056 \\
+Al 3.73km & 2026 & CargaPura & 9 & 18.2019 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & CargaPura & 10 & 4.2573 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 10 & 56.8475 & 0.0328 & 0.0197 \\
+AL 1.32km & 2026 & CargaPura & 10 & 12.6071 & 0.0017 & 0.0010 \\
+AL 2.34km & 2026 & CargaPura & 10 & 12.6071 & 0.0030 & 0.0018 \\
+AL 2.64km & 2026 & CargaPura & 10 & 12.6071 & 0.0034 & 0.0021 \\
+AL 4.2km & 2026 & CargaPura & 10 & 4.2573 & 0.0006 & 0.0004 \\
+Al 0.36km & 2026 & CargaPura & 10 & 55.3244 & 0.0090 & 0.0054 \\
+Al 0.82km & 2026 & CargaPura & 10 & 67.6584 & 0.0307 & 0.0184 \\
+Al 1.09km & 2026 & CargaPura & 10 & 18.5000 & 0.0030 & 0.0018 \\
+Al 14.833km & 2026 & CargaPura & 10 & 4.2573 & 0.0022 & 0.0013 \\
+Al 2.44km & 2026 & CargaPura & 10 & 22.7522 & 0.0103 & 0.0062 \\
+Al 3.73km & 2026 & CargaPura & 10 & 19.1661 & 0.0112 & 0.0067 \\
+AL 0.087km & 2026 & CargaPura & 11 & 4.3419 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 11 & 60.2382 & 0.0368 & 0.0221 \\
+AL 1.32km & 2026 & CargaPura & 11 & 12.8541 & 0.0018 & 0.0011 \\
+AL 2.34km & 2026 & CargaPura & 11 & 12.8541 & 0.0032 & 0.0019 \\
+AL 2.64km & 2026 & CargaPura & 11 & 12.8541 & 0.0036 & 0.0021 \\
+AL 4.2km & 2026 & CargaPura & 11 & 4.3419 & 0.0006 & 0.0004 \\
+Al 0.36km & 2026 & CargaPura & 11 & 58.8560 & 0.0102 & 0.0061 \\
+Al 0.82km & 2026 & CargaPura & 11 & 68.8337 & 0.0318 & 0.0191 \\
+Al 1.09km & 2026 & CargaPura & 11 & 19.6849 & 0.0035 & 0.0021 \\
+Al 14.833km & 2026 & CargaPura & 11 & 4.3419 & 0.0023 & 0.0014 \\
+Al 2.44km & 2026 & CargaPura & 11 & 23.1512 & 0.0107 & 0.0064 \\
+Al 3.73km & 2026 & CargaPura & 11 & 20.3236 & 0.0126 & 0.0076 \\
+AL 0.087km & 2026 & CargaPura & 12 & 3.9097 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 12 & 63.1687 & 0.0404 & 0.0243 \\
+AL 1.32km & 2026 & CargaPura & 12 & 11.5901 & 0.0014 & 0.0009 \\
+AL 2.34km & 2026 & CargaPura & 12 & 11.5901 & 0.0026 & 0.0015 \\
+AL 2.64km & 2026 & CargaPura & 12 & 11.5901 & 0.0029 & 0.0017 \\
+AL 4.2km & 2026 & CargaPura & 12 & 3.9097 & 0.0005 & 0.0003 \\
+Al 0.36km & 2026 & CargaPura & 12 & 59.7835 & 0.0105 & 0.0063 \\
+Al 0.82km & 2026 & CargaPura & 12 & 63.8699 & 0.0273 & 0.0164 \\
+Al 1.09km & 2026 & CargaPura & 12 & 19.9962 & 0.0036 & 0.0021 \\
+Al 14.833km & 2026 & CargaPura & 12 & 3.9097 & 0.0019 & 0.0011 \\
+Al 2.44km & 2026 & CargaPura & 12 & 21.4675 & 0.0092 & 0.0055 \\
+Al 3.73km & 2026 & CargaPura & 12 & 21.3252 & 0.0139 & 0.0083 \\
+AL 0.087km & 2026 & CargaPura & 13 & 4.9092 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 13 & 69.2581 & 0.0486 & 0.0292 \\
+AL 1.32km & 2026 & CargaPura & 13 & 14.5077 & 0.0023 & 0.0014 \\
+AL 2.34km & 2026 & CargaPura & 13 & 14.5077 & 0.0040 & 0.0024 \\
+AL 2.64km & 2026 & CargaPura & 13 & 14.5077 & 0.0045 & 0.0027 \\
+AL 4.2km & 2026 & CargaPura & 13 & 4.9092 & 0.0008 & 0.0005 \\
+Al 0.36km & 2026 & CargaPura & 13 & 63.5303 & 0.0119 & 0.0071 \\
+Al 0.82km & 2026 & CargaPura & 13 & 65.3537 & 0.0286 & 0.0172 \\
+Al 1.09km & 2026 & CargaPura & 13 & 21.2541 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & CargaPura & 13 & 4.9092 & 0.0029 & 0.0018 \\
+Al 2.44km & 2026 & CargaPura & 13 & 21.9707 & 0.0096 & 0.0058 \\
+Al 3.73km & 2026 & CargaPura & 13 & 23.4109 & 0.0167 & 0.0100 \\
+AL 0.087km & 2026 & CargaPura & 14 & 4.7118 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 14 & 70.9873 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CargaPura & 14 & 13.9330 & 0.0021 & 0.0013 \\
+AL 2.34km & 2026 & CargaPura & 14 & 13.9330 & 0.0037 & 0.0022 \\
+AL 2.64km & 2026 & CargaPura & 14 & 13.9330 & 0.0042 & 0.0025 \\
+AL 4.2km & 2026 & CargaPura & 14 & 4.7118 & 0.0008 & 0.0005 \\
+Al 0.36km & 2026 & CargaPura & 14 & 64.7413 & 0.0123 & 0.0074 \\
+Al 0.82km & 2026 & CargaPura & 14 & 74.9336 & 0.0376 & 0.0226 \\
+Al 1.09km & 2026 & CargaPura & 14 & 21.6608 & 0.0042 & 0.0025 \\
+Al 14.833km & 2026 & CargaPura & 14 & 4.7118 & 0.0027 & 0.0016 \\
+Al 2.44km & 2026 & CargaPura & 14 & 25.2237 & 0.0127 & 0.0076 \\
+Al 3.73km & 2026 & CargaPura & 14 & 24.0042 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CargaPura & 15 & 4.1378 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 15 & 70.9965 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CargaPura & 15 & 12.2574 & 0.0016 & 0.0010 \\
+AL 2.34km & 2026 & CargaPura & 15 & 12.2574 & 0.0029 & 0.0017 \\
+AL 2.64km & 2026 & CargaPura & 15 & 12.2574 & 0.0032 & 0.0019 \\
+AL 4.2km & 2026 & CargaPura & 15 & 4.1378 & 0.0006 & 0.0004 \\
+Al 0.36km & 2026 & CargaPura & 15 & 63.1977 & 0.0118 & 0.0071 \\
+Al 0.82km & 2026 & CargaPura & 15 & 79.3619 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & CargaPura & 15 & 21.1425 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & CargaPura & 15 & 4.1378 & 0.0021 & 0.0012 \\
+Al 2.44km & 2026 & CargaPura & 15 & 26.7302 & 0.0142 & 0.0086 \\
+Al 3.73km & 2026 & CargaPura & 15 & 24.0074 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CargaPura & 16 & 4.7608 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 16 & 70.9950 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CargaPura & 16 & 14.0758 & 0.0021 & 0.0013 \\
+AL 2.34km & 2026 & CargaPura & 16 & 14.0758 & 0.0038 & 0.0023 \\
+AL 2.64km & 2026 & CargaPura & 16 & 14.0758 & 0.0043 & 0.0026 \\
+AL 4.2km & 2026 & CargaPura & 16 & 4.7608 & 0.0008 & 0.0005 \\
+Al 0.36km & 2026 & CargaPura & 16 & 61.1682 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & CargaPura & 16 & 79.3603 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & CargaPura & 16 & 20.4611 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & CargaPura & 16 & 4.7608 & 0.0027 & 0.0017 \\
+Al 2.44km & 2026 & CargaPura & 16 & 26.7296 & 0.0142 & 0.0086 \\
+Al 3.73km & 2026 & CargaPura & 16 & 24.0069 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CargaPura & 17 & 2.9901 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CargaPura & 17 & 70.9481 & 0.0510 & 0.0307 \\
+AL 1.32km & 2026 & CargaPura & 17 & 8.8892 & 0.0009 & 0.0005 \\
+AL 2.34km & 2026 & CargaPura & 17 & 8.8892 & 0.0015 & 0.0009 \\
+AL 2.64km & 2026 & CargaPura & 17 & 8.8892 & 0.0017 & 0.0010 \\
+AL 4.2km & 2026 & CargaPura & 17 & 2.9901 & 0.0003 & 0.0002 \\
+Al 0.36km & 2026 & CargaPura & 17 & 61.1291 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & CargaPura & 17 & 78.4119 & 0.0412 & 0.0248 \\
+Al 1.09km & 2026 & CargaPura & 17 & 20.4480 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & CargaPura & 17 & 2.9901 & 0.0011 & 0.0007 \\
+Al 2.44km & 2026 & CargaPura & 17 & 26.4068 & 0.0139 & 0.0084 \\
+Al 3.73km & 2026 & CargaPura & 17 & 23.9907 & 0.0175 & 0.0106 \\
+AL 0.087km & 2026 & CasoBase & 6 & 2.1683 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 6 & 53.7589 & 0.0293 & 0.0176 \\
+AL 1.32km & 2026 & CasoBase & 6 & 8.0099 & 0.0007 & 0.0004 \\
+AL 2.34km & 2026 & CasoBase & 6 & 8.0099 & 0.0012 & 0.0007 \\
+AL 2.64km & 2026 & CasoBase & 6 & 8.0099 & 0.0014 & 0.0008 \\
+AL 4.2km & 2026 & CasoBase & 6 & 2.1683 & 0.0002 & 0.0001 \\
+Al 0.36km & 2026 & CasoBase & 6 & 53.1036 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & CasoBase & 6 & 42.8089 & 0.0123 & 0.0074 \\
+Al 1.09km & 2026 & CasoBase & 6 & 17.7549 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & CasoBase & 6 & 2.5552 & 0.0008 & 0.0005 \\
+Al 2.44km & 2026 & CasoBase & 6 & 14.3485 & 0.0041 & 0.0025 \\
+Al 3.73km & 2026 & CasoBase & 6 & 18.1129 & 0.0100 & 0.0060 \\
+AL 0.087km & 2026 & CasoBase & 7 & 1.3112 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 7 & 50.3248 & 0.0257 & 0.0154 \\
+AL 1.32km & 2026 & CasoBase & 7 & 6.6894 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & CasoBase & 7 & 6.6894 & 0.0009 & 0.0005 \\
+AL 2.64km & 2026 & CasoBase & 7 & 6.6894 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & CasoBase & 7 & 1.3112 & 0.0001 & 0.0000 \\
+Al 0.36km & 2026 & CasoBase & 7 & 51.8075 & 0.0079 & 0.0047 \\
+Al 0.82km & 2026 & CasoBase & 7 & 45.2691 & 0.0137 & 0.0083 \\
+Al 1.09km & 2026 & CasoBase & 7 & 17.3203 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & CasoBase & 7 & 1.9444 & 0.0005 & 0.0003 \\
+Al 2.44km & 2026 & CasoBase & 7 & 15.1779 & 0.0046 & 0.0028 \\
+Al 3.73km & 2026 & CasoBase & 7 & 16.9439 & 0.0088 & 0.0053 \\
+AL 0.087km & 2026 & CasoBase & 8 & 2.0957 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 8 & 53.9437 & 0.0295 & 0.0177 \\
+AL 1.32km & 2026 & CasoBase & 8 & 6.5970 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & CasoBase & 8 & 6.5970 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & CasoBase & 8 & 6.5970 & 0.0009 & 0.0006 \\
+AL 4.2km & 2026 & CasoBase & 8 & 2.0957 & 0.0002 & 0.0001 \\
+Al 0.36km & 2026 & CasoBase & 8 & 51.8922 & 0.0079 & 0.0048 \\
+Al 0.82km & 2026 & CasoBase & 8 & 56.3208 & 0.0213 & 0.0128 \\
+Al 1.09km & 2026 & CasoBase & 8 & 17.3488 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & CasoBase & 8 & 1.7308 & 0.0004 & 0.0002 \\
+Al 2.44km & 2026 & CasoBase & 8 & 18.9110 & 0.0071 & 0.0043 \\
+Al 3.73km & 2026 & CasoBase & 8 & 18.1760 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & CasoBase & 9 & 4.2357 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 9 & 54.0145 & 0.0296 & 0.0178 \\
+AL 1.32km & 2026 & CasoBase & 9 & 8.0613 & 0.0007 & 0.0004 \\
+AL 2.34km & 2026 & CasoBase & 9 & 8.0613 & 0.0012 & 0.0007 \\
+AL 2.64km & 2026 & CasoBase & 9 & 8.0613 & 0.0014 & 0.0008 \\
+AL 4.2km & 2026 & CasoBase & 9 & 4.2357 & 0.0006 & 0.0004 \\
+Al 0.36km & 2026 & CasoBase & 9 & 53.0661 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & CasoBase & 9 & 64.0031 & 0.0275 & 0.0165 \\
+Al 1.09km & 2026 & CasoBase & 9 & 17.7425 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & CasoBase & 9 & 2.1301 & 0.0006 & 0.0003 \\
+Al 2.44km & 2026 & CasoBase & 9 & 21.5125 & 0.0092 & 0.0055 \\
+Al 3.73km & 2026 & CasoBase & 9 & 18.2003 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & CasoBase & 10 & 8.3219 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 10 & 56.8415 & 0.0327 & 0.0197 \\
+AL 1.32km & 2026 & CasoBase & 10 & 5.4713 & 0.0003 & 0.0002 \\
+AL 2.34km & 2026 & CasoBase & 10 & 5.4713 & 0.0006 & 0.0003 \\
+AL 2.64km & 2026 & CasoBase & 10 & 5.4713 & 0.0006 & 0.0004 \\
+AL 4.2km & 2026 & CasoBase & 10 & 8.3219 & 0.0024 & 0.0014 \\
+Al 0.36km & 2026 & CasoBase & 10 & 55.3184 & 0.0090 & 0.0054 \\
+Al 0.82km & 2026 & CasoBase & 10 & 67.6512 & 0.0307 & 0.0184 \\
+Al 1.09km & 2026 & CasoBase & 10 & 18.4980 & 0.0030 & 0.0018 \\
+Al 14.833km & 2026 & CasoBase & 10 & 2.8489 & 0.0010 & 0.0006 \\
+Al 2.44km & 2026 & CasoBase & 10 & 22.7498 & 0.0103 & 0.0062 \\
+Al 3.73km & 2026 & CasoBase & 10 & 19.1641 & 0.0112 & 0.0067 \\
+AL 0.087km & 2026 & CasoBase & 11 & 11.3294 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & CasoBase & 11 & 60.2311 & 0.0368 & 0.0221 \\
+AL 1.32km & 2026 & CasoBase & 11 & 6.6476 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & CasoBase & 11 & 6.6476 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & CasoBase & 11 & 6.6476 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & CasoBase & 11 & 11.3294 & 0.0044 & 0.0026 \\
+Al 0.36km & 2026 & CasoBase & 11 & 58.8487 & 0.0102 & 0.0061 \\
+Al 0.82km & 2026 & CasoBase & 11 & 68.8254 & 0.0317 & 0.0191 \\
+Al 1.09km & 2026 & CasoBase & 11 & 19.6825 & 0.0035 & 0.0021 \\
+Al 14.833km & 2026 & CasoBase & 11 & 4.1318 & 0.0021 & 0.0012 \\
+Al 2.44km & 2026 & CasoBase & 11 & 23.1485 & 0.0107 & 0.0064 \\
+Al 3.73km & 2026 & CasoBase & 11 & 20.3212 & 0.0126 & 0.0076 \\
+AL 0.087km & 2026 & CasoBase & 12 & 12.8081 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & CasoBase & 12 & 63.1619 & 0.0404 & 0.0243 \\
+AL 1.32km & 2026 & CasoBase & 12 & 7.7751 & 0.0007 & 0.0004 \\
+AL 2.34km & 2026 & CasoBase & 12 & 7.7751 & 0.0012 & 0.0007 \\
+AL 2.64km & 2026 & CasoBase & 12 & 7.7751 & 0.0013 & 0.0008 \\
+AL 4.2km & 2026 & CasoBase & 12 & 12.8081 & 0.0056 & 0.0034 \\
+Al 0.36km & 2026 & CasoBase & 12 & 59.7768 & 0.0105 & 0.0063 \\
+Al 0.82km & 2026 & CasoBase & 12 & 63.8629 & 0.0273 & 0.0164 \\
+Al 1.09km & 2026 & CasoBase & 12 & 19.9940 & 0.0036 & 0.0021 \\
+Al 14.833km & 2026 & CasoBase & 12 & 4.9283 & 0.0029 & 0.0018 \\
+Al 2.44km & 2026 & CasoBase & 12 & 21.4652 & 0.0092 & 0.0055 \\
+Al 3.73km & 2026 & CasoBase & 12 & 21.3230 & 0.0139 & 0.0083 \\
+AL 0.087km & 2026 & CasoBase & 13 & 10.9640 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & CasoBase & 13 & 69.2485 & 0.0486 & 0.0292 \\
+AL 1.32km & 2026 & CasoBase & 13 & 6.6452 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & CasoBase & 13 & 6.6452 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & CasoBase & 13 & 6.6452 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & CasoBase & 13 & 10.9640 & 0.0041 & 0.0025 \\
+Al 0.36km & 2026 & CasoBase & 13 & 63.5211 & 0.0119 & 0.0071 \\
+Al 0.82km & 2026 & CasoBase & 13 & 65.3445 & 0.0286 & 0.0172 \\
+Al 1.09km & 2026 & CasoBase & 13 & 21.2511 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & CasoBase & 13 & 3.8582 & 0.0018 & 0.0011 \\
+Al 2.44km & 2026 & CasoBase & 13 & 21.9676 & 0.0096 & 0.0058 \\
+Al 3.73km & 2026 & CasoBase & 13 & 23.4077 & 0.0167 & 0.0100 \\
+AL 0.087km & 2026 & CasoBase & 14 & 8.0549 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 14 & 70.9782 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CasoBase & 14 & 5.9918 & 0.0004 & 0.0002 \\
+AL 2.34km & 2026 & CasoBase & 14 & 5.9918 & 0.0007 & 0.0004 \\
+AL 2.64km & 2026 & CasoBase & 14 & 5.9918 & 0.0008 & 0.0005 \\
+AL 4.2km & 2026 & CasoBase & 14 & 8.0549 & 0.0022 & 0.0013 \\
+Al 0.36km & 2026 & CasoBase & 14 & 64.7327 & 0.0123 & 0.0074 \\
+Al 0.82km & 2026 & CasoBase & 14 & 74.9239 & 0.0376 & 0.0226 \\
+Al 1.09km & 2026 & CasoBase & 14 & 21.6580 & 0.0042 & 0.0025 \\
+Al 14.833km & 2026 & CasoBase & 14 & 2.7179 & 0.0009 & 0.0005 \\
+Al 2.44km & 2026 & CasoBase & 14 & 25.2204 & 0.0127 & 0.0076 \\
+Al 3.73km & 2026 & CasoBase & 14 & 24.0012 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CasoBase & 15 & 4.7366 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 15 & 70.9899 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CasoBase & 15 & 5.9835 & 0.0004 & 0.0002 \\
+AL 2.34km & 2026 & CasoBase & 15 & 5.9835 & 0.0007 & 0.0004 \\
+AL 2.64km & 2026 & CasoBase & 15 & 5.9835 & 0.0008 & 0.0005 \\
+AL 4.2km & 2026 & CasoBase & 15 & 4.7366 & 0.0008 & 0.0005 \\
+Al 0.36km & 2026 & CasoBase & 15 & 63.1917 & 0.0117 & 0.0071 \\
+Al 0.82km & 2026 & CasoBase & 15 & 79.3545 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & CasoBase & 15 & 21.1405 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & CasoBase & 15 & 1.7947 & 0.0004 & 0.0002 \\
+Al 2.44km & 2026 & CasoBase & 15 & 26.7277 & 0.0142 & 0.0086 \\
+Al 3.73km & 2026 & CasoBase & 15 & 24.0052 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CasoBase & 16 & 2.0785 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 16 & 70.9903 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & CasoBase & 16 & 9.9605 & 0.0011 & 0.0006 \\
+AL 2.34km & 2026 & CasoBase & 16 & 9.9605 & 0.0019 & 0.0011 \\
+AL 2.64km & 2026 & CasoBase & 16 & 9.9605 & 0.0021 & 0.0013 \\
+AL 4.2km & 2026 & CasoBase & 16 & 2.0785 & 0.0001 & 0.0001 \\
+Al 0.36km & 2026 & CasoBase & 16 & 61.1640 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & CasoBase & 16 & 79.3550 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & CasoBase & 16 & 20.4597 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & CasoBase & 16 & 2.7671 & 0.0009 & 0.0006 \\
+Al 2.44km & 2026 & CasoBase & 16 & 26.7279 & 0.0142 & 0.0086 \\
+Al 3.73km & 2026 & CasoBase & 16 & 24.0053 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & CasoBase & 17 & 1.3568 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & CasoBase & 17 & 70.9462 & 0.0510 & 0.0307 \\
+AL 1.32km & 2026 & CasoBase & 17 & 6.8923 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & CasoBase & 17 & 6.8923 & 0.0009 & 0.0005 \\
+AL 2.64km & 2026 & CasoBase & 17 & 6.8923 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & CasoBase & 17 & 1.3568 & 0.0001 & 0.0000 \\
+Al 0.36km & 2026 & CasoBase & 17 & 61.1274 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & CasoBase & 17 & 78.4098 & 0.0412 & 0.0248 \\
+Al 1.09km & 2026 & CasoBase & 17 & 20.4474 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & CasoBase & 17 & 2.0097 & 0.0005 & 0.0003 \\
+Al 2.44km & 2026 & CasoBase & 17 & 26.4061 & 0.0139 & 0.0084 \\
+Al 3.73km & 2026 & CasoBase & 17 & 23.9901 & 0.0175 & 0.0105 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.1674 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 53.7585 & 0.0293 & 0.0176 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 6.8367 & 0.0005 & 0.0003 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 8.0068 & 0.0012 & 0.0007 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 8.0068 & 0.0014 & 0.0008 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.1674 & 0.0002 & 0.0001 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 53.1031 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 42.8085 & 0.0123 & 0.0074 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 17.7548 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.5542 & 0.0008 & 0.0005 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 14.3484 & 0.0041 & 0.0025 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 18.1127 & 0.0100 & 0.0060 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.3099 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 50.3240 & 0.0257 & 0.0154 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 4.3799 & 0.0002 & 0.0001 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 6.6833 & 0.0009 & 0.0005 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 6.6833 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.3099 & 0.0001 & 0.0000 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 51.8067 & 0.0079 & 0.0047 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 45.2683 & 0.0137 & 0.0083 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 17.3201 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.9426 & 0.0005 & 0.0003 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 15.1777 & 0.0046 & 0.0028 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 16.9436 & 0.0088 & 0.0053 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 2.0919 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 53.9425 & 0.0295 & 0.0177 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 5.0323 & 0.0003 & 0.0002 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 6.5847 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 6.5847 & 0.0009 & 0.0006 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 2.0919 & 0.0002 & 0.0001 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 51.8909 & 0.0079 & 0.0048 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 56.3194 & 0.0213 & 0.0128 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 17.3483 & 0.0027 & 0.0016 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 1.7275 & 0.0004 & 0.0002 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 18.9105 & 0.0071 & 0.0043 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 18.1756 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 4.2224 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 54.0197 & 0.0296 & 0.0178 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 9.5228 & 0.0010 & 0.0006 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 8.0358 & 0.0012 & 0.0007 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 8.0358 & 0.0014 & 0.0008 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 4.2224 & 0.0006 & 0.0004 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 53.0670 & 0.0083 & 0.0050 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 64.0074 & 0.0275 & 0.0165 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 17.7430 & 0.0028 & 0.0017 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 2.1234 & 0.0005 & 0.0003 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 21.5149 & 0.0092 & 0.0056 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 18.2032 & 0.0101 & 0.0061 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 8.2843 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 56.8505 & 0.0328 & 0.0197 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 19.3681 & 0.0040 & 0.0024 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 5.4461 & 0.0006 & 0.0003 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 5.4461 & 0.0006 & 0.0004 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 8.2843 & 0.0024 & 0.0014 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 55.3221 & 0.0090 & 0.0054 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 67.6597 & 0.0307 & 0.0184 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 18.4994 & 0.0030 & 0.0018 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 2.8360 & 0.0010 & 0.0006 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 22.7538 & 0.0103 & 0.0062 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 19.1686 & 0.0112 & 0.0067 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 11.2664 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 60.2457 & 0.0368 & 0.0221 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 26.9098 & 0.0078 & 0.0047 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 6.6099 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 6.6099 & 0.0009 & 0.0006 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 11.2664 & 0.0044 & 0.0026 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 58.8566 & 0.0102 & 0.0061 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 68.8390 & 0.0318 & 0.0191 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 19.6855 & 0.0035 & 0.0021 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 4.1090 & 0.0020 & 0.0012 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 23.1543 & 0.0107 & 0.0064 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 20.3280 & 0.0126 & 0.0076 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 12.7323 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 63.1801 & 0.0405 & 0.0243 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 30.8270 & 0.0103 & 0.0062 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 7.7288 & 0.0011 & 0.0007 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 7.7288 & 0.0013 & 0.0008 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 12.7323 & 0.0056 & 0.0033 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 59.7870 & 0.0105 & 0.0063 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 63.8771 & 0.0273 & 0.0164 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 19.9977 & 0.0036 & 0.0021 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 4.8994 & 0.0029 & 0.0017 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 21.4710 & 0.0092 & 0.0055 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 21.3312 & 0.0139 & 0.0083 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 10.9024 & 0.0001 & 0.0001 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 69.2681 & 0.0486 & 0.0292 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 25.8037 & 0.0072 & 0.0043 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 6.6069 & 0.0008 & 0.0005 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 6.6069 & 0.0009 & 0.0006 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 10.9024 & 0.0041 & 0.0025 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 63.5296 & 0.0119 & 0.0071 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 65.3570 & 0.0286 & 0.0172 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 21.2543 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 3.8367 & 0.0018 & 0.0011 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 21.9730 & 0.0096 & 0.0058 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 23.4172 & 0.0167 & 0.0101 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 8.0181 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 70.9951 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 18.5865 & 0.0037 & 0.0022 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 5.9639 & 0.0007 & 0.0004 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 5.9639 & 0.0008 & 0.0005 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 8.0181 & 0.0022 & 0.0013 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 64.7373 & 0.0123 & 0.0074 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 74.9354 & 0.0376 & 0.0226 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 21.6599 & 0.0042 & 0.0025 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 2.7054 & 0.0009 & 0.0005 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 25.2262 & 0.0127 & 0.0076 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 24.0103 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 4.7218 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 71.0043 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 10.6498 & 0.0012 & 0.0007 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 5.9646 & 0.0007 & 0.0004 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 5.9646 & 0.0008 & 0.0005 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 4.7218 & 0.0008 & 0.0005 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 63.1936 & 0.0118 & 0.0071 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 79.3645 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 21.1416 & 0.0040 & 0.0024 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 1.7891 & 0.0004 & 0.0002 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 26.7333 & 0.0143 & 0.0086 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 24.0135 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.0748 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 71.0046 & 0.0511 & 0.0307 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 6.2294 & 0.0004 & 0.0003 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 9.9427 & 0.0019 & 0.0011 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 9.9427 & 0.0021 & 0.0013 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.0748 & 0.0001 & 0.0001 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 61.1656 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 79.3649 & 0.0422 & 0.0254 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 20.4607 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.7622 & 0.0009 & 0.0006 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 26.7335 & 0.0143 & 0.0086 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 24.0136 & 0.0176 & 0.0106 \\
+AL 0.087km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 1.3557 & 0.0000 & 0.0000 \\
+AL 1.24km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 70.9612 & 0.0510 & 0.0307 \\
+AL 1.32km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 4.5442 & 0.0002 & 0.0001 \\
+AL 2.34km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 6.8865 & 0.0009 & 0.0005 \\
+AL 2.64km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 6.8866 & 0.0010 & 0.0006 \\
+AL 4.2km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 1.3557 & 0.0001 & 0.0000 \\
+Al 0.36km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 61.1298 & 0.0110 & 0.0066 \\
+Al 0.82km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 78.4202 & 0.0412 & 0.0248 \\
+Al 1.09km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 20.4486 & 0.0037 & 0.0022 \\
+Al 14.833km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 2.0081 & 0.0005 & 0.0003 \\
+Al 2.44km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 26.4117 & 0.0139 & 0.0084 \\
+Al 3.73km & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 23.9985 & 0.0176 & 0.0106 \\
+AL 0.087km & 2028 & CargaPura & 6 & 3.0109 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 6 & 54.3403 & 0.0299 & 0.0180 \\
+AL 1.32km & 2028 & CargaPura & 6 & 8.9506 & 0.0009 & 0.0005 \\
+AL 2.34km & 2028 & CargaPura & 6 & 8.9506 & 0.0015 & 0.0009 \\
+AL 2.64km & 2028 & CargaPura & 6 & 8.9506 & 0.0017 & 0.0010 \\
+AL 4.2km & 2028 & CargaPura & 6 & 3.0109 & 0.0003 & 0.0002 \\
+Al 0.36km & 2028 & CargaPura & 6 & 53.6688 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & CargaPura & 6 & 43.2669 & 0.0125 & 0.0075 \\
+Al 1.09km & 2028 & CargaPura & 6 & 17.9445 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & CargaPura & 6 & 3.0109 & 0.0011 & 0.0007 \\
+Al 2.44km & 2028 & CargaPura & 6 & 14.5029 & 0.0042 & 0.0025 \\
+Al 3.73km & 2028 & CargaPura & 6 & 18.3109 & 0.0102 & 0.0061 \\
+AL 0.087km & 2028 & CargaPura & 7 & 2.9472 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 7 & 50.8687 & 0.0262 & 0.0158 \\
+AL 1.32km & 2028 & CargaPura & 7 & 8.7630 & 0.0008 & 0.0005 \\
+AL 2.34km & 2028 & CargaPura & 7 & 8.7630 & 0.0015 & 0.0009 \\
+AL 2.64km & 2028 & CargaPura & 7 & 8.7630 & 0.0017 & 0.0010 \\
+AL 4.2km & 2028 & CargaPura & 7 & 2.9472 & 0.0003 & 0.0002 \\
+Al 0.36km & 2028 & CargaPura & 7 & 52.3594 & 0.0081 & 0.0049 \\
+Al 0.82km & 2028 & CargaPura & 7 & 45.7542 & 0.0140 & 0.0084 \\
+Al 1.09km & 2028 & CargaPura & 7 & 17.5054 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & CargaPura & 7 & 2.9472 & 0.0011 & 0.0006 \\
+Al 2.44km & 2028 & CargaPura & 7 & 15.3416 & 0.0047 & 0.0028 \\
+Al 3.73km & 2028 & CargaPura & 7 & 17.1289 & 0.0089 & 0.0054 \\
+AL 0.087km & 2028 & CargaPura & 8 & 3.5807 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 8 & 54.5301 & 0.0301 & 0.0181 \\
+AL 1.32km & 2028 & CargaPura & 8 & 10.6258 & 0.0012 & 0.0007 \\
+AL 2.34km & 2028 & CargaPura & 8 & 10.6258 & 0.0022 & 0.0013 \\
+AL 2.64km & 2028 & CargaPura & 8 & 10.6258 & 0.0024 & 0.0015 \\
+AL 4.2km & 2028 & CargaPura & 8 & 3.5807 & 0.0004 & 0.0003 \\
+Al 0.36km & 2028 & CargaPura & 8 & 52.4473 & 0.0081 & 0.0049 \\
+Al 0.82km & 2028 & CargaPura & 8 & 56.9287 & 0.0217 & 0.0131 \\
+Al 1.09km & 2028 & CargaPura & 8 & 17.5349 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & CargaPura & 8 & 3.5807 & 0.0016 & 0.0009 \\
+Al 2.44km & 2028 & CargaPura & 8 & 19.1167 & 0.0073 & 0.0044 \\
+Al 3.73km & 2028 & CargaPura & 8 & 18.3758 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & CargaPura & 9 & 5.0400 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 9 & 54.6051 & 0.0302 & 0.0182 \\
+AL 1.32km & 2028 & CargaPura & 9 & 14.8886 & 0.0024 & 0.0014 \\
+AL 2.34km & 2028 & CargaPura & 9 & 14.8886 & 0.0042 & 0.0025 \\
+AL 2.64km & 2028 & CargaPura & 9 & 14.8886 & 0.0048 & 0.0029 \\
+AL 4.2km & 2028 & CargaPura & 9 & 5.0400 & 0.0009 & 0.0005 \\
+Al 0.36km & 2028 & CargaPura & 9 & 53.6372 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & CargaPura & 9 & 64.6995 & 0.0281 & 0.0169 \\
+Al 1.09km & 2028 & CargaPura & 9 & 17.9340 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & CargaPura & 9 & 5.0400 & 0.0031 & 0.0019 \\
+Al 2.44km & 2028 & CargaPura & 9 & 21.7486 & 0.0094 & 0.0057 \\
+Al 3.73km & 2028 & CargaPura & 9 & 18.4015 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & CargaPura & 10 & 4.3044 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 10 & 57.4650 & 0.0335 & 0.0201 \\
+AL 1.32km & 2028 & CargaPura & 10 & 12.7445 & 0.0018 & 0.0011 \\
+AL 2.34km & 2028 & CargaPura & 10 & 12.7445 & 0.0031 & 0.0019 \\
+AL 2.64km & 2028 & CargaPura & 10 & 12.7445 & 0.0035 & 0.0021 \\
+AL 4.2km & 2028 & CargaPura & 10 & 4.3044 & 0.0006 & 0.0004 \\
+Al 0.36km & 2028 & CargaPura & 10 & 55.9152 & 0.0092 & 0.0055 \\
+Al 0.82km & 2028 & CargaPura & 10 & 68.3895 & 0.0313 & 0.0188 \\
+Al 1.09km & 2028 & CargaPura & 10 & 18.6982 & 0.0031 & 0.0019 \\
+Al 14.833km & 2028 & CargaPura & 10 & 4.3044 & 0.0022 & 0.0014 \\
+Al 2.44km & 2028 & CargaPura & 10 & 23.0003 & 0.0106 & 0.0063 \\
+Al 3.73km & 2028 & CargaPura & 10 & 19.3767 & 0.0114 & 0.0069 \\
+AL 0.087km & 2028 & CargaPura & 11 & 4.3899 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 11 & 60.8942 & 0.0376 & 0.0226 \\
+AL 1.32km & 2028 & CargaPura & 11 & 12.9944 & 0.0018 & 0.0011 \\
+AL 2.34km & 2028 & CargaPura & 11 & 12.9944 & 0.0032 & 0.0019 \\
+AL 2.64km & 2028 & CargaPura & 11 & 12.9944 & 0.0036 & 0.0022 \\
+AL 4.2km & 2028 & CargaPura & 11 & 4.3899 & 0.0007 & 0.0004 \\
+Al 0.36km & 2028 & CargaPura & 11 & 59.4854 & 0.0104 & 0.0063 \\
+Al 0.82km & 2028 & CargaPura & 11 & 69.5785 & 0.0324 & 0.0195 \\
+Al 1.09km & 2028 & CargaPura & 11 & 19.8962 & 0.0035 & 0.0021 \\
+Al 14.833km & 2028 & CargaPura & 11 & 4.3899 & 0.0023 & 0.0014 \\
+Al 2.44km & 2028 & CargaPura & 11 & 23.4040 & 0.0109 & 0.0066 \\
+Al 3.73km & 2028 & CargaPura & 11 & 20.5477 & 0.0129 & 0.0077 \\
+AL 0.087km & 2028 & CargaPura & 12 & 3.9528 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 12 & 63.8573 & 0.0413 & 0.0248 \\
+AL 1.32km & 2028 & CargaPura & 12 & 11.7162 & 0.0015 & 0.0009 \\
+AL 2.34km & 2028 & CargaPura & 12 & 11.7162 & 0.0026 & 0.0016 \\
+AL 2.64km & 2028 & CargaPura & 12 & 11.7162 & 0.0030 & 0.0018 \\
+AL 4.2km & 2028 & CargaPura & 12 & 3.9528 & 0.0005 & 0.0003 \\
+Al 0.36km & 2028 & CargaPura & 12 & 60.4227 & 0.0107 & 0.0065 \\
+Al 0.82km & 2028 & CargaPura & 12 & 64.5598 & 0.0279 & 0.0168 \\
+Al 1.09km & 2028 & CargaPura & 12 & 20.2108 & 0.0036 & 0.0022 \\
+Al 14.833km & 2028 & CargaPura & 12 & 3.9528 & 0.0019 & 0.0011 \\
+Al 2.44km & 2028 & CargaPura & 12 & 21.7014 & 0.0094 & 0.0056 \\
+Al 3.73km & 2028 & CargaPura & 12 & 21.5608 & 0.0142 & 0.0085 \\
+AL 0.087km & 2028 & CargaPura & 13 & 4.9639 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 13 & 70.0163 & 0.0497 & 0.0299 \\
+AL 1.32km & 2028 & CargaPura & 13 & 14.6668 & 0.0023 & 0.0014 \\
+AL 2.34km & 2028 & CargaPura & 13 & 14.6668 & 0.0041 & 0.0025 \\
+AL 2.64km & 2028 & CargaPura & 13 & 14.6668 & 0.0046 & 0.0028 \\
+AL 4.2km & 2028 & CargaPura & 13 & 4.9639 & 0.0008 & 0.0005 \\
+Al 0.36km & 2028 & CargaPura & 13 & 64.2110 & 0.0121 & 0.0073 \\
+Al 0.82km & 2028 & CargaPura & 13 & 66.0612 & 0.0292 & 0.0176 \\
+Al 1.09km & 2028 & CargaPura & 13 & 21.4827 & 0.0041 & 0.0025 \\
+Al 14.833km & 2028 & CargaPura & 13 & 4.9639 & 0.0030 & 0.0018 \\
+Al 2.44km & 2028 & CargaPura & 13 & 22.2106 & 0.0098 & 0.0059 \\
+Al 3.73km & 2028 & CargaPura & 13 & 23.6709 & 0.0171 & 0.0103 \\
+AL 0.087km & 2028 & CargaPura & 14 & 4.7643 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 14 & 71.7662 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CargaPura & 14 & 14.0858 & 0.0021 & 0.0013 \\
+AL 2.34km & 2028 & CargaPura & 14 & 14.0858 & 0.0038 & 0.0023 \\
+AL 2.64km & 2028 & CargaPura & 14 & 14.0858 & 0.0043 & 0.0026 \\
+AL 4.2km & 2028 & CargaPura & 14 & 4.7643 & 0.0008 & 0.0005 \\
+Al 0.36km & 2028 & CargaPura & 14 & 65.4361 & 0.0126 & 0.0076 \\
+Al 0.82km & 2028 & CargaPura & 14 & 75.7481 & 0.0385 & 0.0231 \\
+Al 1.09km & 2028 & CargaPura & 14 & 21.8942 & 0.0043 & 0.0026 \\
+Al 14.833km & 2028 & CargaPura & 14 & 4.7643 & 0.0028 & 0.0017 \\
+Al 2.44km & 2028 & CargaPura & 14 & 25.5007 & 0.0130 & 0.0078 \\
+Al 3.73km & 2028 & CargaPura & 14 & 24.2716 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CargaPura & 15 & 4.1836 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 15 & 71.7756 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CargaPura & 15 & 12.3914 & 0.0017 & 0.0010 \\
+AL 2.34km & 2028 & CargaPura & 15 & 12.3914 & 0.0029 & 0.0018 \\
+AL 2.64km & 2028 & CargaPura & 15 & 12.3914 & 0.0033 & 0.0020 \\
+AL 4.2km & 2028 & CargaPura & 15 & 4.1836 & 0.0006 & 0.0004 \\
+Al 0.36km & 2028 & CargaPura & 15 & 63.8759 & 0.0120 & 0.0072 \\
+Al 0.82km & 2028 & CargaPura & 15 & 80.2258 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & CargaPura & 15 & 21.3702 & 0.0041 & 0.0024 \\
+Al 14.833km & 2028 & CargaPura & 15 & 4.1836 & 0.0021 & 0.0013 \\
+Al 2.44km & 2028 & CargaPura & 15 & 27.0243 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & CargaPura & 15 & 24.2749 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CargaPura & 16 & 4.8139 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 16 & 71.7741 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CargaPura & 16 & 14.2303 & 0.0022 & 0.0013 \\
+AL 2.34km & 2028 & CargaPura & 16 & 14.2303 & 0.0039 & 0.0023 \\
+AL 2.64km & 2028 & CargaPura & 16 & 14.2303 & 0.0044 & 0.0026 \\
+AL 4.2km & 2028 & CargaPura & 16 & 4.8139 & 0.0008 & 0.0005 \\
+Al 0.36km & 2028 & CargaPura & 16 & 61.8244 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & CargaPura & 16 & 80.2241 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & CargaPura & 16 & 20.6814 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & CargaPura & 16 & 4.8139 & 0.0028 & 0.0017 \\
+Al 2.44km & 2028 & CargaPura & 16 & 27.0238 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & CargaPura & 16 & 24.2743 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CargaPura & 17 & 3.0228 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CargaPura & 17 & 71.7261 & 0.0521 & 0.0314 \\
+AL 1.32km & 2028 & CargaPura & 17 & 8.9856 & 0.0009 & 0.0005 \\
+AL 2.34km & 2028 & CargaPura & 17 & 8.9856 & 0.0015 & 0.0009 \\
+AL 2.64km & 2028 & CargaPura & 17 & 8.9856 & 0.0017 & 0.0010 \\
+AL 4.2km & 2028 & CargaPura & 17 & 3.0228 & 0.0003 & 0.0002 \\
+Al 0.36km & 2028 & CargaPura & 17 & 61.7844 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & CargaPura & 17 & 79.2645 & 0.0421 & 0.0253 \\
+Al 1.09km & 2028 & CargaPura & 17 & 20.6680 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & CargaPura & 17 & 3.0228 & 0.0011 & 0.0007 \\
+Al 2.44km & 2028 & CargaPura & 17 & 26.6970 & 0.0142 & 0.0085 \\
+Al 3.73km & 2028 & CargaPura & 17 & 24.2577 & 0.0179 & 0.0108 \\
+AL 0.087km & 2028 & CasoBase & 6 & 2.1997 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 6 & 54.3398 & 0.0299 & 0.0180 \\
+AL 1.32km & 2028 & CasoBase & 6 & 8.1045 & 0.0007 & 0.0004 \\
+AL 2.34km & 2028 & CasoBase & 6 & 8.1045 & 0.0013 & 0.0008 \\
+AL 2.64km & 2028 & CasoBase & 6 & 8.1045 & 0.0014 & 0.0009 \\
+AL 4.2km & 2028 & CasoBase & 6 & 2.1997 & 0.0002 & 0.0001 \\
+Al 0.36km & 2028 & CasoBase & 6 & 53.6683 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & CasoBase & 6 & 43.2665 & 0.0125 & 0.0075 \\
+Al 1.09km & 2028 & CasoBase & 6 & 17.9443 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & CasoBase & 6 & 2.5872 & 0.0008 & 0.0005 \\
+Al 2.44km & 2028 & CasoBase & 6 & 14.5027 & 0.0042 & 0.0025 \\
+Al 3.73km & 2028 & CasoBase & 6 & 18.3108 & 0.0102 & 0.0061 \\
+AL 0.087km & 2028 & CasoBase & 7 & 1.3321 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 7 & 50.8676 & 0.0262 & 0.0158 \\
+AL 1.32km & 2028 & CasoBase & 7 & 6.7805 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & CasoBase & 7 & 6.7805 & 0.0009 & 0.0005 \\
+AL 2.64km & 2028 & CasoBase & 7 & 6.7805 & 0.0010 & 0.0006 \\
+AL 4.2km & 2028 & CasoBase & 7 & 1.3321 & 0.0001 & 0.0000 \\
+Al 0.36km & 2028 & CasoBase & 7 & 52.3582 & 0.0081 & 0.0049 \\
+Al 0.82km & 2028 & CasoBase & 7 & 45.7532 & 0.0140 & 0.0084 \\
+Al 1.09km & 2028 & CasoBase & 7 & 17.5050 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & CasoBase & 7 & 1.9744 & 0.0005 & 0.0003 \\
+Al 2.44km & 2028 & CasoBase & 7 & 15.3412 & 0.0047 & 0.0028 \\
+Al 3.73km & 2028 & CasoBase & 7 & 17.1285 & 0.0089 & 0.0054 \\
+AL 0.087km & 2028 & CasoBase & 8 & 2.0857 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 8 & 54.5276 & 0.0301 & 0.0181 \\
+AL 1.32km & 2028 & CasoBase & 8 & 6.7027 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & CasoBase & 8 & 6.7027 & 0.0009 & 0.0005 \\
+AL 2.64km & 2028 & CasoBase & 8 & 6.7027 & 0.0010 & 0.0006 \\
+AL 4.2km & 2028 & CasoBase & 8 & 2.0857 & 0.0001 & 0.0001 \\
+Al 0.36km & 2028 & CasoBase & 8 & 52.4448 & 0.0081 & 0.0049 \\
+Al 0.82km & 2028 & CasoBase & 8 & 56.9260 & 0.0217 & 0.0131 \\
+Al 1.09km & 2028 & CasoBase & 8 & 17.5341 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & CasoBase & 8 & 1.7613 & 0.0004 & 0.0002 \\
+Al 2.44km & 2028 & CasoBase & 8 & 19.1157 & 0.0073 & 0.0044 \\
+Al 3.73km & 2028 & CasoBase & 8 & 18.3749 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & CasoBase & 9 & 4.2094 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 9 & 54.6000 & 0.0302 & 0.0182 \\
+AL 1.32km & 2028 & CasoBase & 9 & 8.2007 & 0.0007 & 0.0004 \\
+AL 2.34km & 2028 & CasoBase & 9 & 8.2007 & 0.0013 & 0.0008 \\
+AL 2.64km & 2028 & CasoBase & 9 & 8.2007 & 0.0015 & 0.0009 \\
+AL 4.2km & 2028 & CasoBase & 9 & 4.2094 & 0.0006 & 0.0004 \\
+Al 0.36km & 2028 & CasoBase & 9 & 53.6321 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & CasoBase & 9 & 64.6934 & 0.0281 & 0.0169 \\
+Al 1.09km & 2028 & CasoBase & 9 & 17.9323 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & CasoBase & 9 & 2.1604 & 0.0006 & 0.0003 \\
+Al 2.44km & 2028 & CasoBase & 9 & 21.7466 & 0.0094 & 0.0057 \\
+Al 3.73km & 2028 & CasoBase & 9 & 18.3998 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & CasoBase & 10 & 8.2924 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 10 & 57.4588 & 0.0335 & 0.0201 \\
+AL 1.32km & 2028 & CasoBase & 10 & 5.5148 & 0.0003 & 0.0002 \\
+AL 2.34km & 2028 & CasoBase & 10 & 5.5148 & 0.0006 & 0.0003 \\
+AL 2.64km & 2028 & CasoBase & 10 & 5.5148 & 0.0007 & 0.0004 \\
+AL 4.2km & 2028 & CasoBase & 10 & 8.2924 & 0.0024 & 0.0014 \\
+Al 0.36km & 2028 & CasoBase & 10 & 55.9090 & 0.0092 & 0.0055 \\
+Al 0.82km & 2028 & CasoBase & 10 & 68.3821 & 0.0313 & 0.0188 \\
+Al 1.09km & 2028 & CasoBase & 10 & 18.6961 & 0.0031 & 0.0019 \\
+Al 14.833km & 2028 & CasoBase & 10 & 2.8324 & 0.0010 & 0.0006 \\
+Al 2.44km & 2028 & CasoBase & 10 & 22.9979 & 0.0105 & 0.0063 \\
+Al 3.73km & 2028 & CasoBase & 10 & 19.3747 & 0.0114 & 0.0069 \\
+AL 0.087km & 2028 & CasoBase & 11 & 11.2998 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & CasoBase & 11 & 60.8868 & 0.0376 & 0.0226 \\
+AL 1.32km & 2028 & CasoBase & 11 & 6.6346 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & CasoBase & 11 & 6.6346 & 0.0008 & 0.0005 \\
+AL 2.64km & 2028 & CasoBase & 11 & 6.6346 & 0.0009 & 0.0006 \\
+AL 4.2km & 2028 & CasoBase & 11 & 11.2998 & 0.0044 & 0.0026 \\
+Al 0.36km & 2028 & CasoBase & 11 & 59.4779 & 0.0104 & 0.0063 \\
+Al 0.82km & 2028 & CasoBase & 11 & 69.5700 & 0.0324 & 0.0195 \\
+Al 1.09km & 2028 & CasoBase & 11 & 19.8937 & 0.0035 & 0.0021 \\
+Al 14.833km & 2028 & CasoBase & 11 & 4.1077 & 0.0020 & 0.0012 \\
+Al 2.44km & 2028 & CasoBase & 11 & 23.4012 & 0.0109 & 0.0066 \\
+Al 3.73km & 2028 & CasoBase & 11 & 20.5453 & 0.0129 & 0.0077 \\
+AL 0.087km & 2028 & CasoBase & 12 & 12.7817 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & CasoBase & 12 & 63.8502 & 0.0413 & 0.0248 \\
+AL 1.32km & 2028 & CasoBase & 12 & 7.7321 & 0.0006 & 0.0004 \\
+AL 2.34km & 2028 & CasoBase & 12 & 7.7321 & 0.0011 & 0.0007 \\
+AL 2.64km & 2028 & CasoBase & 12 & 7.7321 & 0.0013 & 0.0008 \\
+AL 4.2km & 2028 & CasoBase & 12 & 12.7817 & 0.0056 & 0.0034 \\
+Al 0.36km & 2028 & CasoBase & 12 & 60.4157 & 0.0107 & 0.0065 \\
+Al 0.82km & 2028 & CasoBase & 12 & 64.5526 & 0.0279 & 0.0168 \\
+Al 1.09km & 2028 & CasoBase & 12 & 20.2085 & 0.0036 & 0.0022 \\
+Al 14.833km & 2028 & CasoBase & 12 & 4.9038 & 0.0029 & 0.0018 \\
+Al 2.44km & 2028 & CasoBase & 12 & 21.6990 & 0.0094 & 0.0056 \\
+Al 3.73km & 2028 & CasoBase & 12 & 21.5585 & 0.0142 & 0.0085 \\
+AL 0.087km & 2028 & CasoBase & 13 & 10.9309 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & CasoBase & 13 & 70.0065 & 0.0497 & 0.0299 \\
+AL 1.32km & 2028 & CasoBase & 13 & 6.6641 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & CasoBase & 13 & 6.6641 & 0.0008 & 0.0005 \\
+AL 2.64km & 2028 & CasoBase & 13 & 6.6641 & 0.0010 & 0.0006 \\
+AL 4.2km & 2028 & CasoBase & 13 & 10.9309 & 0.0041 & 0.0025 \\
+Al 0.36km & 2028 & CasoBase & 13 & 64.2016 & 0.0121 & 0.0073 \\
+Al 0.82km & 2028 & CasoBase & 13 & 66.0517 & 0.0292 & 0.0176 \\
+Al 1.09km & 2028 & CasoBase & 13 & 21.4796 & 0.0041 & 0.0025 \\
+Al 14.833km & 2028 & CasoBase & 13 & 3.8350 & 0.0018 & 0.0011 \\
+Al 2.44km & 2028 & CasoBase & 13 & 22.2075 & 0.0098 & 0.0059 \\
+Al 3.73km & 2028 & CasoBase & 13 & 23.6677 & 0.0171 & 0.0103 \\
+AL 0.087km & 2028 & CasoBase & 14 & 8.0232 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 14 & 71.7568 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CasoBase & 14 & 6.0649 & 0.0004 & 0.0002 \\
+AL 2.34km & 2028 & CasoBase & 14 & 6.0649 & 0.0007 & 0.0004 \\
+AL 2.64km & 2028 & CasoBase & 14 & 6.0649 & 0.0008 & 0.0005 \\
+AL 4.2km & 2028 & CasoBase & 14 & 8.0232 & 0.0022 & 0.0013 \\
+Al 0.36km & 2028 & CasoBase & 14 & 65.4273 & 0.0126 & 0.0076 \\
+Al 0.82km & 2028 & CasoBase & 14 & 75.7381 & 0.0384 & 0.0231 \\
+Al 1.09km & 2028 & CasoBase & 14 & 21.8913 & 0.0043 & 0.0026 \\
+Al 14.833km & 2028 & CasoBase & 14 & 2.7056 & 0.0009 & 0.0005 \\
+Al 2.44km & 2028 & CasoBase & 14 & 25.4973 & 0.0130 & 0.0078 \\
+Al 3.73km & 2028 & CasoBase & 14 & 24.2685 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CasoBase & 15 & 4.7108 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 15 & 71.7688 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CasoBase & 15 & 6.0881 & 0.0004 & 0.0002 \\
+AL 2.34km & 2028 & CasoBase & 15 & 6.0881 & 0.0007 & 0.0004 \\
+AL 2.64km & 2028 & CasoBase & 15 & 6.0881 & 0.0008 & 0.0005 \\
+AL 4.2km & 2028 & CasoBase & 15 & 4.7108 & 0.0008 & 0.0005 \\
+Al 0.36km & 2028 & CasoBase & 15 & 63.8697 & 0.0120 & 0.0072 \\
+Al 0.82km & 2028 & CasoBase & 15 & 80.2181 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & CasoBase & 15 & 21.3682 & 0.0041 & 0.0024 \\
+Al 14.833km & 2028 & CasoBase & 15 & 1.8056 & 0.0004 & 0.0002 \\
+Al 2.44km & 2028 & CasoBase & 15 & 27.0218 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & CasoBase & 15 & 24.2726 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CasoBase & 16 & 2.0919 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 16 & 71.7693 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & CasoBase & 16 & 10.1077 & 0.0011 & 0.0007 \\
+AL 2.34km & 2028 & CasoBase & 16 & 10.1077 & 0.0020 & 0.0012 \\
+AL 2.64km & 2028 & CasoBase & 16 & 10.1077 & 0.0022 & 0.0013 \\
+AL 4.2km & 2028 & CasoBase & 16 & 2.0919 & 0.0002 & 0.0001 \\
+Al 0.36km & 2028 & CasoBase & 16 & 61.8202 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & CasoBase & 16 & 80.2187 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & CasoBase & 16 & 20.6800 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & CasoBase & 16 & 2.8144 & 0.0010 & 0.0006 \\
+Al 2.44km & 2028 & CasoBase & 16 & 27.0220 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & CasoBase & 16 & 24.2727 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & CasoBase & 17 & 1.3791 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & CasoBase & 17 & 71.7241 & 0.0521 & 0.0313 \\
+AL 1.32km & 2028 & CasoBase & 17 & 6.9863 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & CasoBase & 17 & 6.9863 & 0.0009 & 0.0006 \\
+AL 2.64km & 2028 & CasoBase & 17 & 6.9863 & 0.0011 & 0.0006 \\
+AL 4.2km & 2028 & CasoBase & 17 & 1.3791 & 0.0001 & 0.0000 \\
+Al 0.36km & 2028 & CasoBase & 17 & 61.7827 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & CasoBase & 17 & 79.2623 & 0.0421 & 0.0253 \\
+Al 1.09km & 2028 & CasoBase & 17 & 20.6674 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & CasoBase & 17 & 2.0407 & 0.0005 & 0.0003 \\
+Al 2.44km & 2028 & CasoBase & 17 & 26.6963 & 0.0142 & 0.0085 \\
+Al 3.73km & 2028 & CasoBase & 17 & 24.2571 & 0.0179 & 0.0108 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.1988 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 54.3393 & 0.0299 & 0.0180 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 6.9302 & 0.0005 & 0.0003 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 8.1014 & 0.0013 & 0.0008 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 8.1014 & 0.0014 & 0.0009 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.1988 & 0.0002 & 0.0001 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 53.6678 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 43.2662 & 0.0125 & 0.0075 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 17.9442 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 2.5862 & 0.0008 & 0.0005 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 14.5026 & 0.0042 & 0.0025 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 18.3106 & 0.0102 & 0.0061 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.3309 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 50.8668 & 0.0262 & 0.0158 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 4.4566 & 0.0002 & 0.0001 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 6.7743 & 0.0009 & 0.0005 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 6.7743 & 0.0010 & 0.0006 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.3309 & 0.0001 & 0.0000 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 52.3574 & 0.0081 & 0.0048 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 45.7524 & 0.0140 & 0.0084 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 17.5047 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 1.9725 & 0.0005 & 0.0003 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 15.3410 & 0.0047 & 0.0028 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 17.1283 & 0.0089 & 0.0054 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 2.0818 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 54.5263 & 0.0301 & 0.0181 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 5.0391 & 0.0003 & 0.0002 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 6.6903 & 0.0009 & 0.0005 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 6.6903 & 0.0010 & 0.0006 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 2.0818 & 0.0001 & 0.0001 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 52.4435 & 0.0081 & 0.0049 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 56.9246 & 0.0217 & 0.0131 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 17.5336 & 0.0027 & 0.0016 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 1.7580 & 0.0004 & 0.0002 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 19.1153 & 0.0073 & 0.0044 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 18.3745 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 4.1962 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 54.6054 & 0.0302 & 0.0182 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 9.4734 & 0.0010 & 0.0006 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 8.1747 & 0.0013 & 0.0008 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 8.1747 & 0.0014 & 0.0009 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 4.1962 & 0.0006 & 0.0004 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 53.6331 & 0.0085 & 0.0051 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 64.6978 & 0.0281 & 0.0169 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 17.9329 & 0.0029 & 0.0017 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 2.1536 & 0.0006 & 0.0003 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 21.7490 & 0.0094 & 0.0057 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 18.4029 & 0.0103 & 0.0062 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 8.2550 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 57.4681 & 0.0335 & 0.0201 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 19.2816 & 0.0040 & 0.0024 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 5.4893 & 0.0006 & 0.0003 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 5.4893 & 0.0007 & 0.0004 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 8.2550 & 0.0023 & 0.0014 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 55.9128 & 0.0092 & 0.0055 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 68.3908 & 0.0313 & 0.0188 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 18.6976 & 0.0031 & 0.0019 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 2.8197 & 0.0010 & 0.0006 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 23.0020 & 0.0106 & 0.0063 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 19.3794 & 0.0114 & 0.0069 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 11.2368 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 60.9017 & 0.0376 & 0.0226 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 26.8186 & 0.0078 & 0.0047 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 6.5969 & 0.0008 & 0.0005 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 6.5969 & 0.0009 & 0.0006 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 11.2368 & 0.0043 & 0.0026 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 59.4859 & 0.0104 & 0.0063 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 69.5838 & 0.0325 & 0.0195 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 19.8967 & 0.0035 & 0.0021 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 4.0850 & 0.0020 & 0.0012 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 23.4072 & 0.0109 & 0.0066 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 20.5523 & 0.0129 & 0.0077 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 12.7060 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 63.8688 & 0.0413 & 0.0249 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 30.7436 & 0.0102 & 0.0061 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 7.6860 & 0.0011 & 0.0007 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 7.6860 & 0.0013 & 0.0008 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 12.7060 & 0.0055 & 0.0033 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 60.4260 & 0.0107 & 0.0065 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 64.5670 & 0.0279 & 0.0168 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 20.2122 & 0.0036 & 0.0022 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 4.8750 & 0.0029 & 0.0017 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 21.7049 & 0.0094 & 0.0056 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 21.5669 & 0.0142 & 0.0085 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 10.8694 & 0.0001 & 0.0001 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 70.0266 & 0.0497 & 0.0299 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 25.7036 & 0.0071 & 0.0043 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 6.6257 & 0.0008 & 0.0005 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 6.6257 & 0.0009 & 0.0006 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 10.8694 & 0.0041 & 0.0024 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 64.2101 & 0.0121 & 0.0073 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 66.0644 & 0.0293 & 0.0176 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 21.4828 & 0.0041 & 0.0025 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 3.8135 & 0.0018 & 0.0011 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 22.2130 & 0.0098 & 0.0059 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 23.6776 & 0.0171 & 0.0103 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 7.9865 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 71.7744 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 18.4956 & 0.0037 & 0.0022 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 6.0366 & 0.0007 & 0.0004 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 6.0366 & 0.0008 & 0.0005 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 7.9865 & 0.0022 & 0.0013 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 65.4319 & 0.0126 & 0.0076 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 75.7500 & 0.0385 & 0.0231 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 21.8933 & 0.0043 & 0.0026 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 2.6932 & 0.0009 & 0.0005 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 25.5033 & 0.0130 & 0.0078 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 24.2780 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 4.6960 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 71.7839 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 10.5854 & 0.0012 & 0.0007 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 6.0688 & 0.0007 & 0.0004 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 6.0688 & 0.0008 & 0.0005 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 4.6960 & 0.0008 & 0.0005 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 63.8717 & 0.0120 & 0.0072 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 80.2286 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 21.3693 & 0.0041 & 0.0024 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 1.7999 & 0.0004 & 0.0002 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 27.0277 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 24.2813 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.0882 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 71.7843 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 6.3182 & 0.0004 & 0.0003 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 10.0897 & 0.0019 & 0.0012 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 10.0897 & 0.0022 & 0.0013 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.0882 & 0.0001 & 0.0001 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 61.8219 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 80.2291 & 0.0431 & 0.0259 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 20.6810 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 2.8094 & 0.0010 & 0.0006 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 27.0278 & 0.0146 & 0.0088 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 24.2814 & 0.0180 & 0.0108 \\
+AL 0.087km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 1.3780 & 0.0000 & 0.0000 \\
+AL 1.24km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 71.7398 & 0.0522 & 0.0314 \\
+AL 1.32km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 4.6242 & 0.0002 & 0.0001 \\
+AL 2.34km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 6.9805 & 0.0009 & 0.0006 \\
+AL 2.64km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 6.9805 & 0.0011 & 0.0006 \\
+AL 4.2km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 1.3780 & 0.0001 & 0.0000 \\
+Al 0.36km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 61.7852 & 0.0112 & 0.0068 \\
+Al 0.82km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 79.2733 & 0.0421 & 0.0253 \\
+Al 1.09km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 20.6687 & 0.0038 & 0.0023 \\
+Al 14.833km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 2.0391 & 0.0005 & 0.0003 \\
+Al 2.44km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 26.7022 & 0.0142 & 0.0085 \\
+Al 3.73km & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 24.2659 & 0.0180 & 0.0108 \\
+\end{longtable}
+
+\subsection{Transformador del proyecto}
+
+Resultados del transformador de elevaci\'on del proyecto.
+
+\small
+\begin{longtable}{llllrrr}
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{Cargabilidad \%} & \textbf{I HV kA} & \textbf{I LV kA} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{Cargabilidad \%} & \textbf{I HV kA} & \textbf{I LV kA} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 4.5227 & 0.0025 & 0.0408 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 10.8911 & 0.0060 & 0.0982 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 22.3904 & 0.0122 & 0.2020 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 39.2179 & 0.0214 & 0.3538 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 58.3830 & 0.0319 & 0.5267 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 74.1684 & 0.0406 & 0.6691 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 80.2531 & 0.0439 & 0.7240 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 74.2895 & 0.0406 & 0.6702 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 58.5916 & 0.0320 & 0.5286 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 39.3462 & 0.0215 & 0.3549 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 22.5340 & 0.0123 & 0.2033 \\
+Tr puerto Boyaca 1.25MW & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 10.9612 & 0.0060 & 0.0989 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 4.5236 & 0.0025 & 0.0408 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 10.8932 & 0.0060 & 0.0983 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 22.3953 & 0.0122 & 0.2020 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 39.2275 & 0.0214 & 0.3539 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 58.3972 & 0.0319 & 0.5268 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 74.1871 & 0.0406 & 0.6692 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 80.2728 & 0.0439 & 0.7241 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 74.3097 & 0.0406 & 0.6704 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 58.6085 & 0.0320 & 0.5287 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 39.3574 & 0.0215 & 0.3550 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 22.5406 & 0.0123 & 0.2033 \\
+Tr puerto Boyaca 1.25MW & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 10.9642 & 0.0060 & 0.0989 \\
+\end{longtable}
+
+\subsection{Despacho de los generadores}
+
+Potencia efectivamente despachada por cada generador en cada hora.
+
+\small
+\begin{longtable}{llllrrr}
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{P MW} & \textbf{Q Mvar} & \textbf{I kA} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Anio} & \textbf{Caso} & \textbf{Hora} & \textbf{P MW} & \textbf{Q Mvar} & \textbf{I kA} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+GD P4 15344 & 2026 & CargaPura & 6 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 6 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 7 & 0.0000 & 0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 7 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 8 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 8 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 9 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 9 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 10 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 10 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 11 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 11 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 12 & 0.0000 & 0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 12 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 13 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 13 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 14 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 14 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 15 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 15 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 16 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 16 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2026 & CargaPura & 17 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2026 & CargaPura & 17 & 0.0000 & -0.0000 & 0.0000 \\
+GD P4 15344 & 2026 & CasoBase & 6 & 0.0185 & 0 & 0.0008 \\
+GD P5 15344 & 2026 & CasoBase & 6 & 0.0185 & 0.0000 & 0.0008 \\
+GD P4 15344 & 2026 & CasoBase & 7 & 0.0447 & 0 & 0.0020 \\
+GD P5 15344 & 2026 & CasoBase & 7 & 0.0447 & -0.0000 & 0.0020 \\
+GD P4 15344 & 2026 & CasoBase & 8 & 0.0918 & 0.0000 & 0.0041 \\
+GD P5 15344 & 2026 & CasoBase & 8 & 0.0918 & 0 & 0.0041 \\
+GD P4 15344 & 2026 & CasoBase & 9 & 0.1606 & -0.0000 & 0.0072 \\
+GD P5 15344 & 2026 & CasoBase & 9 & 0.1606 & 0 & 0.0073 \\
+GD P4 15344 & 2026 & CasoBase & 10 & 0.2396 & 0 & 0.0106 \\
+GD P5 15344 & 2026 & CasoBase & 10 & 0.2396 & 0 & 0.0106 \\
+GD P4 15344 & 2026 & CasoBase & 11 & 0.3046 & -0.0000 & 0.0135 \\
+GD P5 15344 & 2026 & CasoBase & 11 & 0.3046 & 0 & 0.0134 \\
+GD P4 15344 & 2026 & CasoBase & 12 & 0.3300 & -0.0000 & 0.0145 \\
+GD P5 15344 & 2026 & CasoBase & 12 & 0.3300 & -0.0000 & 0.0144 \\
+GD P4 15344 & 2026 & CasoBase & 13 & 0.3046 & -0.0000 & 0.0135 \\
+GD P5 15344 & 2026 & CasoBase & 13 & 0.3046 & -0.0000 & 0.0134 \\
+GD P4 15344 & 2026 & CasoBase & 14 & 0.2396 & 0.0000 & 0.0107 \\
+GD P5 15344 & 2026 & CasoBase & 14 & 0.2396 & 0 & 0.0107 \\
+GD P4 15344 & 2026 & CasoBase & 15 & 0.1606 & 0 & 0.0072 \\
+GD P5 15344 & 2026 & CasoBase & 15 & 0.1606 & 0 & 0.0072 \\
+GD P4 15344 & 2026 & CasoBase & 16 & 0.0918 & -0.0000 & 0.0042 \\
+GD P5 15344 & 2026 & CasoBase & 16 & 0.0918 & 0 & 0.0042 \\
+GD P4 15344 & 2026 & CasoBase & 17 & 0.0447 & 0 & 0.0020 \\
+GD P5 15344 & 2026 & CasoBase & 17 & 0.0447 & 0 & 0.0020 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0556 & 0 & 0.0408 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0185 & 0.0000 & 0.0008 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0185 & 0 & 0.0008 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.1340 & 0.0000 & 0.0983 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.0447 & 0 & 0.0020 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.0447 & 0 & 0.0020 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.2753 & 0 & 0.2020 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.0918 & -0.0000 & 0.0041 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.0918 & -0.0000 & 0.0041 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.4819 & 0 & 0.3538 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.1606 & 0 & 0.0072 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.1606 & -0.0000 & 0.0072 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.7189 & 0 & 0.5267 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.2396 & 0.0000 & 0.0106 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.2396 & 0 & 0.0106 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9139 & 0.0000 & 0.6691 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.3046 & 0.0000 & 0.0134 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.3046 & 0 & 0.0133 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9900 & 0.0000 & 0.7240 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.3300 & -0.0000 & 0.0144 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.3300 & 0.0000 & 0.0143 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9139 & 0 & 0.6702 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.3046 & 0.0000 & 0.0134 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.3046 & 0.0000 & 0.0134 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.7189 & 0 & 0.5286 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.2396 & -0.0000 & 0.0107 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.2396 & 0 & 0.0106 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.4819 & 0 & 0.3549 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.1606 & 0.0000 & 0.0072 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.1606 & 0 & 0.0072 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.2753 & 0 & 0.2033 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.0918 & -0.0000 & 0.0042 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.0918 & 0 & 0.0042 \\
+Distributed Small PV Plants & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.1340 & 0.0000 & 0.0989 \\
+GD P4 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.0447 & 0.0000 & 0.0020 \\
+GD P5 15344 & 2026 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.0447 & -0.0000 & 0.0020 \\
+GD P4 15344 & 2028 & CargaPura & 6 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 6 & 0.0000 & -0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 7 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 7 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 8 & 0.0000 & 0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 8 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 9 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 9 & 0.0000 & -0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 10 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 10 & 0.0000 & 0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 11 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 11 & 0.0000 & 0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 12 & 0.0000 & -0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 12 & 0.0000 & -0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 13 & 0.0000 & 0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 13 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 14 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 14 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 15 & 0.0000 & 0.0000 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 15 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 16 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 16 & 0.0000 & -0.0000 & 0.0000 \\
+GD P4 15344 & 2028 & CargaPura & 17 & 0.0000 & 0 & 0.0000 \\
+GD P5 15344 & 2028 & CargaPura & 17 & 0.0000 & 0 & 0.0000 \\
+GD P4 15344 & 2028 & CasoBase & 6 & 0.0185 & 0.0000 & 0.0008 \\
+GD P5 15344 & 2028 & CasoBase & 6 & 0.0185 & 0 & 0.0008 \\
+GD P4 15344 & 2028 & CasoBase & 7 & 0.0447 & -0.0000 & 0.0020 \\
+GD P5 15344 & 2028 & CasoBase & 7 & 0.0447 & 0 & 0.0020 \\
+GD P4 15344 & 2028 & CasoBase & 8 & 0.0918 & 0 & 0.0041 \\
+GD P5 15344 & 2028 & CasoBase & 8 & 0.0918 & 0 & 0.0041 \\
+GD P4 15344 & 2028 & CasoBase & 9 & 0.1606 & 0 & 0.0072 \\
+GD P5 15344 & 2028 & CasoBase & 9 & 0.1606 & 0 & 0.0073 \\
+GD P4 15344 & 2028 & CasoBase & 10 & 0.2396 & 0.0000 & 0.0106 \\
+GD P5 15344 & 2028 & CasoBase & 10 & 0.2396 & 0 & 0.0106 \\
+GD P4 15344 & 2028 & CasoBase & 11 & 0.3046 & 0 & 0.0135 \\
+GD P5 15344 & 2028 & CasoBase & 11 & 0.3046 & -0.0000 & 0.0134 \\
+GD P4 15344 & 2028 & CasoBase & 12 & 0.3300 & 0 & 0.0145 \\
+GD P5 15344 & 2028 & CasoBase & 12 & 0.3300 & 0.0000 & 0.0144 \\
+GD P4 15344 & 2028 & CasoBase & 13 & 0.3046 & 0 & 0.0135 \\
+GD P5 15344 & 2028 & CasoBase & 13 & 0.3046 & 0.0000 & 0.0134 \\
+GD P4 15344 & 2028 & CasoBase & 14 & 0.2396 & -0.0000 & 0.0107 \\
+GD P5 15344 & 2028 & CasoBase & 14 & 0.2396 & 0.0000 & 0.0107 \\
+GD P4 15344 & 2028 & CasoBase & 15 & 0.1606 & 0 & 0.0072 \\
+GD P5 15344 & 2028 & CasoBase & 15 & 0.1606 & 0 & 0.0072 \\
+GD P4 15344 & 2028 & CasoBase & 16 & 0.0918 & 0 & 0.0042 \\
+GD P5 15344 & 2028 & CasoBase & 16 & 0.0918 & -0.0000 & 0.0042 \\
+GD P4 15344 & 2028 & CasoBase & 17 & 0.0447 & -0.0000 & 0.0020 \\
+GD P5 15344 & 2028 & CasoBase & 17 & 0.0447 & 0.0000 & 0.0020 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0556 & 0 & 0.0408 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0185 & -0.0000 & 0.0008 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 6 & 0.0185 & 0 & 0.0008 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.1340 & -0.0000 & 0.0983 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.0447 & 0 & 0.0020 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 7 & 0.0447 & -0.0000 & 0.0020 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.2753 & -0.0000 & 0.2020 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.0918 & 0 & 0.0041 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 8 & 0.0918 & -0.0000 & 0.0041 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.4819 & -0.0000 & 0.3539 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.1606 & -0.0000 & 0.0072 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 9 & 0.1606 & 0.0000 & 0.0072 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.7189 & 0.0000 & 0.5268 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.2396 & 0 & 0.0106 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 10 & 0.2396 & -0.0000 & 0.0106 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.9139 & 0 & 0.6692 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.3046 & 0 & 0.0134 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 11 & 0.3046 & 0.0000 & 0.0133 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.9900 & 0.0000 & 0.7241 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.3300 & 0 & 0.0144 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 12 & 0.3300 & 0.0000 & 0.0143 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.9139 & 0 & 0.6704 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.3046 & 0 & 0.0134 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 13 & 0.3046 & -0.0000 & 0.0134 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.7189 & 0 & 0.5287 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.2396 & 0.0000 & 0.0107 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 14 & 0.2396 & 0 & 0.0106 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.4819 & 0 & 0.3550 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.1606 & 0 & 0.0072 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 15 & 0.1606 & 0 & 0.0072 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.2753 & 0.0000 & 0.2033 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.0918 & 0 & 0.0042 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 16 & 0.0918 & 0 & 0.0042 \\
+Distributed Small PV Plants & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.1340 & -0.0000 & 0.0989 \\
+GD P4 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.0447 & 0 & 0.0020 \\
+GD P5 15344 & 2028 & GD\_Puerto\_Boyaca\_990kW & 17 & 0.0447 & 0 & 0.0020 \\
+\end{longtable}
+
+\end{document}

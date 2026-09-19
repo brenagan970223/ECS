@@ -40,6 +40,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import openpyxl
 
+from parametros import P
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 RESULTADOS_FLUJO = BASE_DIR / "resultados" / "Resultados_Flujo_Carga.xlsx"
 RESULTADOS_CORTO = BASE_DIR / "resultados" / "Resultados_Cortocircuito.xlsx"
@@ -69,12 +71,23 @@ GRIS_EJE = "#d5d5d0"
 TINTA = "#0b0b0b"
 TINTA_SEC = "#52514e"
 
-CAPACIDAD_CORTE_KA = 10.0
+CAPACIDAD_CORTE_KA = P.red_or("CAPACIDAD_CORTE_KA")
+DEMANDA_PATH = BASE_DIR / "inputs" / "Parametros_Demanda.xlsx"
+P_POTENCIA_AC_KW = P.datos_proyecto("POTENCIA_AC_KW")
+P_POTENCIA_GD_EXISTENTE_KW = 660.0   # GD1 + GD2, 330 kW cada uno
+FACTORES_ANIO = P.anios()
+HORA_PICO_SOLAR = P.despacho("HORA_PICO_SOLAR")
+SIGMA_GAUSS_SOLAR = P.despacho("SIGMA_GAUSS_SOLAR")
+
+
+def factor_solar(hora):
+    """Mismo perfil gaussiano que usa Flujo_carga.py para despachar."""
+    return math.exp(-((hora - HORA_PICO_SOLAR) ** 2) / (2.0 * SIGMA_GAUSS_SOLAR ** 2))
 
 # Barras y elementos que se grafican por nombre (ver cargar_flujo / figura_*)
-BARRA_PC = "P1 15344 13.2kV"        # punto de conexion del proyecto (cabecera)
-BARRA_EXTREMO = "P6 15344 13.2kV"   # extremo del circuito, maxima elevacion
-LINEA_EVACUACION = "AL 1.32km"      # tramo que evacua la generacion del proyecto
+BARRA_PC = P.elemento("BARRA_PC")
+BARRA_EXTREMO = P.elemento("BARRA_EXTREMO")
+LINEA_EVACUACION = P.elemento("LINEA_EVACUACION")
 
 
 def estilo_ejes(ax):
@@ -333,6 +346,117 @@ def figura_perdidas(anios, horas, perdidas, ruta):
     return ruta
 
 
+def cargar_demanda():
+    """Demanda por carga y por hora desde el Excel de insumos del OR."""
+    wb = openpyxl.load_workbook(DEMANDA_PATH, data_only=True)
+    demanda = defaultdict(dict)
+    for carga, hora, p_mw, q_mw in wb["Demanda"].iter_rows(min_row=2, values_only=True):
+        if hora is None:
+            continue
+        demanda[str(carga)][int(hora)] = float(p_mw)
+    return demanda
+
+
+def figura_demanda_cargas(demanda, ruta):
+    """Curva de demanda de cada una de las 8 cargas del area de influencia,
+    agrupadas por circuito.
+
+    Se factoriza por circuito en vez de poner las ocho curvas en un solo panel:
+    con ocho series superpuestas la figura se vuelve ilegible, mientras que dos
+    curvas por panel permiten comparar directamente las dos cargas de un mismo
+    circuito, que es la comparacion que tiene sentido fisico."""
+    circuitos = sorted({c.split("-")[0] for c in demanda})
+    horas = sorted(next(iter(demanda.values())))
+    fig, axes = plt.subplots(2, 2, figsize=(11, 6.6), sharex=True, sharey=True)
+    fig.patch.set_facecolor("white")
+
+    for idx, circuito in enumerate(circuitos):
+        ax = axes[idx // 2][idx % 2]
+        estilo_ejes(ax)
+        cargas = sorted(c for c in demanda if c.startswith(circuito))
+        for j, carga in enumerate(cargas):
+            color = COLOR["CargaPura"] if j == 0 else COLOR["CasoBase"]
+            y = [demanda[carga][hh] for hh in horas]
+            ax.plot(horas, y, color=color, linewidth=2.0, marker="o", markersize=4,
+                    markeredgecolor="white", markeredgewidth=0.8, zorder=3)
+            # etiqueta directa al final de cada curva: evita tener que ir y
+            # volver a una leyenda para identificar dos series
+            ax.annotate(carga, xy=(horas[-1], y[-1]), xytext=(5, 0),
+                        textcoords="offset points", fontsize=8, color=TINTA_SEC,
+                        va="center")
+        ax.set_title(f"Circuito {circuito}", fontsize=10.5, color=TINTA,
+                     fontweight="bold", pad=8)
+        if idx % 2 == 0:
+            ax.set_ylabel("Demanda activa (MW)", fontsize=9, color=TINTA)
+        if idx // 2 == 1:
+            ax.set_xlabel("Hora del día", fontsize=9, color=TINTA)
+        ax.set_xlim(horas[0] - 0.4, horas[-1] + 1.6)
+
+    fig.suptitle("Curvas de demanda por carga — área de influencia, año t",
+                 fontsize=12.5, color=TINTA, fontweight="bold", y=0.98)
+    fig.text(0.5, 0.015, "Para el año t+x todas las curvas se escalan de forma uniforme un +1.04 %, "
+             "según lo solicitado por el OR.", ha="center", fontsize=8, color=TINTA_SEC)
+    fig.tight_layout(rect=[0, 0.045, 1, 0.94])
+    fig.savefig(ruta, dpi=200, facecolor="white")
+    plt.close(fig)
+    return ruta
+
+
+def figura_demanda_generacion(demanda, anios, horas, ruta):
+    """Demanda agregada del area (lo que ve la cabecera del circuito) frente a
+    la generacion, con los tres escenarios del numeral 8.2 marcados.
+
+    Ambas magnitudes van en MW sobre un unico eje: son la misma magnitud fisica
+    y lo que importa es justamente compararlas entre si."""
+    p_proy_kw = P_POTENCIA_AC_KW
+    p_gd_kw = P_POTENCIA_GD_EXISTENTE_KW
+
+    fig, axes = plt.subplots(1, len(anios), figsize=(11, 4.6), sharey=True)
+    fig.patch.set_facecolor("white")
+    if len(anios) == 1:
+        axes = [axes]
+
+    for col, anio in enumerate(anios):
+        ax = axes[col]
+        estilo_ejes(ax)
+        factor_anio = dict(FACTORES_ANIO)[anio]
+        dem = [sum(demanda[c][hh] for c in demanda) * factor_anio for hh in horas]
+        gen_proy = [p_proy_kw / 1000.0 * factor_solar(hh) for hh in horas]
+        gen_tot = [(p_proy_kw + p_gd_kw) / 1000.0 * factor_solar(hh) for hh in horas]
+
+        ax.plot(horas, dem, color=COLOR["CargaPura"], linewidth=2.2, marker="o",
+                markersize=4, markeredgecolor="white", markeredgewidth=0.8,
+                label="Demanda agregada del área", zorder=3)
+        ax.plot(horas, gen_tot, color=COLOR["CasoBase"], linewidth=2.0, marker="o",
+                markersize=4, markeredgecolor="white", markeredgewidth=0.8,
+                label="Generación total (proyecto + GD1/GD2)", zorder=3)
+        ax.plot(horas, gen_proy, color=COLOR["Proyecto"], linewidth=2.0, marker="o",
+                markersize=4, markeredgecolor="white", markeredgewidth=0.8,
+                label="Generación del proyecto", zorder=3)
+
+        # escenarios del numeral 8.2
+        for hora_esc, etiqueta in ((15, "8.2.1 / 8.2.3"), (12, "8.2.2")):
+            ax.axvline(hora_esc, color=GRIS_LIMITE, linewidth=1.0, linestyle=":", zorder=2)
+            # la etiqueta va abajo: arriba chocaria con la curva de demanda
+            ax.annotate(etiqueta, xy=(hora_esc, ax.get_ylim()[0]), xytext=(3, 6),
+                        textcoords="offset points", fontsize=7.5, color=TINTA_SEC)
+
+        ax.set_title(f"Año {anio}", fontsize=11, color=TINTA, fontweight="bold", pad=10)
+        ax.set_xlabel("Hora del día", fontsize=9, color=TINTA)
+        if col == 0:
+            ax.set_ylabel("Potencia (MW)", fontsize=9, color=TINTA)
+
+    manejadores, etiquetas = axes[0].get_legend_handles_labels()
+    fig.legend(manejadores, etiquetas, loc="lower center", ncol=3, frameon=False,
+               fontsize=9, bbox_to_anchor=(0.5, -0.02))
+    fig.suptitle("Demanda del circuito frente a la generación — escenarios del numeral 8.2",
+                 fontsize=12.5, color=TINTA, fontweight="bold", y=0.98)
+    fig.tight_layout(rect=[0, 0.09, 1, 0.93])
+    fig.savefig(ruta, dpi=200, facecolor="white")
+    plt.close(fig)
+    return ruta
+
+
 def figura_cortocircuito(ruta):
     wb = openpyxl.load_workbook(RESULTADOS_CORTO, data_only=True)
     h, filas = leer_hoja(wb, "Nodos")
@@ -412,6 +536,9 @@ def main():
                             SALIDA_DIR / "fig_cargabilidad.png"),
         figura_perdidas(anios, horas, perdidas, SALIDA_DIR / "fig_perdidas.png"),
         figura_cortocircuito(SALIDA_DIR / "fig_cortocircuito.png"),
+        figura_demanda_cargas(cargar_demanda(), SALIDA_DIR / "fig_demanda_cargas.png"),
+        figura_demanda_generacion(cargar_demanda(), anios, horas,
+                                  SALIDA_DIR / "fig_demanda_generacion.png"),
     ]
     for r in rutas:
         print(f"  generada: {r.relative_to(BASE_DIR)}")

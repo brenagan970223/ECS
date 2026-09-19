@@ -1,0 +1,1665 @@
+% ============================================================================
+% Anexo B --- An\'alisis de Cortocircuito
+% Proyecto: Generacion Distribuida 990 kW - Puerto Boyaca (EBSA), circuito 15344
+% Generado automaticamente por scripts/Anexos.py - no editar a mano.
+% Compilador recomendado: pdfLaTeX.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker={,}, group-separator={.}}
+
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=NavyBlue,citecolor=NavyBlue,urlcolor=NavyBlue]{hyperref}
+
+\graphicspath{{figuras/}{../}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Anexo B --- Cortocircuito}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\small Confidencial -- Uso exclusivo tr\'amite de conexi\'on ante EBSA}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{0.6em}{}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Large\bfseries Estudio de Conexi\'on Simplificado\par}
+\vspace{0.4cm}
+{\large Generaci\'on Distribuida 990\,kW --- Puerto Boyac\'a\par}
+\vspace{0.2cm}
+{\large Circuito 15344 --- EBSA --- Solicitud N.\textdegree{} 16869\par}
+\vspace{2.5cm}
+{\Huge\bfseries Anexo B --- An\'alisis de Cortocircuito\par}
+\vspace{2cm}
+{\large Resoluci\'on CREG 174 de 2021\par}
+\vfill
+{\small Documento generado autom\'aticamente a partir de los resultados de simulaci\'on.\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+
+\section{Alcance y metodolog\'ia}
+
+Este anexo recoge el detalle de los c\'alculos de cortocircuito que sustentan la
+Secci\'on 8.4 del informe principal.
+
+\subsection{M\'etodo de c\'alculo}
+
+Se aplica el m\'etodo de la fuente de tensi\'on equivalente de la norma
+\textbf{IEC 60909 / VDE 0102 Parte 0}, con factor de tensi\'on $c = 1.1$ para el
+c\'alculo de corrientes m\'aximas:
+\[
+I''_{k} = \frac{c \cdot U_n}{\sqrt{3}\, Z_k}
+\]
+
+El barrido recorre \textbf{todas las barras del sistema} y, en cada una,
+\textbf{los tres tipos de falla} (trif\'asica, bif\'asica y monof\'asica a
+tierra), para el caso base y para el caso con el proyecto conectado. El
+resultado no depende del nivel de demanda, por lo que no se repite por a\~no.
+
+\subsection{Parametrizaci\'on de secuencia cero}
+
+Las impedancias de secuencia cero del equivalente de red se ajustaron para
+reproducir el dato oficial del Operador de Red: una corriente de falla
+monof\'asica de \textbf{2.622\,kA} en el barraje de 115\,kV. Esta verificaci\'on
+es lo que hace utilizables las corrientes de falla a tierra de este anexo para
+el dise\~no de la malla de puesta a tierra.
+
+\newpage\section{Resultados gr\'aficos}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{fig_cortocircuito.png}
+\caption{Nivel de falla por barra frente a la capacidad de corte, e incremento aportado por el proyecto.}
+\label{fig:anexoB-corto}
+\end{figure}
+
+\newpage\section{Niveles de falla por barra}
+
+\small
+\begin{longtable}{lrrrrrrr}
+\toprule
+\textbf{Barra} & \textbf{3F sin} & \textbf{3F con} & \textbf{2F sin} & \textbf{2F con} & \textbf{1F sin} & \textbf{1F con} & \textbf{Margen} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Barra} & \textbf{3F sin} & \textbf{3F con} & \textbf{2F sin} & \textbf{2F con} & \textbf{1F sin} & \textbf{1F con} & \textbf{Margen} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+P1 15302 13.2kV & 4.2595 & 4.2822 & 3.6888 & 3.6888 & 3.8910 & 3.8927 & 5.72 \\
+P1 15303 13.2kV & 5.2082 & 5.2360 & 4.5104 & 4.5105 & 4.6448 & 4.6474 & 4.76 \\
+P1 15340 13.2kV & 6.6782 & 6.7138 & 5.7835 & 5.7835 & 5.7428 & 5.7470 & 3.29 \\
+P1 15344 13.2kV & 4.1120 & 4.1553 & 3.5611 & 3.5611 & 3.7702 & 3.7743 & 5.84 \\
+P2 15302 13.2kV & 1.5263 & 1.5344 & 1.3218 & 1.3218 & 1.4857 & 1.4859 & 8.47 \\
+P2 15303 13.2kV & 2.1800 & 2.1917 & 1.8880 & 1.8880 & 2.0928 & 2.0932 & 7.81 \\
+P2 15340 13.2kV & 3.8909 & 3.9117 & 3.3696 & 3.3696 & 3.5871 & 3.5886 & 6.09 \\
+P2 15344 13.2kV & 1.8559 & 1.8755 & 1.6073 & 1.6073 & 1.7942 & 1.7952 & 8.12 \\
+P3 15344 13.2kV & 1.2357 & 1.2488 & 1.0702 & 1.0702 & 1.2098 & 1.2103 & 8.75 \\
+P4 153344 13.2kV & 0.7703 & 0.7784 & 0.6671 & 0.6671 & 0.7606 & 0.7608 & 9.22 \\
+P5 15344 13.2kV & 0.7643 & 0.7723 & 0.6619 & 0.6619 & 0.7548 & 0.7550 & 9.23 \\
+P6 15344 13.2kV & 0.3287 & 0.3322 & 0.2847 & 0.2847 & 0.3271 & 0.3271 & 9.67 \\
+PTO BOYACA 13.2kV & 8.1210 & 8.1643 & 7.0330 & 7.0330 & 6.7698 & 6.7756 & 1.84 \\
+PTO BOYACA 34.5kV & 2.0094 & 2.0205 & 1.7402 & 1.7402 & 1.7798 & 1.7809 & 7.98 \\
+PTO BOYACA HV 115 & 6.0020 & 6.0070 & 5.1979 & 5.1979 & 2.6221 & 2.6238 & 3.99 \\
+Puerto Boyaca 800V & --- & 14.1641 & --- & 11.6476 & --- & 13.2201 & -4.16 \\
+\end{longtable}
+\vspace{-0.5em}
+{\small\itshape Corrientes en kA. El margen se calcula contra la capacidad de corte de 10\,kA declarada por el OR. La barra de baja tensi\'on del proyecto no se rige por ese criterio: ver Secci\'on 8.4 del informe.}
+
+
+\newpage\section{Diagramas de falla}
+
+La rutina export\'o \textbf{93 diagramas}, uno por cada combinaci\'on de caso, barra fallada y tipo de falla, disponibles en \texttt{resultados/graficos\_red\_corto/}. Se reproducen los de las barras m\'as representativas.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{falla_PTO_BOYACA_13_2kV_Trifasico.pdf}
+\caption{Barra de mayor nivel de falla de la subestaci\'on --- falla trifasico en PTO BOYACA 13.2kV.}
+\label{fig:falla-PTO_BOYACA_13_2kV_Trifasico}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{falla_P1_15344_13_2kV_Trifasico.pdf}
+\caption{Punto de conexi\'on del proyecto --- falla trifasico en P1 15344 13.2kV.}
+\label{fig:falla-P1_15344_13_2kV_Trifasico}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{falla_Puerto_Boyaca_800V_Trifasico.pdf}
+\caption{Barra de baja tensi\'on del centro de transformaci\'on --- falla trifasico en Puerto Boyaca 800V.}
+\label{fig:falla-Puerto_Boyaca_800V_Trifasico}
+\end{figure}
+
+\newpage\section{Resultados num\'ericos}
+
+\subsection{Corriente de falla por barra}
+
+Corriente de cortocircuito inicial sim\'etrica y potencia de cortocircuito.
+
+\small
+\begin{longtable}{llllrr}
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss kA} & \textbf{Skss MVA} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss kA} & \textbf{Skss MVA} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+P1 15302 13.2kV & CasoBase & P1 15302 13.2kV & Trifasico & 4.2595 & 97385.6017 \\
+P1 15302 13.2kV & CasoBase & P1 15302 13.2kV & Bifasico & 3.6888 & 28112.8017 \\
+P1 15302 13.2kV & CasoBase & P1 15302 13.2kV & Monofasico & 3.8910 & 29653.0451 \\
+P1 15303 13.2kV & CasoBase & P1 15303 13.2kV & Trifasico & 5.2082 & 119075.8744 \\
+P1 15303 13.2kV & CasoBase & P1 15303 13.2kV & Bifasico & 4.5104 & 34374.2442 \\
+P1 15303 13.2kV & CasoBase & P1 15303 13.2kV & Monofasico & 4.6448 & 35397.8939 \\
+P1 15340 13.2kV & CasoBase & P1 15340 13.2kV & Trifasico & 6.6782 & 152684.2340 \\
+P1 15340 13.2kV & CasoBase & P1 15340 13.2kV & Bifasico & 5.7835 & 44076.1421 \\
+P1 15340 13.2kV & CasoBase & P1 15340 13.2kV & Monofasico & 5.7428 & 43765.9748 \\
+P1 15344 13.2kV & CasoBase & P1 15344 13.2kV & Trifasico & 4.1120 & 94013.8766 \\
+P1 15344 13.2kV & CasoBase & P1 15344 13.2kV & Bifasico & 3.5611 & 27139.4692 \\
+P1 15344 13.2kV & CasoBase & P1 15344 13.2kV & Monofasico & 3.7702 & 28732.4762 \\
+P2 15302 13.2kV & CasoBase & P2 15302 13.2kV & Trifasico & 1.5263 & 34895.9878 \\
+P2 15302 13.2kV & CasoBase & P2 15302 13.2kV & Bifasico & 1.3218 & 10073.6040 \\
+P2 15302 13.2kV & CasoBase & P2 15302 13.2kV & Monofasico & 1.4857 & 11322.2544 \\
+P2 15303 13.2kV & CasoBase & P2 15303 13.2kV & Trifasico & 2.1800 & 49842.1757 \\
+P2 15303 13.2kV & CasoBase & P2 15303 13.2kV & Bifasico & 1.8880 & 14388.1968 \\
+P2 15303 13.2kV & CasoBase & P2 15303 13.2kV & Monofasico & 2.0928 & 15949.2565 \\
+P2 15340 13.2kV & CasoBase & P2 15340 13.2kV & Trifasico & 3.8909 & 88958.0131 \\
+P2 15340 13.2kV & CasoBase & P2 15340 13.2kV & Bifasico & 3.3696 & 25679.9665 \\
+P2 15340 13.2kV & CasoBase & P2 15340 13.2kV & Monofasico & 3.5871 & 27337.6818 \\
+P2 15344 13.2kV & CasoBase & P2 15344 13.2kV & Trifasico & 1.8559 & 42432.6983 \\
+P2 15344 13.2kV & CasoBase & P2 15344 13.2kV & Bifasico & 1.6073 & 12249.2656 \\
+P2 15344 13.2kV & CasoBase & P2 15344 13.2kV & Monofasico & 1.7942 & 13673.7404 \\
+P3 15344 13.2kV & CasoBase & P3 15344 13.2kV & Trifasico & 1.2357 & 28252.7581 \\
+P3 15344 13.2kV & CasoBase & P3 15344 13.2kV & Bifasico & 1.0702 & 8155.8695 \\
+P3 15344 13.2kV & CasoBase & P3 15344 13.2kV & Monofasico & 1.2098 & 9219.8053 \\
+P4 153344 13.2kV & CasoBase & P4 153344 13.2kV & Trifasico & 0.7703 & 17610.6379 \\
+P4 153344 13.2kV & CasoBase & P4 153344 13.2kV & Bifasico & 0.6671 & 5083.7540 \\
+P4 153344 13.2kV & CasoBase & P4 153344 13.2kV & Monofasico & 0.7606 & 5796.9185 \\
+P5 15344 13.2kV & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 17474.0223 \\
+P5 15344 13.2kV & CasoBase & P5 15344 13.2kV & Bifasico & 0.6619 & 5044.3165 \\
+P5 15344 13.2kV & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 5752.5598 \\
+P6 15344 13.2kV & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 7515.4758 \\
+P6 15344 13.2kV & CasoBase & P6 15344 13.2kV & Bifasico & 0.2847 & 2169.5314 \\
+P6 15344 13.2kV & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 2492.4822 \\
+PTO BOYACA 13.2kV & CasoBase & PTO BOYACA 13.2kV & Trifasico & 8.1210 & 185670.5922 \\
+PTO BOYACA 13.2kV & CasoBase & PTO BOYACA 13.2kV & Bifasico & 7.0330 & 53598.4837 \\
+PTO BOYACA 13.2kV & CasoBase & PTO BOYACA 13.2kV & Monofasico & 6.7698 & 51592.4329 \\
+PTO BOYACA 34.5kV & CasoBase & PTO BOYACA 34.5kV & Trifasico & 2.0094 & 120075.2893 \\
+PTO BOYACA 34.5kV & CasoBase & PTO BOYACA 34.5kV & Bifasico & 1.7402 & 34662.7505 \\
+PTO BOYACA 34.5kV & CasoBase & PTO BOYACA 34.5kV & Monofasico & 1.7798 & 35451.6793 \\
+PTO BOYACA HV 115 & CasoBase & PTO BOYACA HV 115 & Trifasico & 6.0020 & 1195513.4955 \\
+PTO BOYACA HV 115 & CasoBase & PTO BOYACA HV 115 & Bifasico & 5.1979 & 345115.0198 \\
+PTO BOYACA HV 115 & CasoBase & PTO BOYACA HV 115 & Monofasico & 2.6221 & 174095.4534 \\
+P1 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 4.2822 & 97904.9578 \\
+P1 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 3.6888 & 28112.8025 \\
+P1 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 3.8927 & 29666.4740 \\
+P1 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 5.2360 & 119710.9044 \\
+P1 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 4.5105 & 34374.2458 \\
+P1 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 4.6474 & 35417.8901 \\
+P1 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 6.7138 & 153498.4970 \\
+P1 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 5.7835 & 44076.1461 \\
+P1 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 5.7470 & 43797.8746 \\
+P1 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 4.1553 & 95004.0555 \\
+P1 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 3.5611 & 27139.4801 \\
+P1 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 3.7743 & 28764.2364 \\
+P2 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 1.5344 & 35082.0877 \\
+P2 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 1.3218 & 10073.6040 \\
+P2 15302 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 1.4859 & 11323.8297 \\
+P2 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 2.1917 & 50107.9834 \\
+P2 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 1.8880 & 14388.1968 \\
+P2 15303 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 2.0932 & 15952.5990 \\
+P2 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 3.9117 & 89432.4251 \\
+P2 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 3.3696 & 25679.9670 \\
+P2 15340 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 3.5886 & 27348.8602 \\
+P2 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 1.8755 & 42879.6106 \\
+P2 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 1.6073 & 12249.2677 \\
+P2 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 1.7952 & 13681.4825 \\
+P3 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 1.2488 & 28550.3236 \\
+P3 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 1.0702 & 8155.8704 \\
+P3 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 1.2103 & 9223.3519 \\
+P4 153344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7784 & 17796.1178 \\
+P4 153344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0.6671 & 5083.7543 \\
+P4 153344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.7608 & 5798.3235 \\
+P5 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7723 & 17658.0632 \\
+P5 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0.6619 & 5044.3168 \\
+P5 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7550 & 5753.9434 \\
+P6 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 7594.6308 \\
+P6 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0.2847 & 2169.5315 \\
+P6 15344 13.2kV & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 2492.7417 \\
+PTO BOYACA 13.2kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 8.1643 & 186660.7711 \\
+PTO BOYACA 13.2kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 7.0330 & 53598.4917 \\
+PTO BOYACA 13.2kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 6.7756 & 51637.1295 \\
+PTO BOYACA 34.5kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 2.0205 & 120737.5784 \\
+PTO BOYACA 34.5kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 1.7402 & 34662.7541 \\
+PTO BOYACA 34.5kV & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 1.7809 & 35473.6804 \\
+PTO BOYACA HV 115 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 6.0070 & 1196503.6744 \\
+PTO BOYACA HV 115 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 5.1979 & 345115.0284 \\
+PTO BOYACA HV 115 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 2.6238 & 174208.7945 \\
+Puerto Boyaca 800V & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 14.1641 & 19626.3376 \\
+Puerto Boyaca 800V & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 11.6476 & 5379.8040 \\
+Puerto Boyaca 800V & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 13.2201 & 6106.1066 \\
+\end{longtable}
+
+\subsection{Aporte de las l\'ineas}
+
+Contribuci\'on de cada l\'inea a la corriente de falla.
+
+\small
+\begin{longtable}{llllrr}
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss bus1 kA} & \textbf{Ikss bus2 kA} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss bus1 kA} & \textbf{Ikss bus2 kA} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+AL 0.087km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15302 13.2kV & Trifasico & 4.2595 & 4.2595 \\
+AL 1.32km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15302 13.2kV & Monofasico & 3.8910 & 3.8910 \\
+AL 1.32km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15303 13.2kV & Trifasico & 5.2082 & 5.2082 \\
+Al 1.09km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15303 13.2kV & Monofasico & 4.6448 & 4.6448 \\
+Al 1.09km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15340 13.2kV & Trifasico & 6.6782 & 6.6782 \\
+Al 0.82km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15340 13.2kV & Monofasico & 5.7428 & 5.7428 \\
+Al 0.82km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15344 13.2kV & Trifasico & 4.1120 & 4.1120 \\
+AL 2.34km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P1 15344 13.2kV & Monofasico & 3.7702 & 3.7702 \\
+AL 2.34km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15302 13.2kV & Trifasico & 1.5263 & 1.5263 \\
+AL 1.32km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15302 13.2kV & Trifasico & 1.5263 & 1.5263 \\
+AL 0.087km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15302 13.2kV & Monofasico & 1.4857 & 1.4857 \\
+AL 1.32km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15302 13.2kV & Monofasico & 1.4857 & 1.4857 \\
+AL 0.087km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15303 13.2kV & Trifasico & 2.1800 & 2.1800 \\
+Al 1.09km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15303 13.2kV & Trifasico & 2.1800 & 2.1800 \\
+Al 3.73km & CasoBase & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15303 13.2kV & Monofasico & 2.0928 & 2.0928 \\
+Al 1.09km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15303 13.2kV & Monofasico & 2.0928 & 2.0928 \\
+Al 3.73km & CasoBase & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15340 13.2kV & Trifasico & 3.8909 & 3.8909 \\
+Al 0.82km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15340 13.2kV & Trifasico & 3.8909 & 3.8909 \\
+Al 14.833km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15340 13.2kV & Monofasico & 3.5871 & 3.5871 \\
+Al 0.82km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15340 13.2kV & Monofasico & 3.5871 & 3.5871 \\
+Al 14.833km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15344 13.2kV & Trifasico & 1.8559 & 1.8559 \\
+AL 2.34km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15344 13.2kV & Trifasico & 1.8559 & 1.8559 \\
+AL 4.2km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P2 15344 13.2kV & Monofasico & 1.7942 & 1.7942 \\
+AL 2.34km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & P2 15344 13.2kV & Monofasico & 1.7942 & 1.7942 \\
+AL 4.2km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P3 15344 13.2kV & Trifasico & 1.2357 & 1.2357 \\
+AL 2.34km & CasoBase & P3 15344 13.2kV & Trifasico & 1.2357 & 1.2357 \\
+AL 2.64km & CasoBase & P3 15344 13.2kV & Trifasico & 1.2357 & 1.2357 \\
+AL 4.2km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P3 15344 13.2kV & Monofasico & 1.2098 & 1.2098 \\
+AL 2.34km & CasoBase & P3 15344 13.2kV & Monofasico & 1.2098 & 1.2098 \\
+AL 2.64km & CasoBase & P3 15344 13.2kV & Monofasico & 1.2098 & 1.2098 \\
+AL 4.2km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P4 153344 13.2kV & Trifasico & 0.7703 & 0.7703 \\
+AL 2.34km & CasoBase & P4 153344 13.2kV & Trifasico & 0.7703 & 0.7703 \\
+AL 2.64km & CasoBase & P4 153344 13.2kV & Trifasico & 0.7703 & 0.7703 \\
+AL 4.2km & CasoBase & P4 153344 13.2kV & Trifasico & 0.7703 & 0.7703 \\
+Al 0.36km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P4 153344 13.2kV & Monofasico & 0.7606 & 0.7606 \\
+AL 2.34km & CasoBase & P4 153344 13.2kV & Monofasico & 0.7606 & 0.7606 \\
+AL 2.64km & CasoBase & P4 153344 13.2kV & Monofasico & 0.7606 & 0.7606 \\
+AL 4.2km & CasoBase & P4 153344 13.2kV & Monofasico & 0.7606 & 0.7606 \\
+Al 0.36km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 0.7643 \\
+AL 1.24km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 0.7643 \\
+AL 2.34km & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 0.7643 \\
+AL 2.64km & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 0.7643 \\
+AL 4.2km & CasoBase & P5 15344 13.2kV & Trifasico & 0.7643 & 0.7643 \\
+Al 0.36km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 0.7548 \\
+AL 1.24km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 0.7548 \\
+AL 2.34km & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 0.7548 \\
+AL 2.64km & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 0.7548 \\
+AL 4.2km & CasoBase & P5 15344 13.2kV & Monofasico & 0.7548 & 0.7548 \\
+Al 0.36km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+AL 1.24km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+AL 2.34km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+AL 2.64km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+AL 4.2km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+Al 0.36km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P6 15344 13.2kV & Trifasico & 0.3287 & 0.3287 \\
+Al 2.44km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 1.24km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 2.34km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 2.64km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 4.2km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+Al 0.36km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+Al 2.44km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 0.087km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 1.24km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 1.32km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 2.34km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 2.64km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 4.2km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 0.36km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 0.82km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 1.09km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 14.833km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 2.44km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 3.73km & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 4.2822 & 4.2822 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 3.8927 & 3.8927 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0.0025 & 0.0025 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 5.2360 & 5.2360 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0.0030 & 0.0030 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 4.6474 & 4.6474 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 6.7138 & 6.7138 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0.0037 & 0.0037 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 5.7470 & 5.7470 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 4.1120 & 4.1120 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 3.7709 & 3.7709 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 1.5344 & 1.5344 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 1.5344 & 1.5344 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 1.4859 & 1.4859 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0.0010 & 0.0010 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 1.4859 & 1.4859 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 2.1917 & 2.1917 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 2.1917 & 2.1917 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0.0014 & 0.0014 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 2.0932 & 2.0932 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 2.0932 & 2.0932 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 3.9117 & 3.9117 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 3.9117 & 3.9117 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0.0023 & 0.0023 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 3.5886 & 3.5886 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 3.5886 & 3.5886 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 1.8336 & 1.8336 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 1.8755 & 1.8755 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 1.7936 & 1.7936 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 1.7952 & 1.7952 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 1.2076 & 1.2076 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 1.2488 & 1.2488 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 1.2488 & 1.2488 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 1.2091 & 1.2091 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 1.2103 & 1.2103 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 1.2103 & 1.2103 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7381 & 0.7381 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7784 & 0.7784 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7784 & 0.7784 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7784 & 0.7784 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.7601 & 0.7601 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.7608 & 0.7608 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.7608 & 0.7608 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.7608 & 0.7608 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7723 & 0.7723 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7320 & 0.7320 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7723 & 0.7723 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7723 & 0.7723 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7723 & 0.7723 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7550 & 0.7550 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7543 & 0.7543 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7550 & 0.7550 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7550 & 0.7550 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.7550 & 0.7550 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 0.3322 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.2930 & 0.2930 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 0.3322 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 0.3322 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 0.3322 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.3322 & 0.3322 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3268 & 0.3268 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.3271 & 0.3271 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0.0044 & 0.0044 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0.0031 & 0.0031 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0.0433 & 0.0433 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0.0070 & 0.0070 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0.8151 & 0.8151 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0.0000 & 0.0000 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 & 0 \\
+AL 0.087km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+AL 1.24km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+AL 1.32km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0.7982 & 0.7982 \\
+AL 2.34km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+AL 2.64km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+AL 4.2km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 0.36km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 0.82km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 1.09km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 14.833km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 2.44km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+Al 3.73km & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 & 0 \\
+\end{longtable}
+
+\subsection{Aporte de los generadores}
+
+Contribuci\'on de cada generador. Los generadores existentes GD1 y GD2 est\'an configurados sin aporte a cortocircuito.
+
+\small
+\begin{longtable}{llllr}
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss kA} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nombre} & \textbf{Caso} & \textbf{Barra Falla} & \textbf{Tipo Falla} & \textbf{Ikss kA} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+GD P4 15344 & CasoBase & P1 15302 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15302 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15302 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15302 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15302 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P1 15302 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P1 15303 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15303 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15303 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15303 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15303 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P1 15303 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P1 15340 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15340 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15340 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15340 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15340 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P1 15340 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P1 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P1 15344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P1 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P1 15344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P2 15302 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15302 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15302 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15302 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15302 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P2 15302 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P2 15303 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15303 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15303 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15303 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15303 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P2 15303 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P2 15340 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15340 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15340 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15340 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15340 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P2 15340 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P2 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P2 15344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P2 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P2 15344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P3 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P3 15344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P3 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P3 15344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P3 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P3 15344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P4 153344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P4 153344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P4 153344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P4 153344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P4 153344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P4 153344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P5 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P5 15344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P5 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P5 15344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P5 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P5 15344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & P6 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & P6 15344 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & P6 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & P6 15344 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & P6 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & P6 15344 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 13.2kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 13.2kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 13.2kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 34.5kV & Trifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 34.5kV & Bifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA 34.5kV & Monofasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA HV 115 & Trifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA HV 115 & Bifasico & 0 \\
+GD P4 15344 & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 \\
+GD P5 15344 & CasoBase & PTO BOYACA HV 115 & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15302 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15303 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15340 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P1 15344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15302 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15303 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15340 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P2 15344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P3 15344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P4 153344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P5 15344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & P6 15344 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 13.2kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA 34.5kV & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & PTO BOYACA HV 115 & Monofasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0.7146 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Trifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Bifasico & 0 \\
+Distributed Small PV Plants & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0.0000 \\
+GD P4 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 \\
+GD P5 15344 & GD\_Puerto\_Boyaca\_990kW & Puerto Boyaca 800V & Monofasico & 0 \\
+\end{longtable}
+
+\end{document}

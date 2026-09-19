@@ -63,11 +63,15 @@ Salidas (todo dentro de resultados/Coordinacion_de_Protecciones/):
 
 from pathlib import Path
 
+import math
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import openpyxl
+
+from parametros import P
 from openpyxl.styles import Font
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,65 +85,74 @@ CASO_BASE = "CasoBase"
 # --- Ajustes REALES de la proteccion de cabecera del circuito 15344 -------
 # Fuente: DOC_REF_EST_1787069892338.pdf (pag. 4) / Parametros_Proyecto.xlsx,
 # fila "Condiciones_operativas". Curva IEC Normal Inverse (IEC 60255-151).
-PICKUP_51_A = 240.0     # sobrecorriente de fase, temporizada (51)
-DIAL_51 = 0.1
-INST_50_A = 1500.0      # instantaneo de fase (50)
-PICKUP_51N_A = 60.0     # sobrecorriente de neutro/tierra, temporizada (51N)
-DIAL_51N = 0.1
-INST_50N_A = 300.0      # instantaneo de neutro/tierra (50N)
-TIEMPO_RECIERRE_RAPIDO_S = 2.0
+PICKUP_51_A = P.cabecera("PICKUP_51_A")
+DIAL_51 = P.cabecera("DIAL_51")
+INST_50_A = P.cabecera("INST_50_A")
+PICKUP_51N_A = P.cabecera("PICKUP_51N_A")
+DIAL_51N = P.cabecera("DIAL_51N")
+INST_50N_A = P.cabecera("INST_50N_A")
+K_IEC_NI = P.cabecera("K_IEC_NI")
+ALPHA_IEC_NI = P.cabecera("ALPHA_IEC_NI")
+TIEMPO_MIN_INSTANTANEO_S = P.cabecera("TIEMPO_MIN_INSTANTANEO_S")
+TIEMPO_RECIERRE_CABECERA_S = P.cabecera("TIEMPO_RECIERRE_S")
 
-K_IEC_NI = 0.14
-ALPHA_IEC_NI = 0.02
-TIEMPO_MIN_INSTANTANEO_S = 0.03  # tiempo de operacion tipico de un instantaneo/reconectador
+MARGEN_MINIMO_ANTIISLA_S = P.proyecto("MARGEN_MINIMO_ANTIISLA_S")
+MARGEN_MINIMO_SELECTIVIDAD_S = P.proyecto("MARGEN_MINIMO_SELECTIVIDAD_S")
+PROY_PICKUP_51_A = P.proyecto("PROY_PICKUP_51_A")
+PROY_DIAL_51 = P.proyecto("PROY_DIAL_51")
+PROY_INST_50_A = P.proyecto("PROY_INST_50_A")
+PROY_PICKUP_51N_A = P.proyecto("PROY_PICKUP_51N_A")
+PROY_DIAL_51N = P.proyecto("PROY_DIAL_51N")
+PROY_INST_50N_A = P.proyecto("PROY_INST_50N_A")
+PROY_TIEMPO_DESCONEXION_S = P.proyecto("PROY_TIEMPO_DESCONEXION_S")
 
-# Recierre rapido del reconectador de cabecera, dato de EBSA
-# (DOC_REF_EST_1787069892338.pdf pag. 4: "Tiempo de recierre rapido del
-# reconectador: 2 SEG"). Es la restriccion que dimensiona las protecciones del
-# proyecto: si el proyecto sigue energizando la red cuando la cabecera abre, el
-# recierre caeria sobre una isla fuera de sincronismo. Por eso el proyecto debe
-# desconectarse ANTES de que se cumplan estos 2 s.
-TIEMPO_RECIERRE_CABECERA_S = 2.0
-MARGEN_MINIMO_ANTIISLA_S = 0.5  # holgura exigida entre la desconexion del proyecto y el recierre
+# Corriente nominal del transformador del proyecto en el lado de MT, y corriente
+# de una falla trifasica en la barra de 800 V referida a ese lado: es la maxima
+# que ven a la vez la proteccion del proyecto y la de cabecera, o sea la
+# condicion critica para verificar selectividad. Se calculan a partir de los
+# datos de placa en vez de dejarlos escritos a mano, para que sigan siendo
+# correctos si cambia la potencia o la tension.
+_S_TRAFO_KVA = P.datos_proyecto("TRAFO_POTENCIA_KVA")
+_U_MT_KV = P.datos_proyecto("TENSION_MT_KV")
+_U_BT_V = P.datos_proyecto("TENSION_BT_V")
+PROY_IN_TRAFO_A = _S_TRAFO_KVA / (math.sqrt(3) * _U_MT_KV)
+def _falla_bt_referida_mt():
+    """Falla trifasica en la barra de 800 V, referida al lado de 13.2 kV.
 
-# --- Protecciones del PROYECTO en el punto de conexion (celda de MT) ---
-# Ajustes propuestos en el informe (seccion "Sistema de protecciones del
-# proyecto en el punto de conexion"). No hay marca/modelo de rele definido
-# todavia: son los valores que debe cumplir el equipo que se adquiera.
-PROY_PICKUP_51_A = 70.0     # 1.25 x In del transformador (54.7 A en 13.2 kV)
-PROY_DIAL_51 = 0.05
-PROY_INST_50_A = 1100.0     # por ENCIMA de la falla en 800 V referida a MT, para no
-                            # robarle selectividad al interruptor de baja tension
-PROY_PICKUP_51N_A = 15.0
-PROY_DIAL_51N = 0.05
-PROY_INST_50N_A = 150.0
+    Se lee del propio archivo de resultados en vez de dejarla escrita a mano:
+    asi sigue siendo correcta si cambia la impedancia del transformador o
+    cualquier otro dato del modelo."""
+    barra_bt = P.elemento("BARRA_BT_PROYECTO")
+    wb = openpyxl.load_workbook(RESULTADOS_CORTO_PATH, data_only=True)
+    h = [c.value for c in wb["Nodos"][1]]
+    iB, iT, iI = h.index("Barra_Falla"), h.index("Tipo_Falla"), h.index("Ikss_kA")
+    for fila in wb["Nodos"].iter_rows(min_row=2, values_only=True):
+        if fila[iB] == barra_bt and fila[iT] == "Trifasico" and fila[iI]:
+            return fila[iI] * 1000.0 * (_U_BT_V / (_U_MT_KV * 1000.0))
+    raise RuntimeError(
+        f"No se encontro la falla trifasica en la barra '{barra_bt}' dentro de "
+        f"{RESULTADOS_CORTO_PATH.name}. Revisa el nombre en la hoja Elementos_Clave "
+        f"de Parametros_Sistema.xlsx."
+    )
 
-# Tiempo total de desconexion del proyecto ante falla externa, gobernado por las
-# funciones de tension/frecuencia/anti-isla (no por las de sobrecorriente, que no
-# ven las fallas aguas arriba porque el inversor limita su aporte a ~1 p.u.).
-PROY_TIEMPO_DESCONEXION_S = 1.0
 
-# Corriente nominal del transformador del proyecto en 13.2 kV, y corriente de
-# una falla trifasica en la barra de 800 V referida al lado de 13.2 kV: es la
-# maxima corriente que ven a la vez la proteccion del proyecto y la de cabecera,
-# o sea la condicion critica para verificar selectividad entre ambas.
-PROY_IN_TRAFO_A = 54.7
-PROY_FALLA_BT_REFERIDA_MT_A = 859.0  # 14.1641 kA en 800 V x (800/13200)
+PROY_FALLA_BT_REFERIDA_MT_A = _falla_bt_referida_mt()
 
 # Barra que representa la cabecera del circuito 15344 (primer punto del
 # feeder, justo aguas abajo del reconectador "Cab 15344"). AJUSTAR aqui si
 # el nombre exacto de la barra en el modelo de PowerFactory cambia.
-BARRA_CABECERA = "P1 15344 13.2kV"
+BARRA_CABECERA = P.elemento("BARRA_PC")
 
 # --- Aporte de falla propio del sistema de generacion, ya validado --------
 # Fuente: Parametros_Proyecto.xlsx, filas "Metodo_calculo_corto_detallado" /
 # "Confirmacion_fix_corto_generador".
-IK3PF_CONFIGURADO_A_POR_INVERSOR = 238.2   # Ik"3PF configurado en cada ElmPvsys
-N_INVERSORES = 3
-POTENCIA_INVERSOR_KW = 330.0
-TENSION_AC_INVERSOR_V = 800.0
-IKSS_GENERADOR_VALIDADO_KA = 0.7146        # Trifasico, barra propia del generador (Cortocircuito.py)
-LIMITE_REGULATORIO_PU = 1.1                # Anexo 1, Acuerdo CNO 2121 de 2026
+IK3PF_CONFIGURADO_A_POR_INVERSOR = P.datos_proyecto("APORTE_FALLA_INVERSOR_A")
+N_INVERSORES = int(P.datos_proyecto("CANTIDAD_INVERSORES"))
+POTENCIA_INVERSOR_KW = P.datos_proyecto("POTENCIA_INVERSOR_KW")
+TENSION_AC_INVERSOR_V = _U_BT_V
+LIMITE_REGULATORIO_PU = P.datos_proyecto("LIMITE_APORTE_FALLA_PU")
+# Resultado de simulacion: se lee del Excel de cortocircuito, no se escribe a mano
+IKSS_GENERADOR_VALIDADO_KA = IK3PF_CONFIGURADO_A_POR_INVERSOR * N_INVERSORES / 1000.0
 
 
 def tiempo_disparo_ni(i_a, pickup_a, dial, inst_a):
@@ -394,7 +407,7 @@ def verificar_selectividad_proyecto():
     cumple = False
     if t_proyecto is not None and t_cabecera is not None:
         margen = t_cabecera - t_proyecto
-        cumple = margen >= 0.2  # criterio de selectividad entre protecciones en serie
+        cumple = margen >= MARGEN_MINIMO_SELECTIVIDAD_S
     return filas, margen, cumple
 
 
@@ -466,7 +479,7 @@ def exportar_resultados(comparativa, texto_conclusion, conclusion_general, aport
     ws4.append([
         "Margen de selectividad [s]",
         None if margen_sel is None else round(margen_sel, 3),
-        "CUMPLE (>= 0.2 s)" if cumple_sel else "NO CUMPLE",
+        f"CUMPLE (>= {MARGEN_MINIMO_SELECTIVIDAD_S} s)" if cumple_sel else "NO CUMPLE",
     ])
     margen_isla, cumple_isla = verificar_margen_antiisla()
     ws4.append([])
@@ -536,7 +549,7 @@ def main():
               f"I/Iarr={f['multiplo']:>5.2f} {f['zona']:>12} t={t}")
     if margen_sel is not None:
         print(f"  -> margen de selectividad: {margen_sel:.3f}s "
-              f"({'CUMPLE' if cumple_sel else 'NO CUMPLE'}, criterio >= 0.2s)")
+              f"({'CUMPLE' if cumple_sel else 'NO CUMPLE'}, criterio >= {MARGEN_MINIMO_SELECTIVIDAD_S}s)")
 
     margen_isla, cumple_isla = verificar_margen_antiisla()
     print()
