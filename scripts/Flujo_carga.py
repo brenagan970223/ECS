@@ -26,8 +26,8 @@ Pasos:
   3. Por cada ANO de ESCENARIOS_ANIO (bucle mas externo): se fija el factor
      de crecimiento de demanda de ese ano. La red, los casos y las horas
      son los mismos en todos los anos - lo unico que cambia es ese factor.
-  4. Por cada CASO DE RED (CasoBase + cada Network Variation que haga match
-     entre el Excel y PowerFactory): se ACTIVA el caso primero, y RECIEN
+  4. Por cada CASO DE RED (CargaPura + CasoBase + cada Network Variation que
+     haga match entre el Excel y PowerFactory): se ACTIVA el caso primero, y RECIEN
      DESPUES se listan los elementos calc-relevantes de la red (nodos,
      lineas, transformadores 2 y 3 devanados, generadores, cargas). Esto
      es clave: una Network Variation puede agregar o quitar equipos, asi
@@ -35,19 +35,26 @@ Pasos:
      sola vez al principio (si se hiciera antes de activar, los equipos
      que solo existen dentro de una Network Variation nunca apareceran
      en los resultados de ese caso).
-  5. Por cada HORA dentro de ese caso: actualiza plini/qlini de cada carga
-     con su valor del Excel MULTIPLICADO por el factor del ano en curso
-     (el escalado de demanda es automatico, no hay que editar el Excel de
-     insumos ni cambiar constantes entre corridas), y ejecuta ComLdf.
+  5. Por cada HORA dentro de ese caso:
+     a) actualiza plini/qlini de cada carga con su valor del Excel
+        MULTIPLICADO por el factor del ano en curso (el escalado de demanda
+        es automatico, no hay que editar el Excel de insumos ni cambiar
+        constantes entre corridas);
+     b) despacha cada generador a su potencia nominal MULTIPLICADA por el
+        factor solar de esa hora (campana de Gauss centrada al mediodia, ver
+        HORA_PICO_SOLAR / SIGMA_GAUSS_SOLAR), o a cero si el caso es el de
+        carga pura;
+     c) ejecuta ComLdf.
   6. Cada vez que se ejecuta ComLdf (converja o no), exporta el diagrama
      unifilar activo a SVG en resultados/graficos_red/, con nombre
      <Proyecto>_<timestamp>_Anio<AAAA>_Hora<N>_<Caso>.svg.
   7. Si converge, registra por cada elemento sus variables tecnicas
      (segun el tipo); si no converge, esa combinacion ano/caso/hora queda
      marcada y se continua con la siguiente.
-  8. Al terminar cada caso, devuelve plini/qlini de las cargas a su valor
-     original, para no dejar el modelo con la demanda proyectada del
-     ultimo ano simulado como si fuera su estado normal.
+  8. Al terminar cada caso, devuelve plini/qlini de las cargas y pgini de los
+     generadores a su valor original, para no dejar el modelo con la demanda
+     proyectada ni el despacho de la ultima hora simulada como si fueran su
+     estado normal.
   9. Al terminar todo, desactiva todas las Network Variations (vuelve al
      caso base) para dejar PowerFactory en un estado limpio.
  10. Exporta a Resultados_Flujo_Carga.xlsx (un solo archivo con todos los
@@ -98,6 +105,7 @@ nominal de la barra (uknom).
 """
 
 import datetime as dt
+import math
 import re
 import sys
 from pathlib import Path
@@ -140,6 +148,42 @@ ESCENARIOS_ANIO = [
     (2026, 1.0),      # ano t   - demanda tal cual viene en Parametros_Demanda.xlsx
     (2028, 1.0104),   # ano t+x - demanda del ano t incrementada 1.04%
 ]
+
+# --- Despacho horario de los generadores (perfil solar) ---------------------
+#
+# POR QUE EXISTE ESTO: hasta la corrida del 2026-09-19 el script solo escalaba
+# la demanda y NUNCA tocaba el despacho de los generadores, de modo que el
+# proyecto inyectaba sus 990 kW planos en las 12 horas y los generadores
+# existentes sus 330 kW, tambien planos. Eso hacia imposible construir los tres
+# escenarios que exige el numeral 8.2 de CREG 174: no existia un escenario de
+# carga pura (GD1/GD2 generaban siempre) y los escenarios 8.2.2 y 8.2.3 no se
+# diferenciaban entre si por generacion, solo por hora de demanda.
+#
+# Ahora el despacho de CADA generador sigue una campana de Gauss centrada en el
+# mediodia solar, aplicada de forma PROPORCIONAL a su potencia propia: el
+# generador del proyecto se escala sobre sus 990 kW y cada generador existente
+# sobre sus 330 kW, de modo que todos comparten la misma forma de curva pero
+# cada uno en su escala.
+#
+#     factor(hora) = exp( -(hora - HORA_PICO)^2 / (2 * SIGMA^2) )
+#
+# Con HORA_PICO=12 y SIGMA=2.5 el perfil queda (fraccion de la potencia nominal):
+#     h6=0.056  h7=0.135  h8=0.278  h9=0.487  h10=0.726  h11=0.923
+#     h12=1.000 h13=0.923 h14=0.726 h15=0.487 h16=0.278  h17=0.135
+# es decir: muy poca generacion al amanecer, maximo al mediodia, y simetrico
+# hacia la tarde. Es una representacion suave y reproducible del recurso solar,
+# suficiente para un estudio de conexion, donde lo que importa es la FORMA de
+# la curva frente a la curva de demanda y no el detalle meteorologico.
+HORA_PICO_SOLAR = 12
+SIGMA_GAUSS_SOLAR = 2.5
+
+# Caso adicional de CARGA PURA (escenario 8.2.1 de CREG 174): misma red que el
+# caso base pero con TODOS los generadores en cero. Es el unico modo de obtener
+# el escenario de demanda sin generacion que exige la norma, porque los
+# generadores existentes GD1/GD2 forman parte de la red base y de otro modo
+# estarian despachando siempre.
+CASO_CARGA_PURA = "CargaPura"
+INCLUIR_CASO_CARGA_PURA = True
 
 
 def sanitizar_nombre_archivo(texto):
@@ -307,6 +351,57 @@ def nombre_nodo(cubicle):
         return None
 
 
+def factor_solar(hora):
+    """Fraccion de la potencia nominal que despacha un generador solar a una
+    hora dada, segun la campana de Gauss descrita arriba. Devuelve 1.0 en la
+    hora pico y valores decrecientes de forma simetrica hacia el amanecer y el
+    atardecer."""
+    return math.exp(-((hora - HORA_PICO_SOLAR) ** 2) / (2.0 * SIGMA_GAUSS_SOLAR ** 2))
+
+
+def perfil_solar(horas):
+    """{hora: factor} para todas las horas simuladas."""
+    return {hora: factor_solar(hora) for hora in horas}
+
+
+def guardar_despacho_original(generadores):
+    """Fotografia de pgini antes de que el barrido lo modifique.
+
+    El pgini que trae el modelo es la referencia de potencia nominal de cada
+    generador (990 kW el del proyecto, 330 kW cada uno de los existentes): el
+    perfil solar se aplica como fraccion de ESE valor, por eso hay que leerlo
+    antes de tocarlo y restaurarlo despues."""
+    return {gen.GetFullName(): safe_get(gen, "pgini") for gen in generadores}
+
+
+def aplicar_despacho(app, generadores, despacho_original, factor_hora, escala_generacion):
+    """Despacha cada generador a (su potencia nominal) x (factor de la hora).
+
+    escala_generacion permite anular toda la generacion (0.0) para construir el
+    escenario de carga pura, sin tener que sacar los generadores de servicio ni
+    modificar la topologia."""
+    for gen in generadores:
+        nominal = despacho_original.get(gen.GetFullName())
+        if nominal is None:
+            continue
+        try:
+            gen.SetAttribute("pgini", nominal * factor_hora * escala_generacion)
+        except Exception as exc:
+            app.PrintError(f"No se pudo despachar el generador '{gen.loc_name}': {exc}")
+
+
+def restaurar_despacho_original(app, generadores, despacho_original):
+    """Devuelve pgini a su valor de partida al terminar el caso."""
+    for gen in generadores:
+        nominal = despacho_original.get(gen.GetFullName())
+        if nominal is None:
+            continue
+        try:
+            gen.SetAttribute("pgini", nominal)
+        except Exception as exc:
+            app.PrintError(f"No se pudo restaurar el despacho de '{gen.loc_name}': {exc}")
+
+
 def guardar_demanda_original(cargas):
     """Fotografia de plini/qlini de las cargas antes de que el barrido las
     modifique, para poder devolverlas a su valor de partida al terminar."""
@@ -365,6 +460,12 @@ def main():
         + ", ".join(f"{anio} (factor {factor})" for anio, factor in ESCENARIOS_ANIO)
     )
     horas = sorted(demanda.keys())
+    perfil = perfil_solar(horas)
+    app.PrintInfo(
+        "Perfil de despacho solar (campana de Gauss, pico a la hora "
+        f"{HORA_PICO_SOLAR}, sigma {SIGMA_GAUSS_SOLAR}): "
+        + ", ".join(f"h{h}={perfil[h]:.3f}" for h in horas)
+    )
     nombres_carga = sorted({carga for valores in demanda.values() for carga in valores})
 
     # --- lectura y emparejamiento de Network Variations (caso base siempre se corre) ---
@@ -379,8 +480,14 @@ def main():
 
     # se usa el loc_name exacto de PowerFactory (no el texto de busqueda del Excel)
     # para que el nombre del caso en tablas y en el SVG sea el nombre real de la Network Variation
-    casos = [(CASO_BASE, None)] + [(obj.loc_name, obj) for obj in mapeo_variations.values()]
-    app.PrintInfo(f"Casos de red a simular: {[nombre for nombre, _ in casos]}")
+    # Cada caso lleva su factor de generacion: 0.0 anula toda la generacion
+    # (escenario de carga pura, 8.2.1) y 1.0 la despacha segun el perfil solar.
+    casos = []
+    if INCLUIR_CASO_CARGA_PURA:
+        casos.append((CASO_CARGA_PURA, None, 0.0))
+    casos.append((CASO_BASE, None, 1.0))
+    casos += [(obj.loc_name, obj, 1.0) for obj in mapeo_variations.values()]
+    app.PrintInfo(f"Casos de red a simular: {[nombre for nombre, _, _ in casos]}")
 
     # medida de seguridad: se desactivan todas las Network Variations que hagan
     # match ANTES de arrancar el barrido, sin importar el estado en que haya
@@ -409,10 +516,10 @@ def main():
             f"({(factor_demanda - 1) * 100:+.2f}% sobre Parametros_Demanda.xlsx)"
         )
 
-        for nombre_caso, variacion_obj in casos:
+        for nombre_caso, variacion_obj, escala_generacion in casos:
             ejecutar_barrido_caso(
                 app, ldf, nombre_proyecto, anio, factor_demanda, nombre_caso, variacion_obj, variations_pf,
-                demanda, horas, nombres_carga,
+                demanda, horas, nombres_carga, perfil, escala_generacion,
                 filas_resumen, filas_nodos, filas_lineas, filas_trafos_2w, filas_trafos_3w,
                 filas_generadores, cargas_faltantes_todas,
             )
@@ -429,7 +536,7 @@ def main():
 
 def ejecutar_barrido_caso(
     app, ldf, nombre_proyecto, anio, factor_demanda, nombre_caso, variacion_obj, variations_pf,
-    demanda, horas, nombres_carga,
+    demanda, horas, nombres_carga, perfil, escala_generacion,
     filas_resumen, filas_nodos, filas_lineas, filas_trafos_2w, filas_trafos_3w,
     filas_generadores, cargas_faltantes_todas,
 ):
@@ -490,6 +597,13 @@ def ejecutar_barrido_caso(
     # se fotografian plini/qlini ANTES de tocarlos, para devolver las cargas a
     # su valor de partida al terminar este caso (ver restaurar_demanda_original)
     demanda_original = guardar_demanda_original(mapeo_cargas.values())
+    despacho_original = guardar_despacho_original(generadores)
+    app.PrintInfo(
+        f"[{anio} | {nombre_caso}] despacho de generacion: "
+        + ("ANULADO (escenario de carga pura)" if escala_generacion == 0.0
+           else f"perfil solar sobre la potencia propia de cada generador "
+                f"({ {g.loc_name: round(despacho_original.get(g.GetFullName()) or 0, 4) for g in generadores} })")
+    )
 
     for hora in horas:
         for nombre, (p_mw, q_mw) in demanda[hora].items():
@@ -502,9 +616,17 @@ def ejecutar_barrido_caso(
             carga_obj.SetAttribute("plini", p_mw * factor_demanda)
             carga_obj.SetAttribute("qlini", q_mw * factor_demanda)
 
+        # el despacho de cada generador sigue el perfil solar, proporcional a su
+        # propia potencia nominal (ver factor_solar / aplicar_despacho)
+        factor_hora = perfil.get(hora, 0.0)
+        aplicar_despacho(app, generadores, despacho_original, factor_hora, escala_generacion)
+
         err = ldf.Execute()
         convergio = err == 0
-        filas_resumen.append([anio, nombre_caso, hora, convergio, factor_demanda])
+        filas_resumen.append([
+            anio, nombre_caso, hora, convergio, factor_demanda,
+            factor_hora * escala_generacion,
+        ])
 
         exportar_diagrama_red(app, nombre_proyecto, anio, nombre_caso, hora)
 
@@ -567,6 +689,7 @@ def ejecutar_barrido_caso(
             ])
 
     restaurar_demanda_original(app, mapeo_cargas.values(), demanda_original)
+    restaurar_despacho_original(app, generadores, despacho_original)
 
 
 def guardar_workbook_seguro(app, wb, ruta):
@@ -608,7 +731,11 @@ def exportar_resultados(
     # Todas las hojas llevan la columna Anio como primera clave: los resultados
     # de los dos anos del horizonte conviven en este mismo archivo y se separan
     # filtrando por ella (autofiltro ya activado en cada hoja).
-    hoja("Resumen", ["Anio", "Caso", "Hora", "Convergio", "Factor_Demanda"], filas_resumen)
+    hoja(
+        "Resumen",
+        ["Anio", "Caso", "Hora", "Convergio", "Factor_Demanda", "Factor_Generacion"],
+        filas_resumen,
+    )
     hoja(
         "Escenarios_Anio",
         ["Anio", "Factor_Demanda_aplicado", "Variacion_%_vs_ano_base", "Descripcion"],

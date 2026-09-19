@@ -468,6 +468,62 @@ Escenario & Hora & Demanda total (MW) & Generaci\'on (kWh) \\
 \end{table}
 
 \textbf{Criterio adoptado (confirmado con el interesado):} la demanda m\'inima (hora 7) y la generaci\'on m\'axima (hora 11) no coincid\'ian en la misma hora en los datos disponibles; se opt\'o por usar la \textbf{hora 11} (m\'axima generaci\'on solar real) con su demanda real asociada, por ser el caso m\'as cr\'itico de inyecci\'on de potencia (mayor riesgo de sobretensi\'on / flujo inverso en el punto de conexi\'on) -- criterio m\'as conservador para el interesado en conectarse.
+\subsubsection*{Modelaci\'on del despacho de generaci\'on}
+\label{sec:despacho}
+
+Los tres escenarios que exige el numeral 8.2 se diferencian entre s\'i por la
+\emph{relaci\'on} entre demanda y generaci\'on, de modo que no basta con variar la
+demanda hora a hora: la generaci\'on tambi\'en debe seguir su propio perfil. Un
+despacho constante hace indistinguibles los escenarios 8.2.2 y 8.2.3, e impide
+construir el escenario de carga pura.
+
+\textbf{Perfil adoptado.} El despacho de cada generador fotovoltaico sigue una
+\textbf{campana de Gauss centrada en el mediod\'ia solar}, aplicada de forma
+\textbf{proporcional a la potencia nominal de cada m\'aquina}:
+\[
+f(h) = \exp\!\left(-\frac{(h - h_{pico})^2}{2\sigma^2}\right), \qquad h_{pico} = 12,\quad \sigma = 2.5
+\]
+
+\begin{table}[H]
+\centering
+\caption{Factor de despacho por hora y potencia resultante de cada generador.}
+\begin{tabular}{lcccccccccccc}
+\toprule
+Hora & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 \\
+\midrule
+Factor $f(h)$ & 0.056 & 0.135 & 0.278 & 0.487 & 0.726 & 0.923 & \textbf{1.000} & 0.923 & 0.726 & 0.487 & 0.278 & 0.135 \\
+Proyecto (kW) & 56 & 134 & 275 & 482 & 719 & 914 & \textbf{990} & 914 & 719 & 482 & 275 & 134 \\
+GD1 / GD2 (kW c/u) & 19 & 45 & 92 & 161 & 240 & 305 & \textbf{330} & 305 & 240 & 161 & 92 & 45 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Por qu\'e este perfil.} Reproduce el comportamiento f\'isico del recurso
+solar --- generaci\'on nula al amanecer, crecimiento progresivo, m\'aximo al
+mediod\'ia y decaimiento sim\'etrico hacia el atardecer --- mediante una funci\'on
+continua, reproducible y de un solo par\'ametro de forma ($\sigma$). Para un
+estudio de conexi\'on esto es suficiente y preferible a una serie meteorol\'ogica
+concreta: lo que determina las condiciones cr\'iticas de la red es la \emph{forma}
+de la curva de generaci\'on frente a la de demanda, no el detalle de un d\'ia
+particular. Al aplicarse de forma proporcional, todos los generadores comparten la
+misma forma pero cada uno en su propia escala, que es el comportamiento esperable
+de plantas fotovoltaicas en una misma zona geogr\'afica.
+
+\textbf{Escenario de carga pura (8.2.1).} Se simula como un \textbf{caso de red
+adicional} (\texttt{CargaPura}) id\'entico al caso base pero con \emph{todos} los
+generadores en cero. Este caso es imprescindible porque los generadores GD1 y GD2
+forman parte de la red base del circuito: sin anularlos expl\'icitamente no existe
+ninguna condici\'on simulada de demanda sin generaci\'on, y el escenario que exige
+la norma quedar\'ia sin representar. La implementaci\'on no altera la topolog\'ia
+(no saca equipos de servicio), \'unicamente fija su despacho en cero.
+
+El barrido completo pasa as\'i de 2 a \textbf{3 casos de red} por a\~no
+(\texttt{CargaPura}, \texttt{CasoBase} y el caso con el proyecto), es decir
+$2\ \text{a\~nos} \times 3\ \text{casos} \times 12\ \text{horas} = 72$ escenarios
+simulados. La columna \texttt{Factor\_Generacion} de la hoja \texttt{Resumen} de
+\texttt{Resultados\_Flujo\_Carga.xlsx} deja registrado el factor aplicado en cada
+combinaci\'on, de modo que el despacho usado es auditable escenario por escenario.
+
 \textbf{Criterio adoptado sobre la demanda relevante:} se considera relevante la \textbf{demanda agregada de las 8 cargas} del \'area de influencia, y no \'unicamente la del circuito 15344. La raz\'on es el mecanismo f\'isico que se est\'a evaluando: la condici\'on de isla no se produce al desconectarse una carga concreta, sino cuando se \textbf{desenergiza la cabecera del circuito} y queda aislado todo el conjunto de red que el proyecto podr\'ia llegar a alimentar. El balance que determina si una isla puede sostenerse debe hacerse, por tanto, contra la demanda del conjunto que quedar\'ia separado, que es la que EBSA entrega como demanda equivalente del \'area. Este criterio es adem\'as el m\'as conservador: cuanto mayor sea la demanda considerada, mayor es el desbalance frente a los 990\,kW del proyecto y m\'as r\'apida la detecci\'on de la condici\'on de isla.
 
 \subsection{Perfiles de tensi\'on y nivel de carga (flujo de carga)}
