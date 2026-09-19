@@ -284,6 +284,211 @@ def diagnosticar_atributos(app, obj, atributos, etiqueta):
     app.PrintInfo(f"  [diagnostico {etiqueta}] {obj.loc_name}: " + " | ".join(partes))
 
 
+# ---------------------------------------------------------------------------
+# Diagnostico de los datos de secuencia que realmente tiene el modelo
+# ---------------------------------------------------------------------------
+# Datos de referencia del OR para el equivalente de red de 115 kV
+# (DOC_REF_EST_1787069892338.pdf pag. 4, "CORRIENTE DE CORTOCIRCUITO EN
+# BARRAJE 115kV DE LA SE PUERTO BOYACA").
+IK3_REF_115KV_KA = 6.002
+IK1_REF_115KV_KA = 2.622
+XR_REF_115KV = 10.0
+
+# Atributos que se inspeccionan por tipo de objeto. Se prueban todos y se
+# reporta cuales existen en esta version de PowerFactory y cuales no: asi el
+# diagnostico sirve aunque algun nombre de atributo cambie entre versiones.
+ATRIBUTOS_XNET = [
+    ("ikss", "Ikss max [kA] - cortocircuito TRIFASICO", "directa"),
+    ("snss", "Skss max [MVA] - potencia de cortocircuito", "directa"),
+    ("rntxn", "R/X max - relacion resistencia/reactancia", "directa"),
+    ("z2tz1", "Z2/Z1 max - secuencia inversa", "inversa"),
+    ("x0tx1", "X0/X1 max", "CERO"),
+    ("r0tx0", "R0/X0 max", "CERO"),
+]
+ATRIBUTOS_TYPLNE = [
+    ("rline", "R' [Ohm/km]", "directa"),
+    ("xline", "X' [Ohm/km]", "directa"),
+    ("rline0", "R0' [Ohm/km]", "CERO"),
+    ("xline0", "X0' [Ohm/km]", "CERO"),
+]
+ATRIBUTOS_TYPTR2 = [
+    ("strn", "Potencia nominal [MVA]", "datos"),
+    ("tr2cn_h", "Grupo de conexion lado HV", "datos"),
+    ("tr2cn_l", "Grupo de conexion lado LV", "datos"),
+    ("uktr", "uk [%] - tension de cortocircuito", "directa"),
+    ("uk0tr", "uk0 [%] - tension de cortocircuito", "CERO"),
+    ("ur0tr", "uR0 [%] - componente resistiva", "CERO"),
+]
+ATRIBUTOS_TYPTR3 = [
+    ("strn3_h", "Potencia nominal HV [MVA]", "datos"),
+    ("tr3cn_h", "Grupo de conexion HV", "datos"),
+    ("tr3cn_m", "Grupo de conexion MV", "datos"),
+    ("tr3cn_l", "Grupo de conexion LV", "datos"),
+    ("uktr3_h", "uk HV-MV [%]", "directa"),
+    ("uktr3_m", "uk MV-LV [%]", "directa"),
+    ("uktr3_l", "uk LV-HV [%]", "directa"),
+    ("uk0tr3_h", "uk0 HV-MV [%]", "CERO"),
+    ("uk0tr3_m", "uk0 MV-LV [%]", "CERO"),
+    ("uk0tr3_l", "uk0 LV-HV [%]", "CERO"),
+]
+
+
+def relacion_z0z1_requerida(ik3_ka, ik1_ka):
+    """Z0/Z1 que hace falta para reproducir una falla monofasica dada.
+
+    De las formulas IEC 60909 para falla trifasica y monofasica a tierra,
+    asumiendo Z2 = Z1 (valido en redes de distribucion):
+
+        Ik3 = c*Un / (raiz(3)*Z1)
+        Ik1 = raiz(3)*c*Un / |2*Z1 + Z0|
+
+    dividiendo una entre otra y despejando:
+
+        Z0/Z1 = 3/(Ik1/Ik3) - 2
+    """
+    if not ik3_ka or not ik1_ka:
+        return None
+    return 3.0 / (ik1_ka / ik3_ka) - 2.0
+
+
+def _volcar_atributos(app, obj, atributos, sangria="      "):
+    """Imprime los atributos que existen, agrupados por secuencia, y devuelve
+    un dict {nombre: valor} con los que si trajeron valor."""
+    encontrados = {}
+    for attr, descripcion, grupo in atributos:
+        valor = safe_get(obj, attr)
+        if valor is None:
+            app.PrintInfo(f"{sangria}[{grupo:>7}] {attr:<10} = (no existe en esta version)   {descripcion}")
+        else:
+            encontrados[attr] = valor
+            texto = f"{valor:.6g}" if isinstance(valor, (int, float)) else str(valor)
+            app.PrintInfo(f"{sangria}[{grupo:>7}] {attr:<10} = {texto:<22} {descripcion}")
+    return encontrados
+
+
+def diagnosticar_datos_secuencia(app):
+    """Recorre el modelo ANTES de calcular y reporta que datos de secuencia
+    tiene puesto cada elemento, en que objeto estan y que hay que cambiar.
+
+    Existe porque la corrida anterior mostro Ik1 exactamente igual a Ik3 en
+    las 15 barras de media tension, senal de que la secuencia cero no esta
+    parametrizada; este diagnostico dice DONDE esta el dato que falta, con el
+    nombre y la ruta exacta del objeto, para no tener que buscarlo a mano."""
+    app.PrintInfo("")
+    app.PrintInfo("=" * 78)
+    app.PrintInfo("DIAGNOSTICO: datos de secuencia que esta usando el modelo")
+    app.PrintInfo("=" * 78)
+
+    acciones = []
+
+    # ---- 1. Equivalente de red (ElmXnet) ----
+    app.PrintInfo("")
+    app.PrintInfo("[1] EQUIVALENTE DE RED (clase ElmXnet)")
+    app.PrintInfo("-" * 78)
+    xnets = list(app.GetCalcRelevantObjects("*.ElmXnet", 1))
+    if not xnets:
+        app.PrintError("    No se encontro ningun ElmXnet calc-relevante.")
+    for xnet in xnets:
+        barra = nombre_nodo(safe_get(xnet, "bus1")) or "?"
+        app.PrintInfo(f"    Objeto : {xnet.loc_name}")
+        app.PrintInfo(f"    Ruta   : {xnet.GetFullName()}")
+        app.PrintInfo(f"    Barra  : {barra}")
+        valores = _volcar_atributos(app, xnet, ATRIBUTOS_XNET)
+
+        z0z1_req = relacion_z0z1_requerida(IK3_REF_115KV_KA, IK1_REF_115KV_KA)
+        x0tx1_actual = valores.get("x0tx1")
+        app.PrintInfo("")
+        app.PrintInfo(f"      Referencia del OR: Ik3 = {IK3_REF_115KV_KA} kA, Ik1 = {IK1_REF_115KV_KA} kA, X/R = {XR_REF_115KV}")
+        app.PrintInfo(f"      -> X0/X1 necesario para reproducir esa Ik1: {z0z1_req:.3f}")
+        if x0tx1_actual is None:
+            app.PrintError("      -> No se pudo leer 'x0tx1'. Buscar en la pestana de cortocircuito "
+                           "el campo X0/X1 (o el de corriente monofasica) y ajustarlo a mano.")
+        elif abs(x0tx1_actual - 1.0) < 1e-6:
+            acciones.append(
+                f"ElmXnet '{xnet.loc_name}': poner x0tx1 = {z0z1_req:.3f} (hoy vale {x0tx1_actual:.3f}, "
+                f"el valor por defecto, que hace Ik1 = Ik3) y r0tx0 = {1.0 / XR_REF_115KV:.3f}"
+            )
+            app.PrintError(f"      -> ACCION: x0tx1 vale {x0tx1_actual:.3f} (por defecto). "
+                           f"Cambiarlo a {z0z1_req:.3f}. Con 1.0, la falla monofasica sale igual a la trifasica.")
+        elif abs(x0tx1_actual - z0z1_req) > 0.05:
+            acciones.append(
+                f"ElmXnet '{xnet.loc_name}': x0tx1 vale {x0tx1_actual:.3f} pero la referencia del OR pide {z0z1_req:.3f}"
+            )
+            app.PrintError(f"      -> ACCION: x0tx1 vale {x0tx1_actual:.3f}, se esperaba {z0z1_req:.3f}.")
+        else:
+            app.PrintInfo(f"      -> OK: x0tx1 = {x0tx1_actual:.3f} coincide con la referencia del OR.")
+
+    # ---- 2. Transformadores ----
+    for clase, atributos, etiqueta in (
+        ("*.ElmTr2", ATRIBUTOS_TYPTR2, "TRANSFORMADORES DE 2 DEVANADOS"),
+        ("*.ElmTr3", ATRIBUTOS_TYPTR3, "TRANSFORMADORES DE 3 DEVANADOS"),
+    ):
+        app.PrintInfo("")
+        app.PrintInfo(f"[2] {etiqueta} (los datos viven en el TIPO, no en el elemento)")
+        app.PrintInfo("-" * 78)
+        for tr in app.GetCalcRelevantObjects(clase, 1):
+            tipo = safe_get(tr, "typ_id")
+            app.PrintInfo(f"    Elemento: {tr.loc_name}")
+            if tipo is None:
+                app.PrintError("      Sin tipo asignado (typ_id vacio): no se pueden leer sus impedancias.")
+                continue
+            app.PrintInfo(f"    Tipo    : {tipo.loc_name}")
+            app.PrintInfo(f"    Ruta    : {tipo.GetFullName()}")
+            valores = _volcar_atributos(app, tipo, atributos)
+            # aviso si la secuencia cero esta igual a la directa o vacia
+            for attr_dir, attr_cero in (("uktr", "uk0tr"), ("uktr3_h", "uk0tr3_h")):
+                if attr_dir in valores and attr_cero in valores:
+                    if not valores[attr_cero]:
+                        acciones.append(f"Tipo '{tipo.loc_name}': {attr_cero} esta en cero o vacio")
+                        app.PrintError(f"      -> ACCION: {attr_cero} = 0. Revisar la secuencia cero de este tipo.")
+                    elif abs(valores[attr_cero] - valores[attr_dir]) < 1e-9:
+                        app.PrintInfo(f"      -> Nota: {attr_cero} = {attr_dir}. Correcto SOLO si el OR lo declara asi "
+                                      f"(para T9, EBSA reporta secuencia 0 igual a la directa).")
+
+    # ---- 3. Lineas ----
+    app.PrintInfo("")
+    app.PrintInfo("[3] LINEAS (los datos viven en el TIPO de conductor)")
+    app.PrintInfo("-" * 78)
+    tipos_vistos = {}
+    for ln in app.GetCalcRelevantObjects("*.ElmLne", 1):
+        tipo = safe_get(ln, "typ_id")
+        if tipo is None:
+            app.PrintError(f"    Linea '{ln.loc_name}': sin tipo asignado.")
+            continue
+        tipos_vistos.setdefault(tipo.GetFullName(), (tipo, []))[1].append(ln.loc_name)
+    for _, (tipo, lineas) in tipos_vistos.items():
+        app.PrintInfo(f"    Tipo  : {tipo.loc_name}   (usado por {len(lineas)} lineas: {', '.join(lineas[:4])}{'...' if len(lineas) > 4 else ''})")
+        app.PrintInfo(f"    Ruta  : {tipo.GetFullName()}")
+        valores = _volcar_atributos(app, tipo, ATRIBUTOS_TYPLNE)
+        r1, x1 = valores.get("rline"), valores.get("xline")
+        r0, x0 = valores.get("rline0"), valores.get("xline0")
+        if r1 and x1:
+            if not r0 or not x0:
+                acciones.append(f"Tipo de linea '{tipo.loc_name}': secuencia cero vacia o en cero (rline0/xline0)")
+                app.PrintError("      -> ACCION: la secuencia cero esta vacia. Valores tipicos de linea aerea de "
+                               "distribucion: R0' = 2 a 3 x R', X0' = 3 x X'. EBSA no los entrega, asi que "
+                               "habria que asumirlos y declararlo en el informe.")
+            else:
+                app.PrintInfo(f"      -> Relaciones actuales: R0'/R' = {r0 / r1:.2f}, X0'/X' = {x0 / x1:.2f} "
+                              f"(tipico en linea aerea: 2-3 y ~3)")
+                if abs(r0 / r1 - 1.0) < 1e-6 and abs(x0 / x1 - 1.0) < 1e-6:
+                    acciones.append(f"Tipo de linea '{tipo.loc_name}': secuencia cero igual a la directa (valores por defecto)")
+                    app.PrintError("      -> ACCION: secuencia cero identica a la directa, son los valores por "
+                                   "defecto. En una linea aerea real X0' es del orden de 3 veces X'.")
+
+    # ---- resumen ----
+    app.PrintInfo("")
+    app.PrintInfo("=" * 78)
+    if acciones:
+        app.PrintInfo(f"RESUMEN: {len(acciones)} punto(s) a corregir antes de confiar en las fallas monofasicas")
+        for i, accion in enumerate(acciones, 1):
+            app.PrintError(f"  {i}. {accion}")
+    else:
+        app.PrintInfo("RESUMEN: no se detectaron datos de secuencia cero sin parametrizar.")
+    app.PrintInfo("=" * 78)
+    app.PrintInfo("")
+
+
 def nombre_nodo(cubicle):
     try:
         return cubicle.cterm.loc_name
@@ -354,6 +559,10 @@ def main():
 
     app.PrintInfo("Asegurando estado inicial: desactivando Network Variations antes de iniciar el barrido...")
     activar_caso_red(app, CASO_BASE, None, variations_pf)
+
+    # Se diagnostica con el CasoBase ya activo (recien desactivadas las Network
+    # Variations), que es el estado en que la red base esta completa.
+    diagnosticar_datos_secuencia(app)
 
     shc = app.GetFromStudyCase("ComShc")
 
