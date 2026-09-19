@@ -33,18 +33,31 @@ EBSA reporta (`DOC_REF_EST_1787069892338.pdf`, "Generadores Distribuidos Conecta
 Prueba mínima: conecta a PowerFactory (`GetApplication()`), confirma que hay un proyecto activo. Úsalo cuando algo no conecta, para descartar problemas de PowerFactory antes de correr el script grande.
 
 ### `Flujo_carga.py`
-El script principal. Por cada **caso de red** (`CasoBase` + cada Network Variation que definas en `inputs/Network_Variations.xlsx`) y por cada **hora** (las que traiga `inputs/Parametros_Demanda.xlsx`):
+El script principal. Por cada **año del horizonte** (año t y año t+x, ver abajo), por cada **caso de red** (`CasoBase` + cada Network Variation que definas en `inputs/Network_Variations.xlsx`) y por cada **hora** (las que traiga `inputs/Parametros_Demanda.xlsx`):
 
 1. Activa ese caso de red (activa la Network Variation correspondiente, o ninguna para `CasoBase`).
 2. **Recién después de activar el caso**, relee los elementos de la red (nodos, líneas, transformadores, generadores, cargas) — no antes. Esto es a propósito: una Network Variation puede agregar o quitar equipos, así que la lista de equipos "calc-relevantes" depende de qué caso esté activo en ese momento.
-3. Actualiza `plini`/`qlini` (P/Q) de cada carga según la demanda de esa hora.
+3. Actualiza `plini`/`qlini` (P/Q) de cada carga según la demanda de esa hora, **multiplicada por el factor de crecimiento del año que se esté simulando**.
 4. Ejecuta el flujo de carga (`ComLdf`).
 5. Exporta el diagrama unifilar activo a SVG (`resultados/graficos_red/`), converja o no.
 6. Si converge, registra tensiones, corrientes, cargabilidad y pérdidas de cada elemento.
 
-Al terminar, deja todas las Network Variations desactivadas (vuelve a `CasoBase`) y guarda todo en `resultados/Resultados_Flujo_Carga_<año>.xlsx`.
+Al terminar cada caso devuelve `plini`/`qlini` a su valor original (así el modelo no queda con la demanda proyectada del último año como si fuera su estado normal), al final desactiva todas las Network Variations (vuelve a `CasoBase`), y guarda todo en `resultados/Resultados_Flujo_Carga.xlsx`.
 
-**Escenario año t vs. año t+x**: la constante `ESCALA_DEMANDA` al inicio del script multiplica toda la demanda de `Parametros_Demanda.xlsx` (que representa el año t=2026) — déjala en `1.0` para correr el año t, o cámbiala a `1.0104` para el año t+x=2028 (incremento del 1.04% que pidió EBSA para esta solicitud). El nombre del archivo de resultados incluye el año usado, para no mezclar corridas. El cortocircuito (`Cortocircuito.py`) no necesita esto — con el método IEC 60909/VDE 0102 usado, el resultado no depende del nivel de demanda.
+**Escenario año t vs. año t+x — automático, en una sola corrida.** No hay que editar constantes ni relanzar el script: la lista `ESCENARIOS_ANIO` al inicio del archivo define los años y su factor de crecimiento de demanda, y el barrido los recorre todos seguidos, escalando por sí solo la demanda de cada carga del sistema.
+
+```python
+ESCENARIOS_ANIO = [
+    (2026, 1.0),      # año t   - demanda tal cual en Parametros_Demanda.xlsx
+    (2028, 1.0104),   # año t+x - demanda del año t incrementada 1.04%
+]
+```
+
+El factor es **acumulado respecto al año base**, no anual compuesto: `1.0104` es el incremento total del 1.04% que pidió EBSA para esta solicitud entre 2026 y 2028. Si el OR cambia el horizonte o la tasa, se edita solo esa lista — agregar o quitar filas `(año, factor)` basta para que el barrido corra esos años. El Excel de insumos nunca se toca: siempre representa el año base.
+
+Los resultados de todos los años quedan en **un solo archivo**, `resultados/Resultados_Flujo_Carga.xlsx`, diferenciados por la columna **`Anio`** que lleva cada hoja (con autofiltro activado). La hoja `Escenarios_Anio` deja registrado qué factor se aplicó a cada año, para que la trazabilidad del escalado quede en el mismo archivo de resultados.
+
+El cortocircuito (`Cortocircuito.py`) no necesita nada de esto — con el método IEC 60909/VDE 0102 usado, el resultado no depende del nivel de demanda, así que no se repite por año.
 
 **Corrección de unidades (2026-09-18)**: en este proyecto, las variables de resultado de `ComLdf` (`m:P:busX`, `m:Q:busX`, `m:I:busX`) vienen en **kW/kvar/A**, no en MW/Mvar/kA como es lo habitual en PowerFactory — el script ahora las convierte dividiendo entre 1000 (función `safe_get_mw`). Aparte, `m:U` en `ElmTerm` resultó ser tensión fase-neutro, no fase-fase; `U_kV` ahora se calcula como `m:u` (p.u., ya venía correcto) × `uknom` (tensión nominal). Antes de este fix, los resultados de `Flujo_carga.py` estaban mal por un factor de 1000 (P/Q/I) y de √3 (U_kV) — **no era un error del modelo en PowerFactory, era un error de interpretación de unidades en el script**. `Cortocircuito.py` nunca tuvo este problema: sus variables (`m:Ikss`, `m:Ikss:busX`) siempre vinieron en kA nativamente. Si corriste `Flujo_carga.py` antes de esta fecha, vuelve a correrlo — los resultados viejos en `resultados/Resultados_Flujo_Carga_*.xlsx` no son confiables.
 
@@ -76,12 +89,13 @@ Insumos de referencia del montaje original del circuito 15344 (barras, líneas, 
 
 ## Outputs (`resultados/`)
 
-### `Resultados_Flujo_Carga_<año>.xlsx`
-Una hoja por tipo de elemento, formato largo `Nombre | Caso | Hora | <variables>` (un archivo por año simulado — `2026` o `2028`, ver `ESCALA_DEMANDA`):
+### `Resultados_Flujo_Carga.xlsx`
+**Un solo archivo con todos los años del horizonte.** Una hoja por tipo de elemento, formato largo `Nombre | Anio | Caso | Hora | <variables>` — para separar años se filtra por la columna `Anio` (2026 / 2028), no por archivo:
 
 | Hoja | Variables |
 |---|---|
-| `Resumen` | `Caso, Hora, Convergio` |
+| `Resumen` | `Anio, Caso, Hora, Convergio, Factor_Demanda` |
+| `Escenarios_Anio` | `Anio, Factor_Demanda_aplicado, Variacion_%_vs_ano_base, Descripcion` — deja registrado en el propio archivo de resultados con qué factor se escaló cada año |
 | `Nodos` | `U_pu, U_kV, Angulo_deg` |
 | `Lineas` | `Nodo_I, Nodo_J, Cargabilidad_%, I_bus1_kA, I_bus2_kA, P_perdidas_MW, Q_perdidas_Mvar` |
 | `Transformadores_2Devanados` | `Cargabilidad_%, I_HV_kA, I_LV_kA, P_perdidas_MW, Q_perdidas_Mvar` |
@@ -89,12 +103,14 @@ Una hoja por tipo de elemento, formato largo `Nombre | Caso | Hora | <variables>
 | `Generadores` | `Barra` (nodo al que está conectado), `P_MW, Q_Mvar, Cargabilidad_%, I_kA` — todos los generadores (`ElmGenstat`/`ElmSym`/`ElmPvsys`) de cada caso, en una sola tabla larga |
 | `Generadores_Existentes` | mismos datos, filtrados solo a `Caso == CasoBase` (Network Variation del proyecto desactivada) — deberían aparecer únicamente las plantas que ya existen en el circuito (ej. GD1/GD2), no la del proyecto |
 | `Generadores_Con_Proyecto` | mismos datos, filtrados a `Caso != CasoBase` — las plantas existentes más el generador del proyecto |
-| `Cargas_Faltantes` / `Variations_Faltantes` | qué del Excel no se encontró en PowerFactory |
+| `Cargas_Faltantes` / `Variations_Faltantes` | qué del Excel no se encontró en PowerFactory (las cargas faltantes se reportan por año y caso) |
 
 Si el archivo está abierto en Excel al momento de guardar, el script no pierde los resultados: guarda una copia con timestamp y avisa que cierres el original.
 
+> Los archivos `Resultados_Flujo_Carga_2026.xlsx` y `Resultados_Flujo_Carga.xlsx` que existían antes son de corridas viejas (uno por año / anterior al fix de unidades). Quedan reemplazados por este archivo único en la primera corrida del script actualizado.
+
 ### `graficos_red/`
-Un SVG por cada combinación caso × hora simulada, nombre `<Proyecto>_<timestamp>_Hora<N>_<Caso>.svg` (o `..._NetworkVariation_<Nombre>.svg` cuando hay una variation activa).
+Un SVG por cada combinación año × caso × hora simulada, nombre `<Proyecto>_<timestamp>_Anio<AAAA>_Hora<N>_<Caso>.svg` (o `..._NetworkVariation_<Nombre>.svg` cuando hay una variation activa). El año va en el nombre porque la carpeta se limpia una sola vez al arrancar: sin él, los diagramas del segundo año se confundirían con los del primero.
 
 ### `Resultados_Cortocircuito.xlsx`
 Formato largo `Nombre | Caso | Barra_Falla | Tipo_Falla | <variables>`:
@@ -107,7 +123,7 @@ Formato largo `Nombre | Caso | Barra_Falla | Tipo_Falla | <variables>`:
 | `Transformadores_2Devanados` | `Ikss_HV_kA, Ikss_LV_kA` |
 | `Transformadores_3Devanados` | `Ikss_HV_kA, Ikss_MV_kA, Ikss_LV_kA` |
 | `Generadores` | `Barra` (nodo al que está conectado), `Ikss_kA` |
-| `Generadores_Existentes` / `Generadores_Con_Proyecto` | mismo desglose que en `Resultados_Flujo_Carga_<año>.xlsx`, filtrado por `Caso == CasoBase` / `Caso != CasoBase` |
+| `Generadores_Existentes` / `Generadores_Con_Proyecto` | mismo desglose que en `Resultados_Flujo_Carga.xlsx`, filtrado por `Caso == CasoBase` / `Caso != CasoBase` |
 | `Variations_Faltantes` | qué Network Variation del Excel no se encontró en PowerFactory |
 
 ### `graficos_red_corto/`
@@ -180,9 +196,9 @@ El aporte de falla propio del sistema de generación (`Ik"3PF=238.2A` por invers
 ## Flujo de trabajo típico
 
 **Flujo de carga:**
-1. Editar `inputs/Parametros_Demanda.xlsx` y/o `inputs/Network_Variations.xlsx` si cambia algo.
-2. Correr `Flujo_carga.py` dentro de PowerFactory.
-3. Revisar `resultados/Resultados_Flujo_Carga_<año>.xlsx` y `resultados/graficos_red/`.
+1. Editar `inputs/Parametros_Demanda.xlsx` (año base) y/o `inputs/Network_Variations.xlsx` si cambia algo. Si cambia el horizonte o la tasa de crecimiento, editar `ESCENARIOS_ANIO` en `Flujo_carga.py`.
+2. Correr `Flujo_carga.py` dentro de PowerFactory — **una sola vez**: corre los dos años seguidos, escalando la demanda por sí solo.
+3. Revisar `resultados/Resultados_Flujo_Carga.xlsx` (filtrar por la columna `Anio`) y `resultados/graficos_red/`.
 
 **Cortocircuito:**
 1. Editar `inputs/Network_Variations.xlsx` si aplica (el método de cálculo IEC 60909/VDE 0102 ya lo fuerza el script, no requiere configuración previa).
