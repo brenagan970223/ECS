@@ -1,0 +1,480 @@
+"""
+Analisis de cortocircuito en TODAS las barras del sistema, para cada CASO
+DE RED (CasoBase + Network Variations listadas en Network_Variations.xlsx)
+y para 3 TIPOS DE FALLA: trifasico, bifasico y monofasico (a tierra).
+
+Recicla la misma logica y estructura de Flujo_carga.py: mismo manejo de
+Network Variations (activar/desactivar, tolerante a las que no existan),
+misma relectura de elementos DESPUES de activar cada caso (una Network
+Variation puede agregar equipos nuevos), y resultados organizados por tipo
+de elemento en formato largo Nombre | Caso | Barra_Falla | Tipo_Falla |
+<variables>.
+
+A proposito NO reutiliza Parametros_Demanda.xlsx ni el barrido por hora:
+con el metodo de calculo usado aqui (IEC 60909 / VDE 0102 Part 0,
+ildfinit=False, ver configurar_shc), la corriente de cortocircuito se
+calcula con una fuente de tension equivalente y NO depende de plini/qlini
+de las cargas. Agregar la dimension Hora repetiria el mismo Ikss 12 veces
+por barra/caso/tipo de falla, sin aportar informacion nueva - decision
+confirmada con el usuario 2026-09-13.
+
+Motivacion (CREG 174 de 2021, numeral 8.4 "Calculo contribucion a la
+corriente de cortocircuito"): verificar que la conexion del generador no
+incremente la corriente de cortocircuito (Icc) en las subestaciones de la
+zona de influencia por encima de la capacidad de corte de los
+interruptores existentes, calculando la intensidad de fase maxima ante
+falla polifasica (trifasica/bifasica) o falla a tierra (monofasica) en
+cada barra.
+
+Modo asistido (igual que Flujo_carga.py): se corre desde dentro de
+PowerFactory. Se ejecuta manualmente UNA vez; a partir de ahi el barrido
+sobre todas las barras, tipos de falla y casos de red corre de manera
+desatendida (sin intervencion manual por combinacion).
+
+Pasos:
+  1. Conexion a PowerFactory (proyecto y caso de estudio ya activos). Se
+     borran los SVG de resultados/graficos_red_corto/ de corridas
+     anteriores.
+  2. Lectura y emparejamiento de Network Variations (caso base siempre se
+     corre; una Network Variation del Excel que no exista en PowerFactory
+     se excluye, avisa, y no detiene el barrido).
+  3. Por cada CASO DE RED: se activa el caso, y RECIEN DESPUES se listan
+     los elementos calc-relevantes (nodos, lineas, transformadores 2 y 3
+     devanados, generadores) - igual que en Flujo_carga.py, porque esa
+     lista cambia segun el caso activo.
+  4. Por cada BARRA del caso y por cada TIPO DE FALLA (3psc/2psc/spgf):
+     ejecuta ComShc con esa barra como punto de falla, exporta el
+     diagrama a SVG, y si el calculo es valido registra por cada elemento
+     sus variables tecnicas.
+  5. Al terminar, desactiva todas las Network Variations (vuelve al caso
+     base) y exporta a Resultados_Cortocircuito.xlsx.
+
+IMPORTANTE - transparencia sobre que esta verificado y que no:
+  - CONFIRMADO (documentacion/ejemplos reales de scripting DIgSILENT):
+    comando 'ComShc'; atributos shcobj (barra de falla), iopt_allbus=0
+    (falla en una barra especifica), iopt_shc con codigos '3psc'
+    (trifasico), '2psc' (bifasico), 'spgf' (monofasico a tierra);
+    resultado m:Ikss (corriente de cortocircuito simetrica inicial, kA)
+    y m:Skss (potencia de cortocircuito, MVA) leidos del ElmTerm fallado.
+  - METODO DE CALCULO: se fuerza iopt_mde = 0, que corresponde a
+    "VDE 0102 Part 0 / DIN EN 60909-0" (la adopcion europea/aleman de
+    IEC 60909 - en la practica el mismo metodo de calculo). Es el metodo
+    por defecto de esta instalacion de PowerFactory, confirmado con el
+    usuario. El script imprime el valor de iopt_mde al arrancar para que
+    quede visible en la Output Window en cada corrida.
+  - MEJOR ESFUERZO, NO VERIFICADO todavia en un proyecto real: los
+    nombres de atributo de corriente de aporte en lineas/transformadores/
+    generadores (m:Ikss:bus1, m:Ikss:bushv, etc.) se extrapolaron del
+    patron ':busX' que SI esta validado para flujo de carga en este mismo
+    proyecto (m:P:bus1, m:I:bus1). Si salen vacios o con nombre
+    incorrecto, avisa para ajustarlos - no detienen el barrido
+    (usan safe_get, igual que el resto del proyecto).
+  - Se exporta un SVG por CADA combinacion caso x barra fallada x tipo de
+    falla (uno por cada ComShc.Execute(), converja o no) - confirmado con
+    el usuario, a pesar de que son muchos archivos para un sistema con
+    varias barras. Se exporta DESPUES de calcular esa falla puntual (no
+    antes), para que el diagrama refleje el resultado de ESE calculo y
+    no un estado en blanco o de un calculo anterior.
+
+Variables registradas por tipo de elemento:
+  Nodos (ElmTerm):        Ikss_kA (m:Ikss), Skss_MVA (m:Skss) - SOLO de la
+                          barra realmente fallada en esa combinacion (una
+                          fila por Caso x Barra_Falla x Tipo_Falla, igual
+                          cantidad de filas que la hoja Resumen). No se
+                          registran las demas barras: el Ikss/Skss de una
+                          barra que NO es la fallada, durante el calculo
+                          de otra barra, no es su propio nivel de
+                          cortocircuito (para eso hay que fallarla a
+                          ella, y eso ya se hace en su propia iteracion) -
+                          incluirlas solo inflaba la hoja sin aportar
+                          informacion.
+  Lineas (ElmLne):        Nodo_I, Nodo_J, Ikss_bus1_kA, Ikss_bus2_kA
+  Transformadores 2 devanados (ElmTr2): Ikss_HV_kA, Ikss_LV_kA
+  Transformadores 3 devanados (ElmTr3): Ikss_HV_kA, Ikss_MV_kA, Ikss_LV_kA
+  Generadores (ElmGenstat / ElmSym / ElmPvsys): Barra (bus1, nombre de
+                          la barra a la que esta conectado), Ikss_kA
+"""
+
+import datetime as dt
+import re
+import sys
+from pathlib import Path
+
+try:
+    import powerfactory as pf
+except ImportError:
+    sys.path.append(r"C:\Program Files\DIgSILENT\PowerFactory 2024\Python\3.12")
+    import powerfactory as pf
+
+import openpyxl
+from openpyxl.styles import Font
+
+BASE_DIR = Path(r"C:\Users\USUARIO\Desktop\Puerto Boyaca\ECS")
+VARIATIONS_PATH = BASE_DIR / "inputs" / "Network_Variations.xlsx"
+VARIATIONS_SHEET = "Network_Variations"
+RESULTADOS_PATH = BASE_DIR / "resultados" / "Resultados_Cortocircuito.xlsx"
+GRAFICOS_DIR = BASE_DIR / "resultados" / "graficos_red_corto"
+CASO_BASE = "CasoBase"
+
+# tipo mostrado en tablas/nombres de archivo -> codigo iopt_shc de PowerFactory
+TIPOS_FALLA = [
+    ("Trifasico", "3psc"),
+    ("Bifasico", "2psc"),
+    ("Monofasico", "spgf"),
+]
+
+
+def sanitizar_nombre_archivo(texto):
+    return re.sub(r'[\\/:*?"<>|]', "_", str(texto))
+
+
+def exportar_diagrama_red(app, nombre_proyecto, nombre_caso, barra_falla, tipo_falla):
+    """Exporta el/los diagramas unifilares (SetDeskpage) activos a SVG, una
+    vez por cada combinacion caso x barra fallada x tipo de falla (una
+    imagen por cada calculo de ComShc). Ver docstring del modulo."""
+    try:
+        desktop = app.GetGraphicsBoard()
+        paginas = list(desktop.GetContents("*.SetDeskpage", 1)) if desktop is not None else []
+        if not paginas:
+            app.PrintError("No se encontro ningun diagrama de red (SetDeskpage) abierto para exportar a SVG.")
+            return
+
+        marca_tiempo = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        base = sanitizar_nombre_archivo(f"{nombre_proyecto}_{marca_tiempo}_{nombre_caso}_{barra_falla}_{tipo_falla}")
+
+        for pagina in paginas:
+            desktop.Show(pagina)
+            sufijo = f"_{sanitizar_nombre_archivo(pagina.loc_name)}" if len(paginas) > 1 else ""
+            ruta = GRAFICOS_DIR / f"{base}{sufijo}.svg"
+
+            com_wr = app.GetFromStudyCase("ComWr")
+            com_wr.SetAttribute("iopt_rd", "svg")
+            com_wr.SetAttribute("iopt_savas", 0)
+            com_wr.SetAttribute("f", str(ruta))
+            com_wr.Execute()
+    except Exception as exc:
+        app.PrintError(
+            f"No se pudo exportar el diagrama de red a SVG (caso {nombre_caso}, barra {barra_falla}, "
+            f"falla {tipo_falla}): {exc}"
+        )
+
+
+def limpiar_carpeta_graficos(app):
+    if not GRAFICOS_DIR.exists():
+        return
+    borrados = 0
+    for archivo in GRAFICOS_DIR.glob("*.svg"):
+        try:
+            archivo.unlink()
+            borrados += 1
+        except OSError as exc:
+            app.PrintError(f"No se pudo borrar el SVG anterior '{archivo.name}': {exc}")
+    app.PrintInfo(f"Limpieza de graficos_red_corto: {borrados} SVG de corridas anteriores borrados.")
+
+
+def emparejar_por_nombre(objetos, nombres, descripcion):
+    """Empareja nombres del Excel con objetos de PowerFactory por coincidencia
+    de substring en loc_name. Devuelve (mapeo, faltantes); un nombre ambiguo
+    (coincide con mas de un objeto) si detiene la ejecucion."""
+    mapeo = {}
+    faltantes = []
+    for nombre in nombres:
+        candidatos = [obj for obj in objetos if nombre in obj.loc_name]
+        if len(candidatos) == 1:
+            mapeo[nombre] = candidatos[0]
+        elif len(candidatos) == 0:
+            faltantes.append(nombre)
+        else:
+            raise RuntimeError(
+                f"Nombre de {descripcion} ambiguo '{nombre}': coincide con {[c.loc_name for c in candidatos]}"
+            )
+    return mapeo, faltantes
+
+
+def leer_nombres_columna(path, sheet_name):
+    if not path.exists():
+        return []
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb[sheet_name]
+    nombres = []
+    for (valor,) in ws.iter_rows(min_row=2, max_col=1, values_only=True):
+        if valor is not None and str(valor).strip():
+            nombres.append(str(valor).strip())
+    return nombres
+
+
+def listar_network_variations(app):
+    carpeta = app.GetProjectFolder("scheme")
+    if carpeta is None:
+        return []
+    return list(carpeta.GetContents("*.IntScheme", 1))
+
+
+def desactivar_todas_variations(variations_pf, activas):
+    for variacion in variations_pf:
+        if variacion in activas:
+            variacion.Deactivate()
+
+
+def activar_caso_red(app, nombre_caso, variacion_objetivo, variations_pf):
+    activas = list(app.GetActiveNetworkVariations())
+    desactivar_todas_variations(variations_pf, activas)
+    if variacion_objetivo is not None:
+        if variacion_objetivo.Activate():
+            raise RuntimeError(f"No se pudo activar la Network Variation '{nombre_caso}'.")
+
+
+def safe_get(obj, attr):
+    try:
+        return obj.GetAttribute(attr)
+    except Exception:
+        return None
+
+
+def nombre_nodo(cubicle):
+    try:
+        return cubicle.cterm.loc_name
+    except Exception:
+        return None
+
+
+def configurar_shc(shc, barra):
+    """Configuracion base de ComShc: falla en una barra especifica (no todas
+    las barras a la vez), impedancia de falla nula (falla franca, para
+    obtener la Icc maxima que pide CREG 174), asunciones de calculo "todo
+    incluido" (cargas, capacitancia de lineas, magnetizacion de
+    transformadores, shunts), y metodo de calculo IEC 60909 / VDE 0102
+    Part 0 (iopt_mde = 0) - ver nota en el docstring del modulo."""
+    shc.iopt_allbus = 0
+    shc.shcobj = barra
+    shc.iopt_mde = 0  # IEC 60909 / VDE 0102 Part 0 (DIN EN 60909-0)
+    shc.Rf = 0
+    shc.Xf = 0
+    shc.ildfinit = False
+    shc.cfac_full = 1
+    shc.ilngLoad = True
+    shc.ilngLneCap = True
+    shc.ilngTrfMag = True
+    shc.ilngShnt = True
+
+
+def main():
+    app = pf.GetApplication()
+    if app is None:
+        raise RuntimeError(
+            "CONEXION FALLIDA: GetApplication() devolvio None. "
+            "Si esto corre fuera de PowerFactory, cierra cualquier instancia grafica abierta."
+        )
+
+    project = app.GetActiveProject()
+    if project is None:
+        raise RuntimeError("No hay ningun proyecto activo. Abre el proyecto en PowerFactory antes de correr el script.")
+
+    study_case = app.GetActiveStudyCase()
+    if study_case is None:
+        raise RuntimeError("No hay ningun caso de estudio activo. Activa un Study Case antes de correr el script.")
+
+    nombre_proyecto = project.loc_name
+    GRAFICOS_DIR.mkdir(parents=True, exist_ok=True)
+    limpiar_carpeta_graficos(app)
+
+    app.PrintInfo("===================================")
+    app.PrintInfo(f"Proyecto activo: {project}")
+    app.PrintInfo(f"Caso de estudio activo: {study_case}")
+    app.PrintInfo(
+        "Metodo de calculo de cortocircuito: iopt_mde = 0 (IEC 60909 / VDE 0102 Part 0), "
+        "forzado por el script en cada ejecucion de ComShc."
+    )
+
+    # --- lectura y emparejamiento de Network Variations (caso base siempre se corre) ---
+    variations_pf = listar_network_variations(app)
+    nombres_variations = leer_nombres_columna(VARIATIONS_PATH, VARIATIONS_SHEET)
+    mapeo_variations, variations_faltantes = emparejar_por_nombre(variations_pf, nombres_variations, "Network Variation")
+    if variations_faltantes:
+        app.PrintError(
+            f"Network Variations del Excel que NO existen en PowerFactory (se excluyen, "
+            f"no detienen la ejecucion): {variations_faltantes}"
+        )
+
+    casos = [(CASO_BASE, None)] + [(obj.loc_name, obj) for obj in mapeo_variations.values()]
+    app.PrintInfo(f"Casos de red a simular: {[nombre for nombre, _ in casos]}")
+
+    app.PrintInfo("Asegurando estado inicial: desactivando Network Variations antes de iniciar el barrido...")
+    activar_caso_red(app, CASO_BASE, None, variations_pf)
+
+    shc = app.GetFromStudyCase("ComShc")
+
+    filas_resumen = []
+    filas_nodos = []
+    filas_lineas = []
+    filas_trafos_2w = []
+    filas_trafos_3w = []
+    filas_generadores = []
+
+    for nombre_caso, variacion_obj in casos:
+        activar_caso_red(app, nombre_caso, variacion_obj, variations_pf)
+        app.PrintInfo(f"--- Caso de red: {nombre_caso} ---")
+
+        # se relee la red DESPUES de activar el caso (ver Flujo_carga.py: una
+        # Network Variation puede agregar/quitar equipos)
+        terminals = list(app.GetCalcRelevantObjects("*.ElmTerm", 1))
+        lines = list(app.GetCalcRelevantObjects("*.ElmLne", 1))
+        trafos_2w = list(app.GetCalcRelevantObjects("*.ElmTr2", 1))
+        trafos_3w = list(app.GetCalcRelevantObjects("*.ElmTr3", 1))
+        generadores = (
+            list(app.GetCalcRelevantObjects("*.ElmGenstat", 1))
+            + list(app.GetCalcRelevantObjects("*.ElmSym", 1))
+            + list(app.GetCalcRelevantObjects("*.ElmPvsys", 1))
+        )
+        app.PrintInfo(
+            f"[{nombre_caso}] elementos: {len(terminals)} nodos, {len(lines)} lineas, "
+            f"{len(trafos_2w)} transformadores 2 dev., {len(trafos_3w)} transformadores 3 dev., "
+            f"{len(generadores)} generadores."
+        )
+
+        for barra in terminals:
+            for nombre_tipo, codigo_tipo in TIPOS_FALLA:
+                configurar_shc(shc, barra)
+                shc.iopt_shc = codigo_tipo
+
+                err = shc.Execute()
+                # ComShc con IEC 60909/VDE 0102 es un calculo directo (no iterativo),
+                # a diferencia de ComLdf: no "converge" o no, simplemente calcula bien
+                # o da error (configuracion invalida, dato faltante, etc.)
+                valido = err == 0
+                filas_resumen.append([nombre_caso, barra.loc_name, nombre_tipo, valido])
+
+                # se exporta una imagen por CADA calculo (valido o no), como en
+                # Flujo_carga.py, para poder revisar cada falla individualmente
+                exportar_diagrama_red(app, nombre_proyecto, nombre_caso, barra.loc_name, nombre_tipo)
+
+                if not valido:
+                    app.PrintError(
+                        f"Caso {nombre_caso}, barra {barra.loc_name}, falla {nombre_tipo}: "
+                        f"CALCULO NO VALIDO (codigo {err})."
+                    )
+                    continue
+
+                # solo se registra la barra realmente fallada (Nombre == Barra_Falla):
+                # m:Ikss/m:Skss en las demas barras durante ESTE calculo puntual no es
+                # el nivel de cortocircuito propio de esas otras barras (para eso hay
+                # que fallarlas a ellas, y eso ya se hace en su propia iteracion) -
+                # registrarlas aqui solo inflaba la hoja sin aportar informacion.
+                filas_nodos.append([
+                    barra.loc_name, nombre_caso, barra.loc_name, nombre_tipo,
+                    safe_get(barra, "m:Ikss"), safe_get(barra, "m:Skss"),
+                ])
+
+                for ln in lines:
+                    filas_lineas.append([
+                        ln.loc_name, nombre_nodo(ln.bus1), nombre_nodo(ln.bus2), nombre_caso, barra.loc_name, nombre_tipo,
+                        safe_get(ln, "m:Ikss:bus1"), safe_get(ln, "m:Ikss:bus2"),
+                    ])
+
+                for tr in trafos_2w:
+                    filas_trafos_2w.append([
+                        tr.loc_name, nombre_caso, barra.loc_name, nombre_tipo,
+                        safe_get(tr, "m:Ikss:bushv"), safe_get(tr, "m:Ikss:buslv"),
+                    ])
+
+                for tr in trafos_3w:
+                    filas_trafos_3w.append([
+                        tr.loc_name, nombre_caso, barra.loc_name, nombre_tipo,
+                        safe_get(tr, "m:Ikss:bushv"), safe_get(tr, "m:Ikss:busmv"), safe_get(tr, "m:Ikss:buslv"),
+                    ])
+
+                for gen in generadores:
+                    filas_generadores.append([
+                        gen.loc_name, nombre_nodo(gen.bus1), nombre_caso, barra.loc_name, nombre_tipo,
+                        safe_get(gen, "m:Ikss:bus1"),
+                    ])
+
+    # deja PowerFactory en el caso base al terminar
+    activar_caso_red(app, CASO_BASE, None, variations_pf)
+
+    exportar_resultados(
+        app, filas_resumen, filas_nodos, filas_lineas, filas_trafos_2w, filas_trafos_3w, filas_generadores,
+        variations_faltantes,
+    )
+    app.PrintInfo("===================================")
+
+
+def guardar_workbook_seguro(app, wb, ruta):
+    try:
+        wb.save(ruta)
+        return ruta
+    except PermissionError:
+        alterna = ruta.with_name(f"{ruta.stem}_{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}{ruta.suffix}")
+        wb.save(alterna)
+        app.PrintError(
+            f"No se pudo guardar en '{ruta.name}' (permiso denegado - seguramente esta abierto en Excel). "
+            f"CIERRA ese archivo antes de la proxima corrida. Los resultados de esta corrida se guardaron en: {alterna}"
+        )
+        return alterna
+
+
+def exportar_resultados(
+    app, filas_resumen, filas_nodos, filas_lineas, filas_trafos_2w, filas_trafos_3w, filas_generadores,
+    variations_faltantes,
+):
+    wb = openpyxl.Workbook()
+
+    def hoja(nombre, headers, filas):
+        ws = wb.create_sheet(nombre) if nombre != "Resumen" else wb.active
+        ws.title = nombre
+        ws.append(headers)
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+        for fila in filas:
+            ws.append(fila)
+        ws.auto_filter.ref = ws.dimensions
+        for col in ws.columns:
+            max_len = max(len(str(c.value)) if c.value is not None else 0 for c in col)
+            ws.column_dimensions[col[0].column_letter].width = max_len + 2
+
+    hoja("Resumen", ["Caso", "Barra_Falla", "Tipo_Falla", "Valido"], filas_resumen)
+    hoja(
+        "Variations_Faltantes",
+        ["Network_Variation_no_encontrada_en_PowerFactory"],
+        [[nombre] for nombre in variations_faltantes],
+    )
+    hoja("Nodos", ["Nombre", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA", "Skss_MVA"], filas_nodos)
+    hoja(
+        "Lineas",
+        ["Nombre", "Nodo_I", "Nodo_J", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_bus1_kA", "Ikss_bus2_kA"],
+        filas_lineas,
+    )
+    hoja(
+        "Transformadores_2Devanados",
+        ["Nombre", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_HV_kA", "Ikss_LV_kA"],
+        filas_trafos_2w,
+    )
+    hoja(
+        "Transformadores_3Devanados",
+        ["Nombre", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_HV_kA", "Ikss_MV_kA", "Ikss_LV_kA"],
+        filas_trafos_3w,
+    )
+    hoja(
+        "Generadores",
+        ["Nombre", "Barra", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA"],
+        filas_generadores,
+    )
+    # ver nota en Flujo_carga.py: mismo desglose, para separar a simple vista
+    # las plantas ya existentes (CasoBase) del escenario con el generador del
+    # proyecto activo (Network Variation).
+    hoja(
+        "Generadores_Existentes",
+        ["Nombre", "Barra", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA"],
+        [fila for fila in filas_generadores if fila[2] == CASO_BASE],
+    )
+    hoja(
+        "Generadores_Con_Proyecto",
+        ["Nombre", "Barra", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA"],
+        [fila for fila in filas_generadores if fila[2] != CASO_BASE],
+    )
+
+    ruta_final = guardar_workbook_seguro(app, wb, RESULTADOS_PATH)
+    app.PrintInfo(f"Resultados exportados a: {ruta_final}")
+
+
+main()
