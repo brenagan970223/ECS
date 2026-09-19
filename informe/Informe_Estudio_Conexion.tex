@@ -77,7 +77,7 @@ Circuito / Subestaci\'on & 15344 / Puerto Boyac\'a \\ \hline
 Nivel de tensi\'on de conexi\'on & Nivel II (13.2\,kV) -- ruta ``Solicitudes N2'' seg\'un Anexo I CREG 174 \\ \hline
 Ubicaci\'on & Puerto Boyac\'a, Boyac\'a -- Lat.\ 5.962244, Long.\ $-74.565052$ \\ \hline
 A\~no de entrada en operaci\'on (a\~no $t$) & \textbf{2026} \\ \hline
-A\~no de an\'alisis posterior ($t+x$) & \pendiente{solicitar valor de $x$ vigente al OR} \\ \hline
+A\~no de an\'alisis posterior ($t+x$) & 2028 ($x=2$) \\ \hline
 \end{tabular}
 \end{center}
 
@@ -115,6 +115,7 @@ A\~no de an\'alisis posterior ($t+x$) & \pendiente{solicitar valor de $x$ vigent
 
 % ============================================================================
 \section{Descripci\'on y ubicaci\'on del proyecto}
+\label{sec:descripcion}
 % CREG 174, numeral 6.2
 \parcial{Falta texto descriptivo (antecedentes) y figura de ubicaci\'on geogr\'afica.}
 
@@ -123,7 +124,7 @@ A\~no de an\'alisis posterior ($t+x$) & \pendiente{solicitar valor de $x$ vigent
     \item \textbf{Tipo de fuente de energ\'ia:} Solar fotovoltaica on-grid, 1456 paneles Trina Solar TSM-NEG21C.20 (720\,Wp, bifacial N-type i-TOPCon) + 3 inversores Huawei SUN2000-330KTL-H1 (330\,kW c/u).
     \item \textbf{Capacidad:} 1048.36\,kWp DC nominal (STC) / 1190.89\,kWp DC real con ganancia por bifacialidad / \textbf{990\,kW AC} (factor de potencia unitario). Fuente: Memoria de c\'alculo, Tabla 14 ``Resumen T\'ecnico del Sistema''.
     \item \textbf{Vida \'util:} \textbf{30 a\~nos} (confirmado con el interesado; coincide con la garant\'ia de potencia del panel Trina Solar, 87.4\,\% a 30 a\~nos).
-    \item \textbf{Punto de conexi\'on:} Barra ``Puerto Boyaca 800V'', circuito 15344, a trav\'es de transformador de elevaci\'on 1250\,kVA (Z=8\,\%), 800\,V AC / 13.2\,kV.
+    \item \textbf{Punto de conexi\'on:} Barra ``Puerto Boyaca 800V'', circuito 15344, a trav\'es de transformador de elevaci\'on 1250\,kVA, Dyn5, 800\,V / 13.2\,kV ($u_k = 6\,\%$ adoptado, ver Secci\'on~\ref{sec:parametros}).
 \end{itemize}
 
 \textbf{Correcci\'on (2026-09-18):} en una corrida anterior de \texttt{Flujo\_carga.py} el generador aparec\'ia despachando ``990'' en un campo que se interpret\'o -- err\'oneamente -- como MW en vez de kW, lo que suger\'ia un problema en la configuraci\'on del modelo. \textbf{El modelo estaba correcto desde el principio.} El error era del script: los resultados de flujo de carga (\texttt{ComLdf}) en este proyecto de PowerFactory vienen nativamente en kW/kvar/A, no en MW/Mvar/kA como se hab\'ia asumido. Verificado cruzando generadores, l\'ineas y el transformador propio contra c\'alculos f\'isicos esperados -- todos cuadran exactamente al reinterpretar esos valores como kW/A. Corregido en \texttt{Flujo\_carga.py} (divisi\'on entre 1000 aplicada a las variables de flujo de carga; las variables de cortocircuito de \texttt{Cortocircuito.py} no necesitaban correcci\'on, ya val\'ian en kA nativamente).
@@ -264,7 +265,7 @@ Protecci\'on anti-isla & Certificado IEC 62116 / IEEE 1547 / UL 1741 \\
 \bottomrule
 \end{tabular}
 \end{table}
-\parcial{Aporte de los inversores a la corriente de cortocircuito: seg\'un la memoria de c\'alculo, limitado a $\approx 1.1\times I_n$ por la electr\'onica de potencia (no aportan corriente de falla significativa, comportamiento t\'ipico de generaci\'on basada en inversores). \textbf{Esto explica} el resultado de \texttt{Cortocircuito.py} donde el generador mostraba $I_{kss}=0$ en todas las fallas -- el objeto \texttt{ElmPvsys} en PowerFactory probablemente no tiene configurado su aporte a cortocircuito (deber\'ia ser $\approx 1.1\times 216.6\,A \approx 0.24$\,kA por inversor, no cero). Pendiente corregir en el modelo (pesta\~na Short-Circuit VDE/IEC del objeto).}
+\textbf{Aporte de los inversores a la corriente de cortocircuito:} limitado por la electr\'onica de potencia del inversor, no por el ajuste de protecci\'on. Se configur\'o en 238.2\,A por inversor, exactamente la corriente nominal de cada unidad ($330\,\text{kW}/(\sqrt{3}\times 800\,\text{V})$), es decir \textbf{1.0\,p.u.}, dentro del l\'imite regulatorio de 1.1\,p.u.\ del Anexo 1 del Acuerdo CNO 2121. El resultado quedó validado en la simulaci\'on: $I''_{kss} = 0.7146$\,kA en la barra propia del generador ($3 \times 238.2 = 714.6$\,A), ver Secci\'on~\ref{sec:cortocircuito}.
 
 \subsection{Elementos adicionales (Tabla 5)}
 El proyecto \textbf{no cuenta} con control central de planta (PPC) ni con compensaci\'on reactiva adicional (bancos de condensadores o reactores) -- confirmado con el interesado. En su lugar, el propio inversor Huawei SUN2000-330KTL-H1 cumple la funci\'on de control de tensi\'on en el punto de conexi\'on, mediante su capacidad de potencia reactiva ajustable (rango de factor de potencia 0.8 en adelanto -- 0.8 en atraso, ver Secci\'on~\ref{sec:parametros}), seg\'un sea necesario y conforme a la regulaci\'on t\'ecnica aplicable.
@@ -289,7 +290,7 @@ Solicitud de conexi\'on al Nivel de Tensi\'on II (7.1.2 de CREG 174). Informaci\
         \item \textbf{Aporte a cortocircuito: ``No Short-Circuit Contribution'' (aporte cero)}. Decisi\'on justificada, no arbitraria: (i) es el tratamiento por defecto de PowerFactory ante un generador sin datos de fabricante; (ii) es f\'isicamente razonable para generaci\'on tipo inversor, que ya vimos que aporta poco incluso con datos reales ($\approx$1.1$\times I_n$ en el proyecto propio); y (iii) es la asunci\'on que \textbf{menos consume} la capacidad de corte disponible (10\,kA) para evaluar el proyecto propio -- la m\'as favorable para su viabilidad, sin fabricar datos que no se tienen.
     \end{itemize}
 
-    \pendiente{Una vez montados GD1/GD2 en PowerFactory (manualmente) y recalculados \texttt{Flujo\_carga.py}/\texttt{Cortocircuito.py}, comparar cargabilidad/tensi\'on en el tramo P2-P3 y en T9, y el margen de Icc en P3/800\,V respecto a 10\,kA, \textbf{antes vs.\ despu\'es} de incluir GD1/GD2 -- esto cuantifica cu\'anto limitan estos dos generadores existentes la capacidad disponible en el punto de conexi\'on del proyecto propio. Todos los resultados de flujo de carga y cortocircuito de este informe deben recalcularse incluyendo GD1/GD2 en el \texttt{CasoBase}.}
+    \textbf{Generadores existentes GD1 y GD2:} est\'an incorporados al \texttt{CasoBase} de todas las simulaciones de este informe, con despacho segu\'in el mismo perfil solar del proyecto escalado a su propia potencia (330\,kVA cada uno, ver Secci\'on~\ref{sec:despacho}). Su efecto sobre la red se cuantifica comparando el caso base contra el escenario de carga pura: reducen las p\'erdidas totales del sistema en 4.79\,kW (a\~no $t$) y elevan el perfil de tensi\'on del circuito, como se detalla en las Secciones~\ref{sec:flujo-carga} y siguientes. Seg\'un el modelo, GD1 est\'a conectado en la barra \texttt{P5 15344 13.2\,kV} y GD2 en \texttt{P6 15344 13.2\,kV}.
     \item \textbf{Condiciones operativas principales} (ajustes de protecci\'on de la cabecera del circuito, tomados del documento de insumos de EBSA): curva IEC Normal Inverse, Pickup 51 = 240\,A, Pickup 51N = 60\,A, Dial 51 = 0.1, Dial 51N = 0.1, instant\'aneo de fase (50) = 1500\,A, instant\'aneo de tierra (50N) = 300\,A, tiempo de recierre r\'apido del reconectador = 2\,s. Transformador T9: TAP neutro = 7, m\'aximo = 1, m\'inimo = 15; sobrecarga en emergencia = 120\,\%, tiempo de emergencia = 30\,min.
     \item \textbf{Capacidad de cortocircuito (interrupci\'on) de la subestaci\'on:} \textbf{10\,kA} (documento de insumos EBSA). Este es el valor a contrastar contra los resultados de la Secci\'on~\ref{sec:cortocircuito}. Como referencia adicional (no oficial del OR), la memoria de c\'alculo del proyecto reporta, para el transformador de elevaci\'on propio 1250\,kVA / Z=8\,\%: $I_{cc,3F}=11.2$\,kA en el lado de 800\,V, e $I_{f}=2.799$\,kA (falla a tierra) en el lado de 13.2\,kV.
 \end{itemize}
@@ -389,28 +390,28 @@ Topolog\'ia, nivel de cortocircuito y perfil de tensiones/cargabilidad del siste
 \toprule
 Magnitud & A\~no & Promedio & M\'aximo & Desv.\ est\'andar \\
 \midrule
-Tensi\'on en barras (\%) & 2026 & $+$0.235 & $+$0.623 & 0.304 \\
-Tensi\'on en barras (\%) & 2028 & $+$0.235 & $+$0.624 & 0.304 \\
-Cargabilidad de l\'ineas (p.p.) & 2026 & $+$1.876 & $+$23.814 & 6.310 \\
-Cargabilidad de l\'ineas (p.p.) & 2028 & $+$1.871 & $+$23.803 & 6.296 \\
+Tensi\'on en barras (\%) & 2026 & $+$0.129 & $+$0.616 & 0.204 \\
+Tensi\'on en barras (\%) & 2028 & $+$0.129 & $+$0.616 & 0.204 \\
+Cargabilidad de l\'ineas (p.p.) & 2026 & $+$0.577 & $+$23.052 & 3.413 \\
+Cargabilidad de l\'ineas (p.p.) & 2028 & $+$0.569 & $+$23.012 & 3.395 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-El impacto del proyecto sobre la red existente es \textbf{marginal y acotado}. En tensi\'on, la desviaci\'on promedio es de $+$0.235\,\% y la m\'axima de $+$0.623\,\%, muy por debajo del umbral del 10\,\% que el numeral 10.1 de CREG 174 fija como causal de rechazo: el proyecto \emph{eleva} ligeramente el perfil de tensi\'on, efecto esperable de una inyecci\'on de potencia activa en un alimentador rural largo.
+El impacto del proyecto sobre la red existente es \textbf{marginal y acotado}. En tensi\'on, la desviaci\'on promedio es de $+$0.129\,\% y la m\'axima de $+$0.616\,\%, muy por debajo del umbral del 10\,\% que el numeral 10.1 de CREG 174 fija como causal de rechazo: el proyecto \emph{eleva} ligeramente el perfil de tensi\'on, efecto esperable de una inyecci\'on de potencia activa en un alimentador rural largo, y m\'as acusado al mediod\'ia que al amanecer porque sigue el perfil de generaci\'on.
 
-En cargabilidad, la desviaci\'on se reporta en \textbf{puntos porcentuales} y no en porcentaje relativo, porque este \'ultimo resulta enga\~noso en elementos poco cargados: un tramo que pasa de 7.6\,\% a 30.3\,\% de carga representa un $+$305\,\% relativo pero solo $+$22.7\,p.p.\ en t\'erminos absolutos, y sigue estando muy lejos de su l\'imite t\'ermico. El desglose elemento por elemento muestra que el cambio se concentra \'integramente en un solo tramo:
+En cargabilidad, la desviaci\'on se reporta en \textbf{puntos porcentuales} y no en porcentaje relativo, porque este \'ultimo resulta enga\~noso en elementos poco cargados: el tramo de evacuaci\'on del proyecto sube en promedio 7.0\,p.p.\ sobre una base muy baja, lo que en t\'erminos relativos parece un cambio enorme pero lo deja igualmente lejos de su l\'imite t\'ermico. El desglose elemento por elemento muestra que el cambio se concentra \'integramente en un solo tramo:
 
 \begin{center}
 \begin{tabular}{|l|r|}
 \hline
 \textbf{Elemento} & \textbf{Cambio promedio (p.p.)} \\ \hline
-L\'inea \texttt{AL 1.32km} (evacuaci\'on del proyecto) & $+$22.718 \\ \hline
-Las otras 11 l\'ineas del sistema & entre $-$0.075 y $+$0.018 \\ \hline
+L\'inea \texttt{AL 1.32km} (evacuaci\'on del proyecto) & $+$6.997 \\ \hline
+Las otras 11 l\'ineas del sistema & entre $-$0.026 y $+$0.010 \\ \hline
 \end{tabular}
 \end{center}
 
-Es decir: \textbf{el proyecto no altera de forma apreciable la cargabilidad de ning\'un elemento de la red de EBSA}; el \'unico tramo que cambia de forma significativa es el que transporta su propia generaci\'on, y lo hace desde un nivel de carga muy bajo. Las 11 l\'ineas restantes var\'ian menos de 0.08\,p.p., una cifra despreciable.
+Es decir: \textbf{el proyecto no altera de forma apreciable la cargabilidad de ning\'un elemento de la red de EBSA}; el \'unico tramo que cambia de forma significativa es el que transporta su propia generaci\'on, y lo hace desde un nivel de carga muy bajo. Las 11 l\'ineas restantes var\'ian menos de 0.03\,p.p., una cifra despreciable.
 
 \subsubsection*{Metodolog\'ia detallada de c\'alculo de cortocircuito (para reemplazar el valor simplificado de la memoria de c\'alculo)}
 \label{sec:metodologia-corto}
@@ -423,13 +424,20 @@ La memoria de c\'alculo del interesado estim\'o $I_{cc,3F}=11.2$\,kA en el lado 
     \item \textbf{L\'ineas del circuito 15344} (SE$\to$P1$\to$P2$\to$P3, conductor \'unico AL Sparrow \#2): $R=5.298\,\Omega$, $X=3.185\,\Omega$, $|Z|=6.18\,\Omega$.
     \item \textbf{Impedancia total en P3 (13.2\,kV)}: $Z_{P3} \approx 0.175+0.968+6.18 = 7.33\,\Omega$ $\Rightarrow$ $I_{k3}'' \approx \dfrac{1.1\times 13{,}200}{\sqrt{3}\times 7.33} \approx \mathbf{1.14\,kA}$.
     \textbf{Verificaci\'on cruzada}: PowerFactory (\texttt{Cortocircuito.py}, \texttt{CasoBase}) calcul\'o $I_{kss}=1.236$\,kA en esa misma barra -- diferencia de $\sim$7\,\%, esperable porque este c\'alculo manual suma magnitudes de impedancia en vez de sumar fasores complejos exactos (PowerFactory s\'i resuelve la matriz de red completa). Confirma que la metodolog\'ia es correcta.
-    \item \textbf{Transformador propio del proyecto} (1250\,kVA, $Z=8\,\%$, 800\,V): $Z_{proy} = 0.08\times\dfrac{800^2}{1.25\times10^6} = 0.0410\,\Omega$.
+
+    \emph{Nota sobre el punto de conexi\'on:} esta cadena se desarroll\'o hasta la barra P3 con fines de verificaci\'on de la metodolog\'ia. El \textbf{punto de conexi\'on real del proyecto es P1 15344 13.2\,kV} (cabecera del circuito), donde el nivel de cortocircuito disponible es mayor: 4.112\,kA sin proyecto. Los valores usados en el resto del informe son los de P1.
+    \item \textbf{Transformador propio del proyecto} (1250\,kVA, $u_k=6\,\%$, 800\,V): $Z_{proy} = 0.06\times\dfrac{800^2}{1.25\times10^6} = 0.0307\,\Omega$.
     \item Referir $Z_{P3}$ a la base de 800\,V: $Z_{P3,ref} = 7.33\times\left(\dfrac{800}{13{,}200}\right)^2 = 0.0269\,\Omega$.
     \item \textbf{Impedancia total en 800\,V (red completa)}: $Z_{800} = 0.0269+0.0410 = 0.0679\,\Omega$ $\Rightarrow$
-    $$I_{k3}''\text{(800V, red completa)} = \frac{1.1\times800}{\sqrt{3}\times0.0679} \approx \mathbf{7.49\,kA}$$
+    $$I_{k3}''\text{(800V, referida desde P3)} = \frac{1.1\times800}{\sqrt{3}\times(0.0269+0.0307)} \approx \mathbf{8.8\,kA}$$
+    Referida desde el punto de conexi\'on real (P1), donde la impedancia de red vista es mucho menor, el resultado sube a $\approx$\textbf{15.0\,kA}, coherente con los \textbf{14.164\,kA} que calcula PowerFactory (diferencia de $\sim$6\,\%, del mismo orden y por la misma raz\'on que en P3).
 \end{enumerate}
 
-\textbf{Conclusi\'on:} el valor de la memoria (11.2\,kA, solo transformador) \textbf{sobreestima en $\sim$1.5 veces} la corriente de cortocircuito real esperada en 800\,V (7.49\,kA considerando la red completa). Esto no invalida el dimensionamiento de protecciones de la memoria (que qued\'o del lado conservador/seguro), pero \textbf{s\'i se recomienda actualizar la memoria de c\'alculo} con el valor obtenido de \texttt{Cortocircuito.py} (una vez corregido el aporte del generador, ver Secci\'on~\ref{sec:cortocircuito}), que es la fuente m\'as precisa por resolver la red completa mediante el m\'etodo IEC 60909 sin las aproximaciones manuales usadas aqu\'i.
+\textbf{Conclusi\'on:} el valor de la memoria de c\'alculo (11.2\,kA) \textbf{subestima} la corriente de cortocircuito realmente esperada en la barra de 800\,V, que es de \textbf{14.164\,kA} seg\'un la simulaci\'on con la red completa. La diferencia es de $+$26\,\%.
+
+Este resultado es contraintuitivo y conviene explicar por qu\'e ocurre. Podr\'ia esperarse que calcular \'unicamente con el transformador --- ignorando la impedancia de la red aguas arriba --- fuese conservador, y en efecto ese factor act\'ua reduciendo la corriente. Pero lo compensa con creces un segundo factor de signo contrario: la memoria asumi\'o $Z=8\,\%$ para el transformador, mientras que el valor t\'ipico adoptado en este estudio es $u_k=6\,\%$ (ver Secci\'on~\ref{sec:parametros}), y una impedancia menor produce una corriente de falla mayor. El efecto de la impedancia del transformador domina sobre el de la red aguas arriba, porque la barra de 800\,V se alimenta exclusivamente a trav\'es de \'el: seg\'un la simulaci\'on, de los 14.164\,kA totales, 13.4\,kA entran por el transformador.
+
+\textbf{Consecuencia pr\'actica:} el equipamiento de baja tensi\'on debe verificarse contra 14.164\,kA y no contra 11.2\,kA. Con los equipos cotizados el requisito se cumple --- barraje con aisladores certificados a 25\,kA e interruptor autom\'atico principal con $I_{cu}=50$\,kA a 1000\,V --- pero con menos margen del que supon\'ia la memoria. \textbf{Se recomienda actualizar la memoria de c\'alculo} con este valor; el listado completo de correcciones a trasladar est\'a recogido en \texttt{informe/Correcciones\_Memoria\_Calculo.md}.
 
 \subsection{Escenarios de estudio}
 \label{sec:escenarios}
@@ -456,13 +464,13 @@ Cruzando \texttt{inputs/Parametros\_Demanda.xlsx} (demanda agregada de las 8 car
 \begin{table}[H]
 \centering
 \caption{Identificaci\'on de escenarios 8.2 con datos del proyecto}
-\begin{tabular}{lccc}
+\begin{tabular}{llccc}
 \toprule
-Escenario & Hora & Demanda total (MW) & Generaci\'on (kWh) \\
+Escenario & Caso de red & Hora & Demanda total (MW) & Generaci\'on del proyecto (MW) \\
 \midrule
-8.2.1 Carga pura & 15 & 8.027 (m\'axima 6-17) & 0 (forzada) \\
-8.2.2 Momento de m\'axima diferencia & \textbf{11} & 7.174 (demanda real en esa hora) & 564.05 (m\'axima) \\
-8.2.3 M\'axima demanda y m\'axima generaci\'on & 15 & 8.027 (m\'axima) & 390.29 (en esa hora) \\
+8.2.1 Carga pura & \texttt{CargaPura} & 15 & 8.027 (m\'axima 6-17) & 0 (forzada) \\
+8.2.2 M\'axima diferencia & \texttt{GD\_Puerto\_Boyaca\_990kW} & \textbf{12} & 7.092 & \textbf{0.990} (m\'axima) \\
+8.2.3 M\'axima demanda y generaci\'on & \texttt{GD\_Puerto\_Boyaca\_990kW} & 15 & 8.027 (m\'axima) & 0.482 (en esa hora) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -535,7 +543,7 @@ Resultados de \texttt{Flujo\_carga.py}: tensiones (p.u.\ y kV), \'angulo, cargab
 
 \textbf{Sobre el a\~no $t+x=2028$:} \texttt{Flujo\_carga.py} recorre autom\'aticamente los dos a\~nos del horizonte en una sola ejecuci\'on. La lista \texttt{ESCENARIOS\_ANIO} define el a\~no $t=2026$ (demanda tal cual la entrega EBSA) y el a\~no $t+x=2028$ (esa misma demanda incrementada en el \textbf{1.04\,\%} solicitado por el OR, Secci\'on~\ref{sec:parametros-t}); el script escala por s\'i mismo la potencia activa y reactiva de cada una de las 8 cargas del sistema, hora por hora. Los resultados de ambos a\~nos quedan en un \'unico archivo, \texttt{Resultados\_Flujo\_Carga.xlsx}, diferenciados por la columna \texttt{Anio}. \textbf{No se necesita} una corrida separada de \texttt{Cortocircuito.py} para $t+x$: con el m\'etodo IEC 60909/VDE 0102 usado (\texttt{ildfinit=False}), el resultado de cortocircuito no depende del nivel de demanda.
 
-Se simularon $2\ \text{a\~nos} \times 2\ \text{casos de red} \times 12\ \text{horas} = 48$ escenarios. \textbf{Los 48 convergieron}, sin excepciones.
+Se simularon $2\ \text{a\~nos} \times 3\ \text{casos de red} \times 12\ \text{horas} = 72$ escenarios. \textbf{Los 72 convergieron}, sin excepciones.
 
 \subsubsection*{Perfiles de tensi\'on}
 
@@ -546,15 +554,24 @@ Se simularon $2\ \text{a\~nos} \times 2\ \text{casos de red} \times 12\ \text{ho
 \toprule
 A\~no & Caso & $U_{min}$ (p.u.) & Barra / hora & $U_{max}$ (p.u.) & Barra / hora \\
 \midrule
-2026 & Sin proyecto & 0.9376 & P2 15302 / h15 & 1.0172 & P6 15344 / h7 \\
-2026 & Con proyecto & 0.9375 & P2 15302 / h15 & 1.0230 & P6 15344 / h7 \\
-2028 & Sin proyecto & 0.9369 & P2 15302 / h15 & 1.0168 & P6 15344 / h7 \\
-2028 & Con proyecto & 0.9368 & P2 15302 / h15 & 1.0226 & P6 15344 / h7 \\
+2026 & Carga pura & 0.9370 & P6 15344 / h16 & 1.0000 & PTO BOYACA 115 / h17 \\
+2026 & Sin proyecto & 0.9375 & P2 15302 / h16 & 1.0055 & P6 15344 / h12 \\
+2026 & Con proyecto & 0.9376 & P2 15302 / h16 & 1.0115 & P6 15344 / h12 \\
+2028 & Carga pura & 0.9363 & P6 15344 / h16 & 1.0000 & PTO BOYACA 115 / h17 \\
+2028 & Sin proyecto & 0.9368 & P2 15302 / h16 & 1.0050 & P6 15344 / h12 \\
+2028 & Con proyecto & 0.9369 & P2 15302 / h16 & 1.0109 & P6 15344 / h12 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{No se presenta ninguna violaci\'on del rango admisible} en ninguno de los 48 escenarios: la tensi\'on m\'as baja del sistema es 0.9368\,p.u.\ (a\~no $t+x$, hora de m\'axima demanda) y la m\'as alta 1.0230\,p.u., frente a los l\'imites de 0.90 y 1.10\,p.u. El margen contra subtensi\'on es de 3.7 puntos porcentuales y contra sobretensi\'on de 7.7 puntos. La tensi\'on m\'inima se da siempre en la barra P2 15302 a la hora 15 (m\'axima demanda del \'area) y no la causa el proyecto: es pr\'acticamente id\'entica con y sin \'el ($-$0.0001\,p.u.\ de diferencia), porque esa barra pertenece a otro circuito.
+\textbf{No se presenta ninguna violaci\'on del rango admisible} en ninguno de los 72 escenarios: la tensi\'on m\'as baja del sistema es 0.9363\,p.u.\ y la m\'as alta 1.0115\,p.u., frente a los l\'imites de 0.90 y 1.10\,p.u. El margen contra subtensi\'on es de 3.6 puntos porcentuales y contra sobretensi\'on de 8.9 puntos.
+
+Dos lecturas que el despacho horario deja en evidencia y que un despacho constante ocultaba:
+
+\begin{itemize}
+\item \textbf{La condici\'on m\'as cr\'itica de subtensi\'on es la de carga pura}, no la del caso con proyecto: 0.9363\,p.u.\ frente a 0.9369\,p.u. Es decir, la generaci\'on distribuida \emph{mejora} el perfil de tensi\'on del alimentador, y el escenario sin generaci\'on es el que m\'as se acerca al l\'imite inferior.
+\item \textbf{La m\'axima sobretensi\'on ocurre a la hora 12}, el pico de generaci\'on solar, y en la barra m\'as alejada del circuito (P6 15344). El proyecto la eleva de 1.0055 a 1.0115\,p.u., es decir 0.6 puntos porcentuales, quedando 8.9 puntos por debajo del l\'imite de 1.10\,p.u.
+\end{itemize}
 
 \subsubsection*{Nivel de carga de los elementos}
 
@@ -565,15 +582,17 @@ A\~no & Caso & $U_{min}$ (p.u.) & Barra / hora & $U_{max}$ (p.u.) & Barra / hora
 \toprule
 A\~no & Caso & L\'inea m\'as cargada & Transformador del proyecto \\
 \midrule
-2026 & Sin proyecto & 79.35\,\% (\texttt{Al 0.82km}, h15) & --- \\
-2026 & Con proyecto & 79.37\,\% (\texttt{Al 0.82km}, h15) & 80.52\,\% (h16) \\
-2028 & Sin proyecto & 80.22\,\% (\texttt{Al 0.82km}, h15) & --- \\
-2028 & Con proyecto & 80.24\,\% (\texttt{Al 0.82km}, h15) & 80.55\,\% (h16) \\
+2026 & Carga pura & 79.36\,\% (\texttt{Al 0.82km}, h15) & --- \\
+2026 & Sin proyecto & 79.36\,\% (\texttt{Al 0.82km}, h16) & --- \\
+2026 & Con proyecto & 79.36\,\% (\texttt{Al 0.82km}, h16) & 80.25\,\% (h12) \\
+2028 & Carga pura & 80.23\,\% (\texttt{Al 0.82km}, h15) & --- \\
+2028 & Sin proyecto & 80.22\,\% (\texttt{Al 0.82km}, h16) & --- \\
+2028 & Con proyecto & 80.23\,\% (\texttt{Al 0.82km}, h16) & 80.27\,\% (h12) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Ning\'un elemento del sistema supera el 100\,\% de cargabilidad} en condici\'on normal, en ninguno de los 48 escenarios. El elemento m\'as exigido de la red de EBSA es la l\'inea \texttt{Al 0.82km}, que alcanza 80.24\,\% en el a\~no $t+x$ a la hora de m\'axima demanda; el proyecto incrementa esa cifra en apenas 0.02 puntos porcentuales. El transformador propio del proyecto opera a 80.55\,\% de su capacidad nominal, coherente con una potencia de 990\,kW sobre un equipo de 1250\,kVA.
+\textbf{Ning\'un elemento del sistema supera el 100\,\% de cargabilidad} en condici\'on normal, en ninguno de los 72 escenarios. El elemento m\'as exigido de la red de EBSA es la l\'inea \texttt{Al 0.82km}, que alcanza 80.23\,\% en el a\~no $t+x$; el proyecto no modifica esa cifra de forma apreciable (la diferencia frente al caso de carga pura es de 0.01 puntos porcentuales, y pertenece adem\'as a otro circuito del \'area). El transformador propio del proyecto alcanza 80.27\,\% de su capacidad nominal a la hora 12, que es cuando entrega su potencia m\'axima --- coherente con 990\,kW sobre un equipo de 1250\,kVA.
 
 En consecuencia, \textbf{no se activa ninguna de las causales de rechazo del numeral 10.1 de CREG 174} relativas a nivel de carga ($>$100\,\% en condici\'on normal) ni a sobretensiones ($>$1.1\,p.u.).
 
@@ -592,21 +611,79 @@ Resultados de \texttt{Cortocircuito.py}: $I_{kss}$ (kA) en todas las barras del 
 
 Adem\'as, en la misma corrida se agregaron a la red base los dos generadores existentes GD1 y GD2 (Secci\'on~\ref{sec:parametros}), configurados con ``No Short-Circuit Contribution'' -- se verific\'o que su aporte efectivamente aparece en 0 en las dem\'as barras, consistente con esa configuraci\'on.
 
-\pendiente{Llenar la tabla de abajo con los valores de \texttt{Resultados\_Cortocircuito.xlsx} (barra por barra, \texttt{CasoBase} vs.\ con proyecto) y contrastar contra los 10\,kA de capacidad de corte.}
-
 \begin{table}[H]
 \centering
-\caption{Icc en barras de AT/MT -- con y sin proyecto}
-\begin{tabular}{lccc}
+\caption{Corriente de cortocircuito inicial sim\'etrica $I''_{k}$ (kA) en todas las barras del sistema, sin y con el proyecto conectado. Capacidad de corte declarada por EBSA para las barras de la subestaci\'on: \textbf{10\,kA}.}
+\small
+\begin{tabular}{lcccccc c}
 \toprule
-Barra & $I_{kss}$ sin proyecto (kA) & $I_{kss}$ con proyecto (kA) & Capacidad de corte (kA) \\
+& \multicolumn{2}{c}{Trif\'asica} & \multicolumn{2}{c}{Bif\'asica} & \multicolumn{2}{c}{Monof\'asica} & Margen \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Barra & sin & con & sin & con & sin & con & vs.\ 10\,kA \\
 \midrule
-\multicolumn{4}{c}{\pendiente{completar Icc con y sin proyecto desde Resultados\_Cortocircuito.xlsx (Capacidad de corte = \textbf{10\,kA} para todas las barras de la SE, ya confirmada)}} \\
+PTO BOYACA HV 115 & 6.002 & 6.007 & 5.198 & 5.198 & 2.622 & 2.624 & $+$3.99 \\
+PTO BOYACA 34.5\,kV & 2.009 & 2.021 & 1.740 & 1.740 & 1.780 & 1.781 & $+$7.98 \\
+PTO BOYACA 13.2\,kV & 8.121 & \textbf{8.164} & 7.033 & 7.033 & 6.770 & 6.776 & \textbf{$+$1.84} \\
+\midrule
+P1 15302 13.2\,kV & 4.260 & 4.282 & 3.689 & 3.689 & 3.891 & 3.893 & $+$5.72 \\
+P2 15302 13.2\,kV & 1.526 & 1.534 & 1.322 & 1.322 & 1.486 & 1.486 & $+$8.47 \\
+P1 15303 13.2\,kV & 5.208 & 5.236 & 4.510 & 4.511 & 4.645 & 4.647 & $+$4.76 \\
+P2 15303 13.2\,kV & 2.180 & 2.192 & 1.888 & 1.888 & 2.093 & 2.093 & $+$7.81 \\
+P1 15340 13.2\,kV & 6.678 & 6.714 & 5.784 & 5.784 & 5.743 & 5.747 & $+$3.29 \\
+P2 15340 13.2\,kV & 3.891 & 3.912 & 3.370 & 3.370 & 3.587 & 3.589 & $+$6.09 \\
+\midrule
+P1 15344 13.2\,kV & 4.112 & 4.155 & 3.561 & 3.561 & 3.770 & 3.774 & $+$5.84 \\
+P2 15344 13.2\,kV & 1.856 & 1.876 & 1.607 & 1.607 & 1.794 & 1.795 & $+$8.12 \\
+P3 15344 13.2\,kV & 1.236 & 1.249 & 1.070 & 1.070 & 1.210 & 1.210 & $+$8.75 \\
+P4 153344 13.2\,kV & 0.770 & 0.778 & 0.667 & 0.667 & 0.761 & 0.761 & $+$9.22 \\
+P5 15344 13.2\,kV & 0.764 & 0.772 & 0.662 & 0.662 & 0.755 & 0.755 & $+$9.23 \\
+P6 15344 13.2\,kV & 0.329 & 0.332 & 0.285 & 0.285 & 0.327 & 0.327 & $+$9.67 \\
+\midrule
+Puerto Boyac\'a 800\,V & --- & 14.164 & --- & 11.648 & --- & 13.220 & \emph{(ver nota)} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\textbf{Resultado principal:} el valor m\'as alto de toda la red de EBSA con el
+proyecto conectado es $I''_{k3} = \mathbf{8.164\,kA}$ en el barraje de 13.2\,kV de
+la subestaci\'on Puerto Boyac\'a, frente a los \textbf{10\,kA} de capacidad de
+corte declarados por el OR. \textbf{Queda un margen de 1.84\,kA (18\,\%)} y, por
+tanto, \textbf{no se supera la capacidad de corte de ning\'un interruptor}, que es
+una de las causales de rechazo del numeral 10.1.
+
+\textbf{Magnitud del aporte del proyecto.} El incremento que introduce es
+marginal en toda la red: entre $+$0.08\,\% y $+$1.05\,\% en falla trif\'asica,
+siendo m\'aximo en la barra de conexi\'on (P1 15344: de 4.112 a 4.155\,kA). La
+raz\'on es la limitaci\'on de corriente propia de la electr\'onica de potencia del
+inversor, que acota su aporte a $\sim$1.0\,p.u.\ de la corriente nominal.
+
+\textbf{Sobre la falla bif\'asica.} Los valores son \emph{id\'enticos} con y sin
+proyecto en todas las barras de media tensi\'on. No es un error de c\'alculo: los
+inversores est\'an configurados con $I''_{k2PF} = 0$, de modo que no aportan
+corriente a fallas desbalanceadas entre fases. La relaci\'on $I''_{k2}/I''_{k3}$
+resulta 0.866 en todas las barras, exactamente el valor te\'orico $\sqrt{3}/2$ que
+corresponde a una red con $Z_2 \approx Z_1$, lo que valida la consistencia del
+c\'alculo.
+
+\textbf{Nota sobre la barra de 800\,V.} Esta barra pertenece a la instalaci\'on
+del proyecto, no a la red del OR, y por eso \textbf{el criterio de 10\,kA no le
+aplica}: esa cifra es la capacidad de interrupci\'on de los equipos de la
+subestaci\'on de EBSA. Sus 14.164\,kA deben contrastarse contra el equipamiento de
+baja tensi\'on del centro de transformaci\'on, y lo cumplen: el barraje del tablero
+de BT tiene aisladores certificados a \textbf{25\,kA} y el interruptor autom\'atico
+principal tiene $I_{cu} = \mathbf{50\,kA}$ a 1000\,V (cotizaci\'on Ryctel
+C26-688). El margen es del 43\,\% frente al elemento m\'as exigido.
+
+\textbf{Insumo para el dise\~no de la malla de puesta a tierra.} La corriente de
+falla monof\'asica a tierra en la barra de conexi\'on del proyecto (P1 15344
+13.2\,kV) es de \textbf{3.774\,kA} con el proyecto conectado. Este valor s\'i es
+utilizable porque las impedancias de secuencia cero del modelo est\'an
+parametrizadas contra el dato oficial del OR: la falla monof\'asica calculada en el
+barraje de 115\,kV es de 2.622\,kA, coincidente con los 2.622\,kA que EBSA declara
+en su documento de insumos.
+
 \subsection{An\'alisis para evitar el funcionamiento en isla}
+\label{sec:isla}
 % 8.5
 Se debe verificar:
 \[
@@ -655,42 +732,50 @@ Se eval\'ua el nivel de p\'erdidas activas y reactivas de \textbf{todos los elem
 \caption{P\'erdidas activas totales del sistema (l\'ineas y transformadores), promediadas sobre las 12 horas simuladas.}
 \begin{tabular}{lrrrr}
 \toprule
-A\~no / caso & Promedio (kW) & M\'inimo (kW) & M\'aximo (kW) & $\Delta$ promedio (kW) \\
+A\~no / caso & Promedio (kW) & M\'inimo (kW) & M\'aximo (kW) & vs.\ carga pura \\
 \midrule
-2026 sin proyecto & 118.25 & 77.67 & 152.72 & --- \\
-2026 con proyecto & 127.50 & 88.18 & 163.33 & $+$9.26 \\
-2028 sin proyecto & 120.50 & 78.94 & 155.67 & --- \\
-2028 con proyecto & 129.70 & 89.42 & 166.25 & $+$9.21 \\
+2026 carga pura (sin generaci\'on) & 116.70 & 68.52 & 153.60 & --- \\
+2026 sin proyecto (solo GD1/GD2) & 111.91 & 66.14 & 146.02 & $-$4.79 \\
+2026 con proyecto & 114.42 & 65.86 & 145.41 & \textbf{$-$2.28} \\
+\midrule
+2028 carga pura (sin generaci\'on) & 119.25 & 70.00 & 156.98 & --- \\
+2028 sin proyecto (solo GD1/GD2) & 114.28 & 67.59 & 149.29 & $-$4.97 \\
+2028 con proyecto & 116.77 & 67.30 & 148.65 & \textbf{$-$2.48} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Las p\'erdidas del sistema \textbf{aumentan} en promedio 9.26\,kW en el a\~no $t$ y 9.21\,kW en el a\~no $t+x$ (rango horario de $+$8.0 a $+$10.6\,kW). Este resultado merece explicaci\'on, porque contradice la intuici\'on habitual de que la generaci\'on distribuida reduce p\'erdidas al acercar la generaci\'on a la carga.
+El resultado depende de contra qu\'e se compare, y por eso se presentan las tres
+condiciones:
 
-El desglose elemento por elemento muestra que el aumento \textbf{no est\'a repartido por la red, sino concentrado en un \'unico tramo}: la l\'inea \texttt{AL 1.32km}, que es precisamente la que evacua la energ\'ia del proyecto hacia el punto de conexi\'on, pasa de 0.62\,kW a 9.92\,kW de p\'erdidas ($+$9.30\,kW). Todas las dem\'as l\'ineas del sistema \textbf{reducen} ligeramente sus p\'erdidas al entrar el proyecto:
+\begin{itemize}
+\item \textbf{Frente al escenario de carga pura} (la red sin ninguna generaci\'on
+distribuida), el proyecto \textbf{reduce} las p\'erdidas totales del sistema en
+2.28\,kW en el a\~no $t$ y 2.48\,kW en el a\~no $t+x$. Esta es la comparaci\'on que
+responde a la pregunta de fondo del numeral 8.6: qu\'e le aporta la generaci\'on
+distribuida a la red.
+\item \textbf{Frente al caso base} (donde GD1 y GD2 ya generan), el proyecto suma
+2.51\,kW en promedio en el a\~no $t$ y 2.49\,kW en el a\~no $t+x$, con un rango
+horario que va de $-$0.62 a $+$9.53\,kW: \textbf{hay horas en que el proyecto
+reduce las p\'erdidas del sistema} y horas en que las aumenta.
+\end{itemize}
 
-\begin{table}[H]
-\centering
-\caption{P\'erdidas activas por l\'inea, a\~no $t$, hora 15 (m\'axima demanda).}
-\begin{tabular}{lrrr}
-\toprule
-L\'inea & Sin proyecto (kW) & Con proyecto (kW) & $\Delta$ (kW) \\
-\midrule
-\texttt{AL 1.32km} (evacuaci\'on) & 0.62 & 9.92 & $+$9.30 \\
-\texttt{AL 4.2km} & 5.53 & 5.46 & $-$0.07 \\
-\texttt{Al 14.833km} & 2.81 & 2.77 & $-$0.03 \\
-\texttt{AL 2.64km} & 1.24 & 1.23 & $-$0.02 \\
-Resto de l\'ineas & \multicolumn{3}{c}{variaciones inferiores a $\pm$0.02\,kW} \\
-\midrule
-Subtotal l\'ineas & 152.23 & 161.44 & $+$9.21 \\
-\textbf{Total del sistema} (l\'ineas $+$ transformadores) & \textbf{152.23} & \textbf{161.58} & \textbf{$+$9.34} \\
-\bottomrule
-\end{tabular}
-\end{table}
+El comportamiento se explica por la competencia entre dos efectos opuestos. La
+inyecci\'on de potencia cerca de la carga descarga los tramos aguas arriba y
+reduce sus p\'erdidas; simult\'aneamente, evacuar esa potencia carga el tramo de
+conexi\'on del proyecto y aumenta las suyas. El desglose por elemento lo muestra
+con claridad: de las 12 l\'ineas del sistema, \'unicamente \texttt{AL 1.32km} --- la
+que evacua la generaci\'on hacia el punto de conexi\'on --- incrementa sus
+p\'erdidas; las otras 11 las reducen. A las horas de generaci\'on baja
+(amanecer y atardecer) domina el primer efecto y el balance es negativo; al
+mediod\'ia, con el proyecto a plena potencia, domina el segundo.
 
-La lectura correcta es entonces: \textbf{el proyecto no degrada el desempe\~no de la red de EBSA}. Las p\'erdidas adicionales son el costo de transporte de su propia energ\'ia por el tramo de conexi\'on, y su magnitud (9.3\,kW frente a 990\,kW generados, es decir un 0.94\,\%) es normal para una conexi\'on de esta longitud. En el resto del sistema el efecto del proyecto es, como se esperaba, una reducci\'on marginal de p\'erdidas.
-
-Conviene notar adem\'as que las p\'erdidas del transformador propio del proyecto no contribuyen a este delta: el modelo reporta p\'erdidas activas pr\'acticamente nulas en ese equipo, de modo que los 9.26\,kW son \'integramente p\'erdidas en el conductor de evacuaci\'on.
+En t\'erminos relativos, el aumento m\'aximo horario (9.53\,kW) representa un
+0.96\,\% de los 990\,kW generados, magnitud normal para el transporte por un
+tramo de conexi\'on de esta longitud. \textbf{En ning\'un caso el proyecto degrada
+el desempe\~no de la red de EBSA}: incluso en su hora m\'as desfavorable, el
+sistema con el proyecto conectado tiene menos p\'erdidas que el sistema sin
+ninguna generaci\'on distribuida.
 
 \subsection{An\'alisis de estabilidad}
 % 8.7 -- No aplica
@@ -698,7 +783,7 @@ No aplica: el proyecto se conecta en Nivel de Tensi\'on II (13.2\,kV); el an\'al
 
 \subsection{Evaluaci\'on econ\'omica}
 % 8.8 -- condicional
-Condicional: solo aplica si los an\'alisis de las Secciones 5.3/5.4 identifican incumplimientos t\'ecnicos (sobrecargas, sobre/subtensiones). \pendiente{Definir aplicabilidad una vez cerrados los resultados.}
+Condicional: solo aplica si los an\'alisis de las Secciones~\ref{sec:flujo-carga} y~\ref{sec:cortocircuito} identifican incumplimientos t\'ecnicos (sobrecargas, sobre/subtensiones o superaci\'on de la capacidad de corte). \textbf{No aplica}: los resultados de este estudio no identifican ning\'un incumplimiento --- no hay elementos por encima del 100\,\% de cargabilidad, las tensiones se mantienen dentro del rango 0.90--1.10\,p.u.\ en los 72 escenarios simulados, y el nivel de cortocircuito m\'aximo (8.164\,kA) queda por debajo de la capacidad de corte declarada (10\,kA). En consecuencia no se requieren obras de refuerzo ni evaluaci\'on econ\'omica asociada.
 
 % ============================================================================
 \section{Conclusiones}
