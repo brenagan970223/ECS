@@ -231,6 +231,59 @@ def safe_get(obj, attr):
         return None
 
 
+# Atributos candidatos para leer la corriente de cortocircuito, en orden de
+# preferencia. Se prueban uno por uno y se usa el primero que devuelva un valor
+# distinto de None y de cero.
+#
+# POR QUE UNA LISTA Y NO UN SOLO ATRIBUTO: 'm:Ikss' devuelve el valor correcto
+# para falla trifasica y monofasica, pero en la falla BIFASICA devolvia 0.0000
+# en las 31 combinaciones barra x caso de la corrida del 2026-09-19. Una
+# corriente de falla bifasica de cero es fisicamente imposible en una red
+# energizada (no depende de la secuencia cero: Ik2 = raiz(3)*c*Un/|Z1+Z2|, que
+# para Z2 ~ Z1 da Ik2 ~ 0.866*Ik3), asi que no es un problema del modelo sino
+# de que en una falla desbalanceada PowerFactory reporta el resultado en las
+# variables POR FASE y deja 'm:Ikss' sin poblar. En una falla bifasica las
+# fases falladas son dos (por defecto L2-L3), por eso se toma el MAXIMO de las
+# corrientes de fase: sirve igual para trifasica (las tres iguales), monofasica
+# (solo la fallada) y bifasica (las dos falladas).
+ATRIBUTOS_IKSS_BARRA = ["m:Ikss", "m:Ikss:A", "m:Ikss:B", "m:Ikss:C"]
+ATRIBUTOS_SKSS_BARRA = ["m:Skss", "m:Skss:A", "m:Skss:B", "m:Skss:C"]
+
+
+def leer_maximo_por_fase(obj, atributos):
+    """Devuelve (valor, atributo_usado) tomando el mayor valor no nulo entre los
+    atributos candidatos. Si el primero (el agregado, ej. 'm:Ikss') ya trae un
+    valor util, se usa ese; si viene nulo o en cero, se cae a las variables por
+    fase. Devuelve (None, None) si ninguno da un valor."""
+    agregado = safe_get(obj, atributos[0])
+    if agregado not in (None, 0):
+        return agregado, atributos[0]
+
+    mejor, mejor_attr = None, None
+    for attr in atributos[1:]:
+        valor = safe_get(obj, attr)
+        if valor not in (None, 0) and (mejor is None or valor > mejor):
+            mejor, mejor_attr = valor, attr
+    if mejor is not None:
+        return mejor, mejor_attr
+    # ningun candidato dio valor util: se devuelve el agregado tal cual vino
+    # (puede ser 0 o None) para que quede registrado y se marque como invalido
+    return agregado, atributos[0]
+
+
+def diagnosticar_atributos(app, obj, atributos, etiqueta):
+    """Imprime en la Output Window que atributos candidatos traen valor y cuales
+    no, para una barra concreta. Se llama una sola vez por tipo de falla: con
+    eso queda documentado en el log de la corrida cual es la variable que
+    realmente usa esta version de PowerFactory para cada tipo de falla, sin
+    tener que adivinarlo."""
+    partes = []
+    for attr in atributos:
+        valor = safe_get(obj, attr)
+        partes.append(f"{attr}={'None' if valor is None else f'{valor:.6f}'}")
+    app.PrintInfo(f"  [diagnostico {etiqueta}] {obj.loc_name}: " + " | ".join(partes))
+
+
 def nombre_nodo(cubicle):
     try:
         return cubicle.cterm.loc_name
@@ -310,6 +363,7 @@ def main():
     filas_trafos_2w = []
     filas_trafos_3w = []
     filas_generadores = []
+    tipos_diagnosticados = set()  # para volcar el diagnostico de atributos una sola vez por tipo de falla
 
     for nombre_caso, variacion_obj in casos:
         activar_caso_red(app, nombre_caso, variacion_obj, variations_pf)
@@ -341,19 +395,48 @@ def main():
                 # ComShc con IEC 60909/VDE 0102 es un calculo directo (no iterativo),
                 # a diferencia de ComLdf: no "converge" o no, simplemente calcula bien
                 # o da error (configuracion invalida, dato faltante, etc.)
-                valido = err == 0
-                filas_resumen.append([nombre_caso, barra.loc_name, nombre_tipo, valido])
+                ejecuto_ok = err == 0
 
                 # se exporta una imagen por CADA calculo (valido o no), como en
                 # Flujo_carga.py, para poder revisar cada falla individualmente
                 exportar_diagrama_red(app, nombre_proyecto, nombre_caso, barra.loc_name, nombre_tipo)
 
-                if not valido:
+                if not ejecuto_ok:
+                    filas_resumen.append([nombre_caso, barra.loc_name, nombre_tipo, False, "ComShc devolvio error"])
                     app.PrintError(
                         f"Caso {nombre_caso}, barra {barra.loc_name}, falla {nombre_tipo}: "
                         f"CALCULO NO VALIDO (codigo {err})."
                     )
                     continue
+
+                # la primera vez que se calcula cada tipo de falla se vuelca al log
+                # que atributos traen valor, para dejar documentado cual usa esta
+                # version de PowerFactory (ver ATRIBUTOS_IKSS_BARRA)
+                if nombre_tipo not in tipos_diagnosticados:
+                    tipos_diagnosticados.add(nombre_tipo)
+                    app.PrintInfo(f"  Atributos disponibles para falla {nombre_tipo}:")
+                    diagnosticar_atributos(app, barra, ATRIBUTOS_IKSS_BARRA, nombre_tipo)
+
+                ikss, attr_ikss = leer_maximo_por_fase(barra, ATRIBUTOS_IKSS_BARRA)
+                skss, _ = leer_maximo_por_fase(barra, ATRIBUTOS_SKSS_BARRA)
+
+                # VALIDACION FISICA: una corriente de falla nula en una barra
+                # energizada no existe. Antes el script marcaba Valido=True con
+                # solo mirar el codigo de retorno de ComShc, y por eso las 93
+                # combinaciones de la corrida anterior salieron "validas" pese a
+                # que las 31 bifasicas venian en cero.
+                if ikss in (None, 0):
+                    filas_resumen.append([
+                        nombre_caso, barra.loc_name, nombre_tipo, False,
+                        f"Ikss nula o vacia: ningun atributo de {ATRIBUTOS_IKSS_BARRA} trajo valor",
+                    ])
+                    app.PrintError(
+                        f"Caso {nombre_caso}, barra {barra.loc_name}, falla {nombre_tipo}: "
+                        f"ComShc ejecuto sin error pero Ikss vino nula/cero - RESULTADO NO UTILIZABLE. "
+                        f"Revisar que variable reporta la corriente para este tipo de falla."
+                    )
+                else:
+                    filas_resumen.append([nombre_caso, barra.loc_name, nombre_tipo, True, attr_ikss])
 
                 # solo se registra la barra realmente fallada (Nombre == Barra_Falla):
                 # m:Ikss/m:Skss en las demas barras durante ESTE calculo puntual no es
@@ -362,7 +445,7 @@ def main():
                 # registrarlas aqui solo inflaba la hoja sin aportar informacion.
                 filas_nodos.append([
                     barra.loc_name, nombre_caso, barra.loc_name, nombre_tipo,
-                    safe_get(barra, "m:Ikss"), safe_get(barra, "m:Skss"),
+                    ikss, skss, attr_ikss,
                 ])
 
                 for ln in lines:
@@ -392,11 +475,80 @@ def main():
     # deja PowerFactory en el caso base al terminar
     activar_caso_red(app, CASO_BASE, None, variations_pf)
 
+    verificar_coherencia_fisica(app, filas_nodos)
+
     exportar_resultados(
         app, filas_resumen, filas_nodos, filas_lineas, filas_trafos_2w, filas_trafos_3w, filas_generadores,
         variations_faltantes,
     )
     app.PrintInfo("===================================")
+
+
+def verificar_coherencia_fisica(app, filas_nodos):
+    """Chequeos de coherencia sobre los resultados, ANTES de exportarlos.
+
+    Son dos relaciones que la fisica impone y que sirven para detectar de una
+    vez si algun tipo de falla quedo mal leido (que fue justo lo que paso con
+    la bifasica en la corrida del 2026-09-19):
+
+      1. Ik2 / Ik3 ~ 0.866  (raiz(3)/2), porque la falla bifasica solo depende
+         de las secuencias positiva y negativa: Ik2 = raiz(3)*c*Un/|Z1+Z2| y
+         Z2 ~ Z1 en una red de distribucion.
+      2. Ik1 distinto de Ik3. Si dan EXACTAMENTE iguales en todas las barras,
+         es senal de que las impedancias de secuencia cero no estan
+         parametrizadas y PowerFactory esta asumiendo Z0 = Z1 por defecto; en
+         ese caso las corrientes de falla monofasica NO sirven para disenar la
+         malla de puesta a tierra, que depende del camino de secuencia cero.
+    """
+    # filas_nodos: [Nombre, Caso, Barra_Falla, Tipo_Falla, Ikss, Skss, Atributo]
+    valores = {}
+    for fila in filas_nodos:
+        valores[(fila[1], fila[2], fila[3])] = fila[4]
+
+    app.PrintInfo("--- Verificacion de coherencia fisica de los resultados ---")
+
+    ratios_2 = []
+    iguales_1_3 = 0
+    comparadas = 0
+    for (caso, barra, tipo), valor in valores.items():
+        if tipo != "Trifasico" or not valor:
+            continue
+        ik3 = valor
+        ik2 = valores.get((caso, barra, "Bifasico"))
+        ik1 = valores.get((caso, barra, "Monofasico"))
+        if ik2:
+            ratios_2.append(ik2 / ik3)
+        if ik1:
+            comparadas += 1
+            if abs(ik1 / ik3 - 1) < 1e-6:
+                iguales_1_3 += 1
+
+    if not ratios_2:
+        app.PrintError(
+            "  [1] No hay ninguna corriente de falla BIFASICA utilizable: todas vinieron nulas o en cero. "
+            "Revisar el diagnostico de atributos impreso mas arriba."
+        )
+    else:
+        promedio = sum(ratios_2) / len(ratios_2)
+        fuera = [r for r in ratios_2 if not (0.80 <= r <= 0.95)]
+        mensaje = f"  [1] Ik2/Ik3: promedio {promedio:.4f} sobre {len(ratios_2)} barras (esperado ~0.866)."
+        if fuera:
+            app.PrintError(mensaje + f" {len(fuera)} barras fuera del rango 0.80-0.95 - REVISAR.")
+        else:
+            app.PrintInfo(mensaje + " OK.")
+
+    if comparadas and iguales_1_3 == comparadas:
+        app.PrintError(
+            f"  [2] Ik1 es EXACTAMENTE igual a Ik3 en las {comparadas} barras comparadas. Eso indica que las "
+            f"impedancias de secuencia cero NO estan parametrizadas (PowerFactory esta usando Z0 = Z1 por "
+            f"defecto). Las corrientes de falla monofasica de esta corrida NO son utilizables para el diseno "
+            f"de la malla de puesta a tierra."
+        )
+    elif comparadas:
+        app.PrintInfo(
+            f"  [2] Ik1 difiere de Ik3 en {comparadas - iguales_1_3} de {comparadas} barras: la secuencia cero "
+            f"si esta siendo considerada. OK."
+        )
 
 
 def guardar_workbook_seguro(app, wb, ruta):
@@ -432,13 +584,20 @@ def exportar_resultados(
             max_len = max(len(str(c.value)) if c.value is not None else 0 for c in col)
             ws.column_dimensions[col[0].column_letter].width = max_len + 2
 
-    hoja("Resumen", ["Caso", "Barra_Falla", "Tipo_Falla", "Valido"], filas_resumen)
+    # "Valido" ahora refleja tambien la validacion fisica del resultado (Ikss no
+    # nula), no solo el codigo de retorno de ComShc; "Detalle" dice por que fallo
+    # o de que atributo se leyo la corriente.
+    hoja("Resumen", ["Caso", "Barra_Falla", "Tipo_Falla", "Valido", "Detalle"], filas_resumen)
     hoja(
         "Variations_Faltantes",
         ["Network_Variation_no_encontrada_en_PowerFactory"],
         [[nombre] for nombre in variations_faltantes],
     )
-    hoja("Nodos", ["Nombre", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA", "Skss_MVA"], filas_nodos)
+    hoja(
+        "Nodos",
+        ["Nombre", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_kA", "Skss_MVA", "Atributo_leido"],
+        filas_nodos,
+    )
     hoja(
         "Lineas",
         ["Nombre", "Nodo_I", "Nodo_J", "Caso", "Barra_Falla", "Tipo_Falla", "Ikss_bus1_kA", "Ikss_bus2_kA"],
