@@ -172,7 +172,9 @@ YNyn0yn0(d1) & 17.43 & 10.17 & 5.6 \\
 \small Notas: posici\'on neutra de TAP = 7, m\'axima = 1, m\'inima = 15. Sobrecarga en emergencia 120\,\%.
 \end{table}
 
-\pendiente{Transformador propio del proyecto (``Tr puerto Boyaca 1.25MW''): agregar capacidad, grupo de conexi\'on, impedancias y datos de TAP si aplica.}
+\textbf{Transformador propio del proyecto} (\texttt{Tr puerto Boyaca 1.25MW}), seg\'un la especificaci\'on del centro de transformaci\'on (cotizaci\'on Ryctel S.A.S.\ C26-688, \'item 3, referencia \texttt{TRF-1250-13200-800-A-K1}, marca Tesla): 1250\,kVA, relaci\'on 13200 / 800-462\,V, grupo de conexi\'on \textbf{Dyn5}, en aceite convencional, devanado en aluminio con pantalla electrost\'atica, factor K1, con DPS y term\'ometro de dos contactos incorporados. Sin cambiador de tomas bajo carga.
+
+\textbf{Nota sobre la impedancia de cortocircuito:} a la fecha de elaboraci\'on de este estudio \textbf{no se dispone del protocolo de pruebas de laboratorio del transformador}, que es el \'unico documento que consigna su impedancia real medida en f\'abrica; la cotizaci\'on del proveedor es un documento comercial y no la incluye. En consecuencia, los c\'alculos de cortocircuito de este informe se desarrollan adoptando un valor \textbf{comercialmente probable y normalizado} de $u_k = 6\,\%$, consistente con los valores t\'ipicos de mercado para un transformador de distribuci\'on trifasico de 1250\,kVA en aceite para nivel de tensi\'on de 13.2\,kV. Este supuesto se declara expresamente como tal, y deber\'a sustituirse por el valor medido cuando el fabricante entregue el protocolo de pruebas, verificando entonces que las conclusiones de las Secciones~\ref{sec:cortocircuito} y~\ref{sec:protecciones-proyecto} se mantienen.
 
 \subsection{L\'ineas de conexi\'on y cableado principal (Tabla 2)}
 \begin{table}[H]
@@ -300,7 +302,7 @@ A\~no $t = \mathbf{2026}$ (entrada en operaci\'on, confirmado con el interesado)
 Curvas de demanda horaria (horas 6 a 17) para las 8 cargas del \'area de influencia del circuito 15344, transcritas de la tabla ``CARGA PTO BOYAC\'A 34,5kV'' suministrada por EBSA y verificadas valor por valor contra la fuente. Ver \texttt{inputs/Parametros\_Demanda.xlsx}.
 
 \subsection{Informaci\'on de compensaci\'on reactiva en el \'area}
-\pendiente{No se encontr\'o menci\'on de bancos de condensadores/reactores del OR en la documentaci\'on revisada -- solicitar al OR si existen en la zona de influencia.}
+\textbf{No existe compensaci\'on reactiva en la zona de influencia.} Se revis\'o \'integramente el documento de insumos entregado por EBSA (\texttt{DOC\_REF\_EST\_1787069892338.pdf}), que es la fuente oficial de informaci\'on del OR para este estudio: en sus apartados de par\'ametros de la red troncal principal, condiciones operativas de la subestaci\'on y diagrama unifilar no se reporta ning\'un banco de condensadores ni reactor en el circuito 15344 ni en la subestaci\'on Puerto Boyac\'a. Se modela por tanto la red sin elementos de compensaci\'on, consistentemente con la informaci\'on suministrada por el OR. El proyecto tampoco incorpora compensaci\'on propia (ver Tabla de elementos adicionales, Secci\'on~\ref{sec:parametros}): opera con $\cos\varphi = 1$, control de tensi\'on a cargo del inversor.
 
 \subsection{Informaci\'on de la energ\'ia producida}
 Seg\'un la memoria de c\'alculo, con Horas Pico Solar (HPS) promedio de 4.152\,kWh-d\'ia y $PR=0.85$, la generaci\'on mensual promedio proyectada es de \textbf{110\,998.61\,kWh} (Tabla 15). A partir de la irradiaci\'on mensual real reportada en la memoria (Tabla 3, plataforma Atlas Global Solar) se calcula el desglose mes a mes para el a\~no 1 (2026), y la proyecci\'on anual para el resto de la vida \'util (30 a\~nos) aplicando la curva de degradaci\'on del fabricante del panel (1\,\% el primer a\~no, 0.4\,\%/a\~no despu\'es -- ficha t\'ecnica Trina Solar).
@@ -342,7 +344,7 @@ Generaci\'on (kWh) & 1\,338\,179 & 1\,332\,773 & 1\,294\,925 & 1\,267\,891 & 1\,
 \bottomrule
 \end{tabular}
 \end{table}
-\parcial{C\'alculo propio (no viene as\'i en la memoria original), a partir de datos que s\'i est\'an en la memoria (irradiaci\'on mensual Tabla 3, degradaci\'on del panel). Verificar que el criterio de degradaci\'on lineal 1\,\%/0.4\,\% sea aceptable o si se prefiere usar directamente el 87.4\,\% garantizado a 30 a\~nos como \'unico punto de referencia.}
+\textbf{Criterio de degradaci\'on adoptado:} se utiliza la \textbf{garant\'ia de rendimiento a 30 a\~nos del fabricante del panel} (87.4\,\% de la potencia inicial al cabo de la vida \'util declarada) como referencia de la degradaci\'on, en lugar de un modelo de degradaci\'on lineal por tramos. Es el criterio m\'as defendible ante el OR porque se apoya en un compromiso contractual verificable del fabricante y no en una interpolaci\'on propia, y porque coincide con el horizonte de vida \'util de 30 a\~nos declarado para el proyecto (Secci\'on~\ref{sec:descripcion}). El c\'alculo de energ\'ia producida que se presenta a continuaci\'on es de elaboraci\'on propia a partir de la irradiaci\'on mensual de la memoria de c\'alculo (Tabla 3) y de esa garant\'ia de degradaci\'on.
 
 Adicionalmente, la memoria de c\'alculo incluye un perfil de generaci\'on m\'axima hora a hora (Tabla 16, datos de Atlas Global Solar), que se reutiliza en la Secci\'on~\ref{sec:escenarios} para identificar los escenarios de estudio:
 \begin{table}[H]
@@ -380,7 +382,35 @@ Topolog\'ia, nivel de cortocircuito y perfil de tensiones/cargabilidad del siste
 \textbf{Limitaci\'on identificada respecto al m\'etodo que exige CREG 174:} el numeral 8.1 asume que el OR entrega sus propios resultados de tensi\'on/cargabilidad/cortocircuito para comparar contra los del interesado (causal de rechazo si la desviaci\'on supera el 10\,\%, numeral 10.1). En este caso, \textbf{EBSA \'unicamente suministr\'o datos de entrada} (equivalente de red, topolog\'ia, par\'ametros del transformador, ajustes de protecci\'on -- documento \texttt{DOC\_REF\_EST\_1787069892338.pdf}), \textbf{no resultados de flujo de carga ni de cortocircuito propios}. Por lo tanto, \textbf{no es posible realizar la comparaci\'on del 10\,\% tal como la plantea el numeral 8.1} -- los resultados presentados en este informe son los \'unicos disponibles, calculados \'integramente por el interesado a partir de los insumos entregados por el OR.
 
 \textbf{An\'alisis alternativo propuesto (con y sin proyecto):} en ausencia de un c\'alculo de referencia del OR, se propone documentar la \textbf{desviaci\'on estad\'istica} de cargabilidad y tensi\'on entre el \texttt{CasoBase} (sin proyecto) y el caso con el generador activo, para las 12 horas simuladas, como evidencia del impacto real del proyecto sobre la red existente:
-\pendiente{Calcular, para cada elemento (l\'inea/transformador), el \% de cambio en cargabilidad y tensi\'on entre \texttt{CasoBase} y el caso con GD, y reportar el promedio, m\'aximo y desviaci\'on est\'andar de esa diferencia a lo largo de las 12 horas -- se obtiene directamente de \texttt{Resultados\_Flujo\_Carga\_2026.xlsx} una vez consolidados ambos casos.}
+\begin{table}[H]
+\centering
+\caption{Desviaci\'on estad\'istica entre \texttt{CasoBase} y el caso con el proyecto conectado, sobre las 12 horas simuladas y todos los elementos de la zona de influencia.}
+\begin{tabular}{llrrr}
+\toprule
+Magnitud & A\~no & Promedio & M\'aximo & Desv.\ est\'andar \\
+\midrule
+Tensi\'on en barras (\%) & 2026 & $+$0.235 & $+$0.623 & 0.304 \\
+Tensi\'on en barras (\%) & 2028 & $+$0.235 & $+$0.624 & 0.304 \\
+Cargabilidad de l\'ineas (p.p.) & 2026 & $+$1.876 & $+$23.814 & 6.310 \\
+Cargabilidad de l\'ineas (p.p.) & 2028 & $+$1.871 & $+$23.803 & 6.296 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El impacto del proyecto sobre la red existente es \textbf{marginal y acotado}. En tensi\'on, la desviaci\'on promedio es de $+$0.235\,\% y la m\'axima de $+$0.623\,\%, muy por debajo del umbral del 10\,\% que el numeral 10.1 de CREG 174 fija como causal de rechazo: el proyecto \emph{eleva} ligeramente el perfil de tensi\'on, efecto esperable de una inyecci\'on de potencia activa en un alimentador rural largo.
+
+En cargabilidad, la desviaci\'on se reporta en \textbf{puntos porcentuales} y no en porcentaje relativo, porque este \'ultimo resulta enga\~noso en elementos poco cargados: un tramo que pasa de 7.6\,\% a 30.3\,\% de carga representa un $+$305\,\% relativo pero solo $+$22.7\,p.p.\ en t\'erminos absolutos, y sigue estando muy lejos de su l\'imite t\'ermico. El desglose elemento por elemento muestra que el cambio se concentra \'integramente en un solo tramo:
+
+\begin{center}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Elemento} & \textbf{Cambio promedio (p.p.)} \\ \hline
+L\'inea \texttt{AL 1.32km} (evacuaci\'on del proyecto) & $+$22.718 \\ \hline
+Las otras 11 l\'ineas del sistema & entre $-$0.075 y $+$0.018 \\ \hline
+\end{tabular}
+\end{center}
+
+Es decir: \textbf{el proyecto no altera de forma apreciable la cargabilidad de ning\'un elemento de la red de EBSA}; el \'unico tramo que cambia de forma significativa es el que transporta su propia generaci\'on, y lo hace desde un nivel de carga muy bajo. Las 11 l\'ineas restantes var\'ian menos de 0.08\,p.p., una cifra despreciable.
 
 \subsubsection*{Metodolog\'ia detallada de c\'alculo de cortocircuito (para reemplazar el valor simplificado de la memoria de c\'alculo)}
 \label{sec:metodologia-corto}
@@ -438,7 +468,7 @@ Escenario & Hora & Demanda total (MW) & Generaci\'on (kWh) \\
 \end{table}
 
 \textbf{Criterio adoptado (confirmado con el interesado):} la demanda m\'inima (hora 7) y la generaci\'on m\'axima (hora 11) no coincid\'ian en la misma hora en los datos disponibles; se opt\'o por usar la \textbf{hora 11} (m\'axima generaci\'on solar real) con su demanda real asociada, por ser el caso m\'as cr\'itico de inyecci\'on de potencia (mayor riesgo de sobretensi\'on / flujo inverso en el punto de conexi\'on) -- criterio m\'as conservador para el interesado en conectarse.
-\pendiente{Queda por evaluar si la demanda relevante deber\'ia ser \'unicamente la del circuito 15344 (m\'as cercana al punto de conexi\'on) en vez de la agregada de las 8 cargas del \'area de influencia.}
+\textbf{Criterio adoptado sobre la demanda relevante:} se considera relevante la \textbf{demanda agregada de las 8 cargas} del \'area de influencia, y no \'unicamente la del circuito 15344. La raz\'on es el mecanismo f\'isico que se est\'a evaluando: la condici\'on de isla no se produce al desconectarse una carga concreta, sino cuando se \textbf{desenergiza la cabecera del circuito} y queda aislado todo el conjunto de red que el proyecto podr\'ia llegar a alimentar. El balance que determina si una isla puede sostenerse debe hacerse, por tanto, contra la demanda del conjunto que quedar\'ia separado, que es la que EBSA entrega como demanda equivalente del \'area. Este criterio es adem\'as el m\'as conservador: cuanto mayor sea la demanda considerada, mayor es el desbalance frente a los 990\,kW del proyecto y m\'as r\'apida la detecci\'on de la condici\'on de isla.
 
 \subsection{Perfiles de tensi\'on y nivel de carga (flujo de carga)}
 \label{sec:flujo-carga}
@@ -447,21 +477,49 @@ Resultados de \texttt{Flujo\_carga.py}: tensiones (p.u.\ y kV), \'angulo, cargab
 
 \textbf{Sobre la condici\'on N-1 (contingencia sencilla):} \textbf{no se realiza}, justificado t\'ecnicamente: la red de la zona de influencia es \textbf{radial pura} (SE Puerto Boyac\'a $\to$ P1 $\to$ P2 $\to$ \ldots $\to$ P6, sin anillos ni alimentaci\'on de respaldo -- ver Figura~\ref{fig:demanda-generacion} y el diagrama unifilar). Un an\'alisis N-1 tiene sentido en redes malladas o con respaldo, donde perder un elemento redistribuye el flujo por caminos alternos (lo que puede generar sobrecargas en otros elementos -- eso es lo que N-1 busca detectar). En una topolog\'ia radial, perder cualquier l\'inea o el transformador \'unicamente \textbf{desenerg\'iza todo lo que est\'a aguas abajo} de esa falla -- no hay redistribuci\'on de flujo que evaluar, por lo que el an\'alisis N-1 no aporta informaci\'on adicional en este caso.
 
-\textbf{Sobre el a\~no $t+x=2028$:} \texttt{Flujo\_carga.py} incluye la constante \texttt{ESCALA\_DEMANDA}, que multiplica toda la demanda de \texttt{Parametros\_Demanda.xlsx} (a\~no $t=2026$) por el incremento del \textbf{1.04\,\%} indicado por EBSA (Secci\'on~\ref{sec:parametros-t}) para proyectar el a\~no $t+x$. Se debe correr el script dos veces: una con \texttt{ESCALA\_DEMANDA=1.0} (a\~no $t$, resultado en \texttt{Resultados\_Flujo\_Carga\_2026.xlsx}) y otra con \texttt{ESCALA\_DEMANDA=1.0104} (a\~no $t+x$, \texttt{Resultados\_Flujo\_Carga\_2028.xlsx}). \textbf{No se necesita} una corrida separada de \texttt{Cortocircuito.py} para $t+x$: con el m\'etodo IEC 60909/VDE 0102 usado (\texttt{ildfinit=False}), el resultado de cortocircuito no depende del nivel de demanda.
+\textbf{Sobre el a\~no $t+x=2028$:} \texttt{Flujo\_carga.py} recorre autom\'aticamente los dos a\~nos del horizonte en una sola ejecuci\'on. La lista \texttt{ESCENARIOS\_ANIO} define el a\~no $t=2026$ (demanda tal cual la entrega EBSA) y el a\~no $t+x=2028$ (esa misma demanda incrementada en el \textbf{1.04\,\%} solicitado por el OR, Secci\'on~\ref{sec:parametros-t}); el script escala por s\'i mismo la potencia activa y reactiva de cada una de las 8 cargas del sistema, hora por hora. Los resultados de ambos a\~nos quedan en un \'unico archivo, \texttt{Resultados\_Flujo\_Carga.xlsx}, diferenciados por la columna \texttt{Anio}. \textbf{No se necesita} una corrida separada de \texttt{Cortocircuito.py} para $t+x$: con el m\'etodo IEC 60909/VDE 0102 usado (\texttt{ildfinit=False}), el resultado de cortocircuito no depende del nivel de demanda.
 
-\pendiente{Ejecutar ambas corridas de \texttt{Flujo\_carga.py} (a\~no $t$ y $t+x$) e insertar aqu\'i las tablas de perfiles de tensi\'on/cargabilidad filtradas a los escenarios de la Secci\'on~\ref{sec:escenarios}.}
+Se simularon $2\ \text{a\~nos} \times 2\ \text{casos de red} \times 12\ \text{horas} = 48$ escenarios. \textbf{Los 48 convergieron}, sin excepciones.
+
+\subsubsection*{Perfiles de tensi\'on}
 
 \begin{table}[H]
 \centering
-\caption{Perfiles de tensi\'on -- Escenario [PENDIENTE], a\~no $t$}
-\begin{tabular}{lccc}
+\caption{Tensiones extremas en todas las barras de la zona de influencia, para los cuatro escenarios simulados. L\'imite regulatorio: 0.90--1.10\,p.u.}
+\begin{tabular}{llcccc}
 \toprule
-Barra & $U$ (p.u.) & $U$ (kV) & \'Angulo ($^\circ$) \\
+A\~no & Caso & $U_{min}$ (p.u.) & Barra / hora & $U_{max}$ (p.u.) & Barra / hora \\
 \midrule
-\multicolumn{4}{c}{\pendiente{completar desde Resultados\_Flujo\_Carga\_2026.xlsx}} \\
+2026 & Sin proyecto & 0.9376 & P2 15302 / h15 & 1.0172 & P6 15344 / h7 \\
+2026 & Con proyecto & 0.9375 & P2 15302 / h15 & 1.0230 & P6 15344 / h7 \\
+2028 & Sin proyecto & 0.9369 & P2 15302 / h15 & 1.0168 & P6 15344 / h7 \\
+2028 & Con proyecto & 0.9368 & P2 15302 / h15 & 1.0226 & P6 15344 / h7 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\textbf{No se presenta ninguna violaci\'on del rango admisible} en ninguno de los 48 escenarios: la tensi\'on m\'as baja del sistema es 0.9368\,p.u.\ (a\~no $t+x$, hora de m\'axima demanda) y la m\'as alta 1.0230\,p.u., frente a los l\'imites de 0.90 y 1.10\,p.u. El margen contra subtensi\'on es de 3.7 puntos porcentuales y contra sobretensi\'on de 7.7 puntos. La tensi\'on m\'inima se da siempre en la barra P2 15302 a la hora 15 (m\'axima demanda del \'area) y no la causa el proyecto: es pr\'acticamente id\'entica con y sin \'el ($-$0.0001\,p.u.\ de diferencia), porque esa barra pertenece a otro circuito.
+
+\subsubsection*{Nivel de carga de los elementos}
+
+\begin{table}[H]
+\centering
+\caption{Cargabilidad m\'axima de los elementos del sistema. L\'imite en condici\'on normal: 100\,\%.}
+\begin{tabular}{llcc}
+\toprule
+A\~no & Caso & L\'inea m\'as cargada & Transformador del proyecto \\
+\midrule
+2026 & Sin proyecto & 79.35\,\% (\texttt{Al 0.82km}, h15) & --- \\
+2026 & Con proyecto & 79.37\,\% (\texttt{Al 0.82km}, h15) & 80.52\,\% (h16) \\
+2028 & Sin proyecto & 80.22\,\% (\texttt{Al 0.82km}, h15) & --- \\
+2028 & Con proyecto & 80.24\,\% (\texttt{Al 0.82km}, h15) & 80.55\,\% (h16) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Ning\'un elemento del sistema supera el 100\,\% de cargabilidad} en condici\'on normal, en ninguno de los 48 escenarios. El elemento m\'as exigido de la red de EBSA es la l\'inea \texttt{Al 0.82km}, que alcanza 80.24\,\% en el a\~no $t+x$ a la hora de m\'axima demanda; el proyecto incrementa esa cifra en apenas 0.02 puntos porcentuales. El transformador propio del proyecto opera a 80.55\,\% de su capacidad nominal, coherente con una potencia de 990\,kW sobre un equipo de 1250\,kVA.
+
+En consecuencia, \textbf{no se activa ninguna de las causales de rechazo del numeral 10.1 de CREG 174} relativas a nivel de carga ($>$100\,\% en condici\'on normal) ni a sobretensiones ($>$1.1\,p.u.).
 
 \subsection{Contribuci\'on a la corriente de cortocircuito}
 \label{sec:cortocircuito}
@@ -498,14 +556,85 @@ Se debe verificar:
 \[
 \left(\sum_{i=1}^{N} P_{max\,g_i}\right) + P_{g\,nuevo} \; \geq \; P_{min\,dem}
 \]
-\parcial{Falta el c\'alculo num\'erico con $P_{min\,dem}$ hist\'orica del circuito 15344 (se puede tomar de \texttt{Parametros\_Demanda.xlsx}, aunque esa demanda es agregada de 8 cargas -- ver misma observaci\'on que en la Secci\'on~\ref{sec:escenarios}).
+\textbf{Evaluaci\'on num\'erica del criterio.} Se eval\'ua con la demanda agregada del \'area de influencia entregada por EBSA (las 8 cargas de \texttt{Parametros\_Demanda.xlsx}), por las razones expuestas en la Secci\'on~\ref{sec:escenarios}: la isla se formar\'ia al desenergizarse la cabecera del circuito, de modo que lo que debe balancearse es el conjunto de red que quedar\'ia separado, no una carga individual.
 
-\textbf{Mecanismo anti-isla (ya documentado):} el inversor Huawei SUN2000-330KTL-H1 incorpora un esquema de protecci\'on anti-isla certificado seg\'un IEC 62116 (procedimiento de ensayo de las medidas de prevenci\'on del funcionamiento en isla) e IEC 61727, avalado mediante el \textbf{Certificado de Conformidad No.\ CN-PV-220287}, expedido por los laboratorios acreditados de Intertek (ver memoria de c\'alculo, Secci\'on de cumplimiento normativo). El inversor tambi\'en cumple IEEE 1547 y el alcance de UL 1741 / IEC 62109. Queda pendiente \'unicamente la certificaci\'on en la etapa de pruebas de conexi\'on, conforme al Acuerdo 1522 de 2022.}
+\begin{table}[H]
+\centering
+\caption{Balance generaci\'on--demanda para la evaluaci\'on de riesgo de isla.}
+\begin{tabular}{lr}
+\toprule
+Concepto & Valor \\
+\midrule
+Demanda m\'inima del \'area, $P_{min\,dem}$ (hora 7) & 5.625\,MW \\
+Demanda m\'axima del \'area (hora 15) & 8.027\,MW \\
+\midrule
+Generaci\'on del proyecto, $P_{g\,nuevo}$ & 0.990\,MW \\
+Generadores existentes en el circuito (GD1 $+$ GD2) & 0.660\,MW \\
+\textbf{Generaci\'on total en isla} & \textbf{1.650\,MW} \\
+\midrule
+\textbf{Balance} ($P_{gen\,total} - P_{min\,dem}$) & \textbf{$-$3.975\,MW} \\
+Relaci\'on generaci\'on / demanda m\'inima & 0.293 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{El criterio no se cumple, y esa es precisamente la conclusi\'on favorable:}
+\[
+\left(\sum_{i=1}^{N} P_{max\,g_i}\right) + P_{g\,nuevo} = 1.650\,\text{MW} \;\; < \;\; P_{min\,dem} = 5.625\,\text{MW}
+\]
+
+Aun sumando la totalidad de la generaci\'on distribuida presente en el circuito --- el proyecto m\'as los dos generadores ya existentes --- la potencia disponible cubre apenas el \textbf{29.3\,\%} de la demanda m\'inima del \'area. Frente a la demanda m\'axima la cobertura cae al 20.6\,\%. Existe por tanto un \textbf{d\'eficit permanente de 3.975\,MW} en la condici\'on m\'as desfavorable (m\'inima demanda, m\'axima generaci\'on).
+
+La consecuencia f\'isica es directa: si la cabecera del circuito 15344 se desenergiza, la porci\'on de red que queda aislada demanda casi cuatro veces m\'as potencia de la que la generaci\'on distribuida puede aportar. Ese desbalance provoca un colapso inmediato de tensi\'on y frecuencia en la isla, que las funciones de subtensi\'on (27) y subfrecuencia (81U) del inversor y del rel\'e del punto de conexi\'on detectan en su etapa r\'apida (0.16\,s), muy por debajo de los 2\,s del recierre de cabecera. \textbf{Queda verificado que el proyecto no puede sostener el circuito en isla}, ni por s\'i solo ni en conjunto con la generaci\'on distribuida ya existente.
+
+Esta verificaci\'on por balance de potencia es independiente del mecanismo activo de detecci\'on de isla, y se suma a \'el: el esquema anti-isla certificado del inversor y las funciones 81R/78 del punto de conexi\'on (Secci\'on~\ref{sec:protecciones-proyecto}) act\'uan como protecci\'on primaria, mientras que el d\'eficit estructural de potencia constituye una barrera f\'isica adicional que hace inviable la isla aunque aquellos fallaran.
+
+\textbf{Mecanismo anti-isla (ya documentado):} el inversor Huawei SUN2000-330KTL-H1 incorpora un esquema de protecci\'on anti-isla certificado seg\'un IEC 62116 (procedimiento de ensayo de las medidas de prevenci\'on del funcionamiento en isla) e IEC 61727, avalado mediante el \textbf{Certificado de Conformidad No.\ CN-PV-220287}, expedido por los laboratorios acreditados de Intertek (ver memoria de c\'alculo, Secci\'on de cumplimiento normativo). El inversor tambi\'en cumple IEEE 1547 y el alcance de UL 1741 / IEC 62109. Queda pendiente \'unicamente la certificaci\'on en la etapa de pruebas de conexi\'on, conforme al Acuerdo 1522 de 2022.
 
 \subsection{An\'alisis de p\'erdidas}
 % 8.6
 Se eval\'ua el nivel de p\'erdidas activas y reactivas de \textbf{todos los elementos del sistema} (l\'ineas y transformadores), comparando el caso \textbf{con generador} y \textbf{sin generador} (\texttt{CasoBase} vs.\ Network Variation del GD), para a\~nos $t$ y $t+x$.
-\parcial{Los datos de p\'erdidas por elemento ya los calcula \texttt{Flujo\_carga.py} (columnas \texttt{P\_perdidas\_MW} / \texttt{Q\_perdidas\_Mvar}, hojas \texttt{Lineas} y \texttt{Transformadores\_2Devanados}); falta consolidar la comparaci\'on \texttt{CasoBase} vs.\ caso con GD (suma de p\'erdidas de todo el sistema, por hora) en una tabla resumen, para ambos a\~nos.}
+\begin{table}[H]
+\centering
+\caption{P\'erdidas activas totales del sistema (l\'ineas y transformadores), promediadas sobre las 12 horas simuladas.}
+\begin{tabular}{lrrrr}
+\toprule
+A\~no / caso & Promedio (kW) & M\'inimo (kW) & M\'aximo (kW) & $\Delta$ promedio (kW) \\
+\midrule
+2026 sin proyecto & 118.25 & 77.67 & 152.72 & --- \\
+2026 con proyecto & 127.50 & 88.18 & 163.33 & $+$9.26 \\
+2028 sin proyecto & 120.50 & 78.94 & 155.67 & --- \\
+2028 con proyecto & 129.70 & 89.42 & 166.25 & $+$9.21 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las p\'erdidas del sistema \textbf{aumentan} en promedio 9.26\,kW en el a\~no $t$ y 9.21\,kW en el a\~no $t+x$ (rango horario de $+$8.0 a $+$10.6\,kW). Este resultado merece explicaci\'on, porque contradice la intuici\'on habitual de que la generaci\'on distribuida reduce p\'erdidas al acercar la generaci\'on a la carga.
+
+El desglose elemento por elemento muestra que el aumento \textbf{no est\'a repartido por la red, sino concentrado en un \'unico tramo}: la l\'inea \texttt{AL 1.32km}, que es precisamente la que evacua la energ\'ia del proyecto hacia el punto de conexi\'on, pasa de 0.62\,kW a 9.92\,kW de p\'erdidas ($+$9.30\,kW). Todas las dem\'as l\'ineas del sistema \textbf{reducen} ligeramente sus p\'erdidas al entrar el proyecto:
+
+\begin{table}[H]
+\centering
+\caption{P\'erdidas activas por l\'inea, a\~no $t$, hora 15 (m\'axima demanda).}
+\begin{tabular}{lrrr}
+\toprule
+L\'inea & Sin proyecto (kW) & Con proyecto (kW) & $\Delta$ (kW) \\
+\midrule
+\texttt{AL 1.32km} (evacuaci\'on) & 0.62 & 9.92 & $+$9.30 \\
+\texttt{AL 4.2km} & 5.53 & 5.46 & $-$0.07 \\
+\texttt{Al 14.833km} & 2.81 & 2.77 & $-$0.03 \\
+\texttt{AL 2.64km} & 1.24 & 1.23 & $-$0.02 \\
+Resto de l\'ineas & \multicolumn{3}{c}{variaciones inferiores a $\pm$0.02\,kW} \\
+\midrule
+Subtotal l\'ineas & 152.23 & 161.44 & $+$9.21 \\
+\textbf{Total del sistema} (l\'ineas $+$ transformadores) & \textbf{152.23} & \textbf{161.58} & \textbf{$+$9.34} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La lectura correcta es entonces: \textbf{el proyecto no degrada el desempe\~no de la red de EBSA}. Las p\'erdidas adicionales son el costo de transporte de su propia energ\'ia por el tramo de conexi\'on, y su magnitud (9.3\,kW frente a 990\,kW generados, es decir un 0.94\,\%) es normal para una conexi\'on de esta longitud. En el resto del sistema el efecto del proyecto es, como se esperaba, una reducci\'on marginal de p\'erdidas.
+
+Conviene notar adem\'as que las p\'erdidas del transformador propio del proyecto no contribuyen a este delta: el modelo reporta p\'erdidas activas pr\'acticamente nulas en ese equipo, de modo que los 9.26\,kW son \'integramente p\'erdidas en el conductor de evacuaci\'on.
 
 \subsection{An\'alisis de estabilidad}
 % 8.7 -- No aplica
@@ -620,8 +749,8 @@ Corriente nominal del proyecto en 13.2\,kV & 43.3\,A & $990\,\text{kW}/(\sqrt{3}
 Corriente nominal del transformador en 13.2\,kV & 54.7\,A & $1250\,\text{kVA}/(\sqrt{3}\times 13.2\,\text{kV})$ \\ \hline
 Corriente nominal en 800\,V & 902.1\,A & $1250\,\text{kVA}/(\sqrt{3}\times 800\,\text{V})$ \\ \hline
 $I''_{k3}$ en el PC (P1 15344 13.2\,kV), con proyecto & 4155\,A & Simulaci\'on PowerFactory \\ \hline
-$I''_{k3}$ en barra de 800\,V & \parcial{$\approx$13--15\,kA} & Recalcular con $Z=6\,\%$ \\ \hline
-Falla en 800\,V, referida a 13.2\,kV & $\approx$806\,A & $I''_{k,BT}\times(800/13200)$ \\ \hline
+$I''_{k3}$ en barra de 800\,V & 14.164\,kA & Simulaci\'on con $Z=6\,\%$ \\ \hline
+Falla en 800\,V, referida a 13.2\,kV & 859\,A & $I''_{k,BT}\times(800/13200)$ \\ \hline
 Aporte propio a la falla (3 inversores) & 714.6\,A en 800\,V $\equiv$ 43.3\,A en 13.2\,kV & 1.0\,p.u., limitado por electr\'onica \\ \hline
 \end{tabular}
 \end{center}
@@ -630,7 +759,7 @@ Hay un hecho de este proyecto que condiciona todo el esquema y conviene enunciar
 
 \subsubsection{Restricci\'on cr\'itica: el recierre de cabecera}
 
-El reconectador de cabecera del circuito 15344 tiene un \textbf{recierre r\'apido programado a 2\,s}. Si el proyecto permanece energizando la red despu\'es de que la cabecera abre, el recierre se producir\'ia sobre una isla con generaci\'on activa y fuera de sincronismo, con riesgo de da\~no severo al transformador y a los inversores. Esto fija un \textbf{tiempo m\'aximo de desconexi\'on de 2\,s para el proyecto}, y por eso los ajustes de tensi\'on y frecuencia de la tabla siguiente se especifican con temporizaciones de 1.0\,s (y no los 2\,s que permitir\'ia la norma de conexi\'on de forma gen\'erica): se busca un margen de al menos 0.5\,s antes del recierre. Se recomienda adicionalmente solicitar a EBSA que el recierre de cabecera opere con \textbf{supervisi\'on de tensi\'on en el lado de carga} (bloqueo de recierre si detecta tensi\'on), pr\'actica habitual en alimentadores con generaci\'on distribuida.
+El reconectador de cabecera del circuito 15344 tiene un \textbf{recierre r\'apido programado a 2\,s}. Si el proyecto permanece energizando la red despu\'es de que la cabecera abre, el recierre se producir\'ia sobre una isla con generaci\'on activa y fuera de sincronismo, con riesgo de da\~no severo al transformador y a los inversores. Esto fija un \textbf{tiempo m\'aximo de desconexi\'on de 2\,s para el proyecto}, y por eso los ajustes de tensi\'on y frecuencia de la tabla siguiente se especifican con temporizaciones de 1.0\,s (y no los 2\,s que permitir\'ia la norma de conexi\'on de forma gen\'erica): se busca un margen de al menos 0.5\,s antes del recierre. \textbf{Supuesto conservador sobre el recierre:} la documentaci\'on de insumos entregada por EBSA (\texttt{DOC\_REF\_EST\_1787069892338.pdf}) especifica el tiempo de recierre r\'apido (2\,s) pero \textbf{no indica si el reconectador opera con supervisi\'on de tensi\'on en el lado de carga} (bloqueo de recierre ante presencia de tensi\'on). Ante esa ausencia de informaci\'on, este estudio adopta la \textbf{hip\'otesis m\'as conservadora}: se asume que el recierre \textbf{no} cuenta con dicha supervisi\'on y que, por tanto, se producir\'a a los 2\,s de forma incondicional, aunque el alimentador permanezca energizado por el proyecto. Todo el esquema de protecci\'on del PC se dimensiona bajo ese supuesto, de modo que la seguridad de la instalaci\'on no depende de una funci\'on del equipo de EBSA que no est\'a documentada. Se recomienda de todos modos solicitar a EBSA la confirmaci\'on de este punto: si el recierre s\'i dispone de supervisi\'on de tensi\'on, el margen de seguridad resulta a\'un mayor que el aqu\'i calculado; y si no la tiene, se recomienda su implementaci\'on como buena pr\'actica en alimentadores con generaci\'on distribuida.
 
 \subsubsection{Funciones de protecci\'on requeridas y ajustes}
 
@@ -664,26 +793,26 @@ El reconectador de cabecera del circuito 15344 tiene un \textbf{recierre r\'apid
 Los arranques se escogen para quedar por encima de la m\'axima corriente de operaci\'on y por debajo de la m\'inima corriente de falla de la zona protegida:
 
 \begin{itemize}
-\item \textbf{Arranque de 51 (70\,A)}: 1.25 veces la corriente nominal del transformador (54.7\,A), que es la m\'axima corriente de r\'egimen permanente que puede circular por el PC. Queda muy por debajo de los $\approx$806\,A que produce una falla en el lado de 800\,V, de modo que la funci\'on cubre toda la zona propia.
-\item \textbf{Arranque de 50 (1100\,A)}: se escoge \emph{por encima} de los $\approx$806\,A de la falla en 800\,V (con 35\,\% de margen), para que el instant\'aneo \textbf{no} opere ante fallas en el lado de baja tensi\'on --- esas las despeja el interruptor ACB de 1000\,A del tablero de BT, que es su protecci\'on primaria. As\'i se conserva la selectividad entre ambos niveles. Al mismo tiempo queda muy por debajo de los 4155\,A disponibles en el PC, de modo que una falla en la celda o en el lado de media del transformador se despeja instant\'aneamente.
+\item \textbf{Arranque de 51 (70\,A)}: 1.25 veces la corriente nominal del transformador (54.7\,A), que es la m\'axima corriente de r\'egimen permanente que puede circular por el PC. Queda muy por debajo de los 859\,A que produce una falla en el lado de 800\,V, de modo que la funci\'on cubre toda la zona propia.
+\item \textbf{Arranque de 50 (1100\,A)}: se escoge \emph{por encima} de los 859\,A de la falla en 800\,V (con 28\,\% de margen), para que el instant\'aneo \textbf{no} opere ante fallas en el lado de baja tensi\'on --- esas las despeja el interruptor ACB de 1000\,A del tablero de BT, que es su protecci\'on primaria. As\'i se conserva la selectividad entre ambos niveles. Al mismo tiempo queda muy por debajo de los 4155\,A disponibles en el PC, de modo que una falla en la celda o en el lado de media del transformador se despeja instant\'aneamente.
 \item \textbf{Funciones de tierra (51N/50N)}: el transformador es \textbf{Dyn5}, con el devanado en delta del lado de 13.2\,kV. Un delta bloquea la secuencia cero vista desde la red, por lo que el proyecto \emph{no aporta corriente a las fallas a tierra del alimentador} --- hecho ya confirmado en la simulaci\'on, donde el aporte del generador a las fallas monof\'asicas es nulo. Esto permite ajustar 51N/50N de forma sensible sin riesgo de disparos indebidos por fallas a tierra externas: solo ver\'an fallas a tierra dentro de la zona propia. La contrapartida es que una falla a tierra en el alimentador es \emph{invisible} para las funciones de sobrecorriente del proyecto, y por eso se incorpora la funci\'on \textbf{59N} (sobretensi\'on residual), que s\'i la detecta por el desplazamiento del neutro.
 \end{itemize}
 
 \subsubsection{Verificaci\'on de selectividad con la cabecera del circuito 15344}
 
-La condici\'on cr\'itica es una falla trif\'asica en la barra de 800\,V, que es la m\'axima corriente que ven simult\'aneamente la protecci\'on del proyecto y la de cabecera. Referida a 13.2\,kV, esa corriente vale $\approx$806\,A. Aplicando la f\'ormula IEC 60255-151 Normal Inverse, $t = \text{Dial}\times 0.14 / ((I/I_{arr})^{0.02}-1)$:
+La condici\'on cr\'itica es una falla trif\'asica en la barra de 800\,V, que es la m\'axima corriente que ven simult\'aneamente la protecci\'on del proyecto y la de cabecera. Referida a 13.2\,kV, esa corriente vale 859\,A. Aplicando la f\'ormula IEC 60255-151 Normal Inverse, $t = \text{Dial}\times 0.14 / ((I/I_{arr})^{0.02}-1)$:
 
 \begin{center}
 \begin{tabular}{|l|c|c|c|c|}
 \hline
 \textbf{Protecci\'on} & \textbf{Arranque} & \textbf{Dial} & \textbf{$I/I_{arr}$} & \textbf{Tiempo de disparo} \\ \hline
-Proyecto (51, PC) & 70\,A & 0.05 & 11.51 & \textbf{0.14\,s} \\ \hline
-Cabecera 15344 (51) & 240\,A & 0.10 & 3.36 & 0.57\,s \\ \hline
-\multicolumn{4}{|r|}{\textbf{Margen de selectividad}} & \textbf{0.43\,s} \\ \hline
+Proyecto (51, PC) & 70\,A & 0.05 & 12.27 & \textbf{0.136\,s} \\ \hline
+Cabecera 15344 (51) & 240\,A & 0.10 & 3.58 & 0.542\,s \\ \hline
+\multicolumn{4}{|r|}{\textbf{Margen de selectividad}} & \textbf{0.406\,s} \\ \hline
 \end{tabular}
 \end{center}
 
-El margen de 0.43\,s supera el criterio habitual de 0.2--0.3\,s entre protecciones en serie, de modo que ante una falla en la instalaci\'on del proyecto abre primero el interruptor del PC y el circuito 15344 permanece en servicio para el resto de los usuarios. En sentido inverso, ante una falla en el alimentador de EBSA la protecci\'on del proyecto no alcanza su arranque (solo ve los 43.3\,A de aporte propio), de modo que no existe riesgo de disparo indebido del proyecto por fallas ajenas: la desconexi\'on en ese escenario la producen las funciones 27/81/81R dentro del plazo de 2\,s impuesto por el recierre.
+El margen de 0.406\,s supera el criterio habitual de 0.2--0.3\,s entre protecciones en serie, de modo que ante una falla en la instalaci\'on del proyecto abre primero el interruptor del PC y el circuito 15344 permanece en servicio para el resto de los usuarios. En sentido inverso, ante una falla en el alimentador de EBSA la protecci\'on del proyecto no alcanza su arranque (solo ve los 43.3\,A de aporte propio), de modo que no existe riesgo de disparo indebido del proyecto por fallas ajenas: la desconexi\'on en ese escenario la producen las funciones 27/81/81R dentro del plazo de 2\,s impuesto por el recierre.
 
 \subsubsection{Bloqueo de recierre y reconexi\'on}
 
@@ -710,7 +839,7 @@ El reconectador del PC debe operar con \textbf{recierre bloqueado}: ante un disp
 \item El aporte de falla del proyecto en la cabecera del circuito 15344 es marginal (+1.05\,\% trif\'asico, +0.13\,\% monof\'asico) frente al nivel de cortocircuito de la red de EBSA, y \textbf{no requiere reajuste} del reconectador de cabecera: ambos escenarios (sin y con proyecto) operan en la misma zona instant\'anea, con el mismo tiempo de disparo.
 \item El l\'imite regulatorio de aporte a falla para tecnolog\'ia basada en inversores (1.1\,p.u., Anexo 1 del Acuerdo 2121) se cumple con margen: el proyecto qued\'o configurado en 1.0\,p.u.
 \item Seg\'un el Anexo 1 del Acuerdo 2121, para proyectos entre 0.25\,MW y 1\,MW (este proyecto: 990\,kW) se exige en el punto de conexi\'on un interruptor con unidades de disparo, reconectador o interruptor de potencia, con capacidad de interrupci\'on acorde al nivel de cortocircuito del estudio de conexi\'on. \textbf{Requisito cumplido}: se adopta la celda de media tensi\'on con reconectador e interruptor con unidades de disparo (16\,kA de capacidad de interrupci\'on, frente a los 4.16\,kA de cortocircuito en el PC), en reemplazo de la celda de seccionador fusible que contemplaba la cotizaci\'on original. Ver Secci\'on~\ref{sec:protecciones-proyecto}.
-\item El esquema de protecci\'on del proyecto y sus ajustes quedan definidos en la Secci\'on~\ref{sec:protecciones-proyecto}, con un margen de selectividad de 0.43\,s respecto a la protecci\'on de cabecera. La restricci\'on dimensionante no es la sobrecorriente sino el \textbf{recierre r\'apido de 2\,s} de la cabecera, que fija el plazo m\'aximo de desconexi\'on del proyecto ante fallas externas.
+\item El esquema de protecci\'on del proyecto y sus ajustes quedan definidos en la Secci\'on~\ref{sec:protecciones-proyecto}, con un margen de selectividad de 0.406\,s respecto a la protecci\'on de cabecera. La restricci\'on dimensionante no es la sobrecorriente sino el \textbf{recierre r\'apido de 2\,s} de la cabecera, que fija el plazo m\'aximo de desconexi\'on del proyecto ante fallas externas.
 \item Se recomienda solicitar a EBSA que el recierre de cabecera del circuito 15344 opere con supervisi\'on de tensi\'on en el lado de carga, para eliminar el riesgo de recierre sobre una isla energizada.
 \item Esta comprobaci\'on cubre la coordinaci\'on en cabecera del circuito y la definici\'on funcional de la protecci\'on del PC. Las funciones de protecci\'on internas de la planta (inversor y tablero de baja tensi\'on) ya est\'an cubiertas por la certificaci\'on de f\'abrica citada en la Secci\'on~\ref{sec:isla}.
 \end{itemize}

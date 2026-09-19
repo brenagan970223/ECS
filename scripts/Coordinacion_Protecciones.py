@@ -93,6 +93,39 @@ K_IEC_NI = 0.14
 ALPHA_IEC_NI = 0.02
 TIEMPO_MIN_INSTANTANEO_S = 0.03  # tiempo de operacion tipico de un instantaneo/reconectador
 
+# Recierre rapido del reconectador de cabecera, dato de EBSA
+# (DOC_REF_EST_1787069892338.pdf pag. 4: "Tiempo de recierre rapido del
+# reconectador: 2 SEG"). Es la restriccion que dimensiona las protecciones del
+# proyecto: si el proyecto sigue energizando la red cuando la cabecera abre, el
+# recierre caeria sobre una isla fuera de sincronismo. Por eso el proyecto debe
+# desconectarse ANTES de que se cumplan estos 2 s.
+TIEMPO_RECIERRE_CABECERA_S = 2.0
+MARGEN_MINIMO_ANTIISLA_S = 0.5  # holgura exigida entre la desconexion del proyecto y el recierre
+
+# --- Protecciones del PROYECTO en el punto de conexion (celda de MT) ---
+# Ajustes propuestos en el informe (seccion "Sistema de protecciones del
+# proyecto en el punto de conexion"). No hay marca/modelo de rele definido
+# todavia: son los valores que debe cumplir el equipo que se adquiera.
+PROY_PICKUP_51_A = 70.0     # 1.25 x In del transformador (54.7 A en 13.2 kV)
+PROY_DIAL_51 = 0.05
+PROY_INST_50_A = 1100.0     # por ENCIMA de la falla en 800 V referida a MT, para no
+                            # robarle selectividad al interruptor de baja tension
+PROY_PICKUP_51N_A = 15.0
+PROY_DIAL_51N = 0.05
+PROY_INST_50N_A = 150.0
+
+# Tiempo total de desconexion del proyecto ante falla externa, gobernado por las
+# funciones de tension/frecuencia/anti-isla (no por las de sobrecorriente, que no
+# ven las fallas aguas arriba porque el inversor limita su aporte a ~1 p.u.).
+PROY_TIEMPO_DESCONEXION_S = 1.0
+
+# Corriente nominal del transformador del proyecto en 13.2 kV, y corriente de
+# una falla trifasica en la barra de 800 V referida al lado de 13.2 kV: es la
+# maxima corriente que ven a la vez la proteccion del proyecto y la de cabecera,
+# o sea la condicion critica para verificar selectividad entre ambas.
+PROY_IN_TRAFO_A = 54.7
+PROY_FALLA_BT_REFERIDA_MT_A = 859.0  # 14.1641 kA en 800 V x (800/13200)
+
 # Barra que representa la cabecera del circuito 15344 (primer punto del
 # feeder, justo aguas abajo del reconectador "Cab 15344"). AJUSTAR aqui si
 # el nombre exacto de la barra en el modelo de PowerFactory cambia.
@@ -235,8 +268,14 @@ def graficar_tcc(comparativa):
 
 
 def construir_comparativa(ikss_por_caso):
+    # La falla BIFASICA se evalua contra los elementos de FASE (51/50), igual que
+    # la trifasica: una falla entre dos fases sin contacto a tierra no produce
+    # corriente residual, de modo que el elemento de neutro (51N/50N) no la ve.
+    # Se incorporo cuando Cortocircuito.py empezo a reportarla correctamente
+    # (antes devolvia 0 kA y no habia con que evaluarla).
     ajustes = {
         "Trifasico": (PICKUP_51_A, DIAL_51, INST_50_A, "51/50 (fase)"),
+        "Bifasico": (PICKUP_51_A, DIAL_51, INST_50_A, "51/50 (fase)"),
         "Monofasico": (PICKUP_51N_A, DIAL_51N, INST_50N_A, "51N/50N (neutro)"),
     }
     filas = []
@@ -322,6 +361,56 @@ def aporte_falla_generacion():
     }
 
 
+def verificar_selectividad_proyecto():
+    """Verifica la selectividad entre la proteccion del PROYECTO (celda de MT en
+    el punto de conexion) y la de CABECERA del circuito 15344.
+
+    La condicion critica es una falla trifasica en la barra de 800 V: es la
+    maxima corriente que atraviesa el punto de conexion y que, por tanto, ven
+    las dos protecciones a la vez. Referida a 13.2 kV vale
+    PROY_FALLA_BT_REFERIDA_MT_A. Para que el esquema sea selectivo, la
+    proteccion del proyecto debe despejar ANTES que la de cabecera, con margen
+    suficiente (criterio habitual: 0.2 a 0.3 s entre protecciones en serie).
+
+    Devuelve (filas, margen_s, cumple)."""
+    i_falla = PROY_FALLA_BT_REFERIDA_MT_A
+
+    t_proyecto, zona_proyecto = tiempo_disparo_ni(i_falla, PROY_PICKUP_51_A, PROY_DIAL_51, PROY_INST_50_A)
+    t_cabecera, zona_cabecera = tiempo_disparo_ni(i_falla, PICKUP_51_A, DIAL_51, INST_50_A)
+
+    filas = [
+        {
+            "proteccion": "Proyecto (51, punto de conexion)",
+            "pickup_a": PROY_PICKUP_51_A, "dial": PROY_DIAL_51,
+            "multiplo": i_falla / PROY_PICKUP_51_A, "zona": zona_proyecto, "tiempo_s": t_proyecto,
+        },
+        {
+            "proteccion": "Cabecera circuito 15344 (51)",
+            "pickup_a": PICKUP_51_A, "dial": DIAL_51,
+            "multiplo": i_falla / PICKUP_51_A, "zona": zona_cabecera, "tiempo_s": t_cabecera,
+        },
+    ]
+    margen = None
+    cumple = False
+    if t_proyecto is not None and t_cabecera is not None:
+        margen = t_cabecera - t_proyecto
+        cumple = margen >= 0.2  # criterio de selectividad entre protecciones en serie
+    return filas, margen, cumple
+
+
+def verificar_margen_antiisla():
+    """Verifica que el proyecto alcance a desconectarse antes del recierre rapido
+    de la cabecera (2 s, dato de EBSA).
+
+    Esta es la verificacion que realmente dimensiona las protecciones del
+    proyecto. Las funciones de sobrecorriente NO sirven para fallas aguas
+    arriba: el inversor limita su aporte a ~1 p.u. (43.3 A en 13.2 kV), muy por
+    debajo del arranque de 70 A. Ante una falla en el alimentador de EBSA la
+    desconexion la producen las funciones de tension, frecuencia y anti-isla."""
+    margen = TIEMPO_RECIERRE_CABECERA_S - PROY_TIEMPO_DESCONEXION_S
+    return margen, margen >= MARGEN_MINIMO_ANTIISLA_S
+
+
 def exportar_resultados(comparativa, texto_conclusion, conclusion_general, aporte):
     wb = openpyxl.Workbook()
 
@@ -358,6 +447,40 @@ def exportar_resultados(comparativa, texto_conclusion, conclusion_general, aport
     for col in ws2.columns:
         max_len = max(len(str(c.value)) if c.value is not None else 0 for c in col)
         ws2.column_dimensions[col[0].column_letter].width = min(max_len + 2, 100)
+
+    ws4 = wb.create_sheet("Selectividad_Proyecto")
+    filas_sel, margen_sel, cumple_sel = verificar_selectividad_proyecto()
+    ws4.append(["Condicion critica evaluada", "Falla trifasica en la barra de 800 V, referida a 13.2 kV"])
+    ws4.append(["Corriente de falla referida a 13.2 kV [A]", round(PROY_FALLA_BT_REFERIDA_MT_A, 1)])
+    ws4.append([])
+    ws4.append(["Proteccion", "Arranque [A]", "Dial", "I/Iarranque", "Zona", "Tiempo de disparo [s]"])
+    for c in ws4[ws4.max_row]:
+        c.font = Font(bold=True)
+    for f in filas_sel:
+        ws4.append([
+            f["proteccion"], f["pickup_a"], f["dial"],
+            round(f["multiplo"], 2), f["zona"],
+            None if f["tiempo_s"] is None else round(f["tiempo_s"], 3),
+        ])
+    ws4.append([])
+    ws4.append([
+        "Margen de selectividad [s]",
+        None if margen_sel is None else round(margen_sel, 3),
+        "CUMPLE (>= 0.2 s)" if cumple_sel else "NO CUMPLE",
+    ])
+    margen_isla, cumple_isla = verificar_margen_antiisla()
+    ws4.append([])
+    ws4.append(["Verificacion anti-isla frente al recierre de cabecera"])
+    ws4[f"A{ws4.max_row}"].font = Font(bold=True)
+    ws4.append(["Recierre rapido de cabecera [s]", TIEMPO_RECIERRE_CABECERA_S, "Dato EBSA (DOC_REF_EST pag. 4)"])
+    ws4.append(["Desconexion del proyecto [s]", PROY_TIEMPO_DESCONEXION_S, "Funciones 27/59/81/81R"])
+    ws4.append([
+        "Margen antes del recierre [s]", round(margen_isla, 3),
+        f"CUMPLE (>= {MARGEN_MINIMO_ANTIISLA_S} s)" if cumple_isla else "NO CUMPLE",
+    ])
+    for col in ws4.columns:
+        max_len = max(len(str(c.value)) if c.value is not None else 0 for c in col)
+        ws4.column_dimensions[col[0].column_letter].width = min(max_len + 2, 70)
 
     ws3 = wb.create_sheet("Conclusion")
     ws3.append(["Detalle por tipo de falla"])
@@ -402,6 +525,25 @@ def main():
     print(texto_conclusion)
     print()
     print("CONCLUSION:", conclusion_general)
+    print()
+
+    print("=== Selectividad proyecto vs. cabecera (falla trifasica en 800 V) ===")
+    filas_sel, margen_sel, cumple_sel = verificar_selectividad_proyecto()
+    print(f"Corriente de falla referida a 13.2 kV: {PROY_FALLA_BT_REFERIDA_MT_A:.1f} A")
+    for f in filas_sel:
+        t = "-" if f["tiempo_s"] is None else f"{f['tiempo_s']:.3f}s"
+        print(f"  {f['proteccion']:<34} arranque={f['pickup_a']:>6.0f}A dial={f['dial']:<5} "
+              f"I/Iarr={f['multiplo']:>5.2f} {f['zona']:>12} t={t}")
+    if margen_sel is not None:
+        print(f"  -> margen de selectividad: {margen_sel:.3f}s "
+              f"({'CUMPLE' if cumple_sel else 'NO CUMPLE'}, criterio >= 0.2s)")
+
+    margen_isla, cumple_isla = verificar_margen_antiisla()
+    print()
+    print("=== Anti-isla frente al recierre de cabecera ===")
+    print(f"  recierre cabecera = {TIEMPO_RECIERRE_CABECERA_S}s | desconexion proyecto = {PROY_TIEMPO_DESCONEXION_S}s")
+    print(f"  -> margen: {margen_isla:.3f}s ({'CUMPLE' if cumple_isla else 'NO CUMPLE'}, "
+          f"criterio >= {MARGEN_MINIMO_ANTIISLA_S}s)")
     print()
     print(f"Grafico: {ruta_grafico}")
     print(f"Excel:   {ruta_excel}")
