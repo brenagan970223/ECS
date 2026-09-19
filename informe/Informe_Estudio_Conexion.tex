@@ -99,19 +99,79 @@ A\~no de an\'alisis posterior ($t+x$) & 2028 ($x=2$) \\ \hline
 % ============================================================================
 \section{Resumen ejecutivo}
 % CREG 174, numeral 6.1
-\pendiente{Redactar al final, cuando estén cerrados los resultados de las secciones 5 y 6.}
+
+Este documento presenta el estudio de conexi\'on simplificado, conforme a los
+lineamientos de la Resoluci\'on CREG 174 de 2021 y la Circular CREG 021 de 2022,
+para la conexi\'on de un sistema solar fotovoltaico de \textbf{990\,kW} al
+circuito \textbf{15344} de la Empresa de Energ\'ia de Boyac\'a S.A.\ E.S.P.\
+(EBSA), en el municipio de Puerto Boyac\'a. \textbf{El estudio concluye que la
+conexi\'on es t\'ecnicamente viable sin obras de refuerzo en la red del Operador
+de Red.}
 
 \subsection*{Antecedentes y alcance del proyecto}
-\pendiente{Antecedentes de la solicitud, alcance del estudio.}
+
+El interesado radic\'o ante EBSA la solicitud de conexi\'on \textbf{N.\textdegree{}
+16869}, correspondiente a un proyecto de generaci\'on distribuida en Nivel de
+Tensi\'on II (13.2\,kV). EBSA emiti\'o el 11 de agosto de 2026 el documento de
+insumos para el estudio, con la topolog\'ia del circuito, el equivalente de red,
+la demanda horaria del \'area de influencia y los ajustes de la protecci\'on de
+cabecera.
+
+El proyecto corresponde a la ruta de \textbf{Solicitudes N2} (generaci\'on
+inferior a 1\,MW conectada en Nivel II), para la cual no aplican los an\'alisis
+de estabilidad (numeral 8.7) ni los despachos de generaci\'on del Centro Nacional
+de Despacho (numeral 7.4). El alcance cubre, por tanto: validaci\'on de la
+modelaci\'on, definici\'on de escenarios, flujo de carga, contribuci\'on a la
+corriente de cortocircuito, an\'alisis de funcionamiento en isla, an\'alisis de
+p\'erdidas y comprobaci\'on de la coordinaci\'on de protecciones.
 
 \subsection*{Supuestos principales}
-\pendiente{Resumir supuestos clave (herramienta de simulación: DIgSILENT PowerFactory 2024; método de cortocircuito: IEC 60909 / VDE 0102 Part 0; automatización de los cálculos vía scripts Python descritos en este documento).}
+
+\begin{itemize}
+\item \textbf{Herramienta de simulaci\'on:} DIgSILENT PowerFactory 2024. Los
+c\'alculos se automatizaron mediante rutinas propias en Python, documentadas en
+este informe, de modo que todo el barrido es reproducible.
+\item \textbf{M\'etodo de cortocircuito:} IEC 60909 / VDE 0102 Parte 0, con
+factor de tensi\'on $c=1.1$ para c\'alculo de corrientes m\'aximas.
+\item \textbf{Horizonte de an\'alisis:} a\~no $t=2026$ y a\~no $t+x=2028$, con el
+incremento de demanda del 1.04\,\% solicitado por el OR.
+\item \textbf{Despacho de generaci\'on:} perfil solar modelado como campana de
+Gauss centrada al mediod\'ia, aplicado proporcionalmente a la potencia nominal de
+cada generador (Secci\'on~\ref{sec:despacho}).
+\item \textbf{Impedancia del transformador del proyecto:} $u_k = 6\,\%$, valor
+t\'ipico normalizado adoptado por no disponerse a\'un del protocolo de pruebas del
+fabricante. Este supuesto se declara expresamente y debe verificarse al
+recibirlo.
+\item \textbf{Recierre de cabecera:} se asume \emph{sin} supervisi\'on de tensi\'on
+en el lado de carga, por no estar documentado --- la hip\'otesis m\'as
+conservadora para el dise\~no de las protecciones del proyecto.
+\end{itemize}
 
 \subsection*{Resumen de resultados}
-\pendiente{Completar cuando estén los resultados finales de flujo de carga y cortocircuito para los escenarios 8.2.2 y 8.2.3.}
+
+Se simularon \textbf{72 escenarios} (2 a\~nos $\times$ 3 casos de red $\times$ 12
+horas), todos con convergencia satisfactoria.
+
+\begin{center}
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{An\'alisis} & \textbf{Resultado} & \textbf{Estado} \\ \hline
+Perfiles de tensi\'on (8.3) & 0.9363--1.0115\,p.u.\ (l\'imite 0.90--1.10) & Cumple \\ \hline
+Nivel de carga (8.3) & M\'aximo 80.3\,\% (l\'imite 100\,\%) & Cumple \\ \hline
+Cortocircuito (8.4) & M\'aximo 8.164\,kA (capacidad 10\,kA) & Cumple \\ \hline
+Funcionamiento en isla (8.5) & D\'eficit de 3.975\,MW: isla inviable & Cumple \\ \hline
+P\'erdidas (8.6) & Reduce 2.28\,kW frente a carga pura & Favorable \\ \hline
+Coordinaci\'on (9.2) & No requiere reajuste de cabecera & Cumple \\ \hline
+\end{tabular}
+\end{center}
 
 \subsection*{Conclusiones}
-\pendiente{Ver Secci\'on \ref{sec:conclusiones}.}
+
+El proyecto \textbf{no produce incumplimiento t\'ecnico alguno} y, en el caso de
+las p\'erdidas y del perfil de tensi\'on, mejora el desempe\~no del alimentador
+frente a la condici\'on sin generaci\'on distribuida. Tampoco se requiere
+modificar los ajustes de la protecci\'on de cabecera del circuito 15344. El
+detalle se desarrolla en la Secci\'on~\ref{sec:conclusiones}.
 
 % ============================================================================
 \section{Descripci\'on y ubicaci\'on del proyecto}
@@ -573,6 +633,22 @@ Dos lecturas que el despacho horario deja en evidencia y que un despacho constan
 \item \textbf{La m\'axima sobretensi\'on ocurre a la hora 12}, el pico de generaci\'on solar, y en la barra m\'as alejada del circuito (P6 15344). El proyecto la eleva de 1.0055 a 1.0115\,p.u., es decir 0.6 puntos porcentuales, quedando 8.9 puntos por debajo del l\'imite de 1.10\,p.u.
 \end{itemize}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig_tension.png}
+\caption{Perfiles de tensi\'on hora a hora en las dos barras cr\'iticas del circuito 15344 --- el punto de conexi\'on del proyecto (P1) y el extremo del alimentador (P6) --- para los tres casos de red y los dos a\~nos del horizonte. Las l\'ineas discontinuas marcan los l\'imites regulatorios de 0.90 y 1.10\,p.u.}
+\label{fig:tension}
+\end{figure}
+
+\textbf{Lectura de la Figura~\ref{fig:tension}.} Los dos paneles cuentan cosas distintas y complementarias:
+
+\begin{itemize}
+\item \textbf{En el punto de conexi\'on} (panel superior) las tres curvas son casi indistinguibles y se mantienen planas en torno a 0.98\,p.u.\ durante todo el d\'ia. El proyecto apenas eleva la tensi\'on 0.5 puntos porcentuales al mediod\'ia. Esto era esperable: P1 es la barra de cabecera, el\'ectricamente cercana a la subestaci\'on, donde la red es fuerte y una inyecci\'on de 990\,kW no la mueve de forma apreciable.
+\item \textbf{En el extremo del circuito} (panel inferior) el efecto s\'i es visible, y es donde se aprecia el valor de haber modelado el despacho horario: la tensi\'on \textbf{sigue la forma de la campana solar}, con su m\'aximo exactamente a la hora 12. La separaci\'on entre la curva de carga pura (que baja hasta 0.936\,p.u.) y las dos curvas con generaci\'on (que llegan a 1.012\,p.u.) llega a 7 puntos porcentuales al mediod\'ia.
+\end{itemize}
+
+La conclusi\'on operativa es que \textbf{la generaci\'on distribuida sostiene el perfil de tensi\'on del alimentador}: el escenario m\'as desfavorable en subtensi\'on no es el que incluye el proyecto, sino el de carga pura. Ninguna de las curvas se aproxima a los l\'imites: el margen m\'as estrecho es de 3.6 puntos porcentuales contra el l\'imite inferior, en el escenario de carga pura del a\~no $t+x$.
+
 \subsubsection*{Nivel de carga de los elementos}
 
 \begin{table}[H]
@@ -595,6 +671,19 @@ A\~no & Caso & L\'inea m\'as cargada & Transformador del proyecto \\
 \textbf{Ning\'un elemento del sistema supera el 100\,\% de cargabilidad} en condici\'on normal, en ninguno de los 72 escenarios. El elemento m\'as exigido de la red de EBSA es la l\'inea \texttt{Al 0.82km}, que alcanza 80.23\,\% en el a\~no $t+x$; el proyecto no modifica esa cifra de forma apreciable (la diferencia frente al caso de carga pura es de 0.01 puntos porcentuales, y pertenece adem\'as a otro circuito del \'area). El transformador propio del proyecto alcanza 80.27\,\% de su capacidad nominal a la hora 12, que es cuando entrega su potencia m\'axima --- coherente con 990\,kW sobre un equipo de 1250\,kVA.
 
 En consecuencia, \textbf{no se activa ninguna de las causales de rechazo del numeral 10.1 de CREG 174} relativas a nivel de carga ($>$100\,\% en condici\'on normal) ni a sobretensiones ($>$1.1\,p.u.).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig_cargabilidad.png}
+\caption{Nivel de carga hora a hora del tramo de evacuaci\'on del proyecto (panel superior) y de su transformador de elevaci\'on (panel inferior), para los tres casos de red y los dos a\~nos. La l\'inea discontinua marca el l\'imite del 100\,\%.}
+\label{fig:cargabilidad}
+\end{figure}
+
+\textbf{Lectura de la Figura~\ref{fig:cargabilidad}.} El panel superior grafica la l\'inea \texttt{AL 1.32km}, que es el tramo por el que se evacua la generaci\'on del proyecto, y no el elemento m\'as cargado del sistema. La raz\'on es que el elemento m\'as cargado (\texttt{Al 0.82km}, 80.2\,\%) pertenece a otro circuito del \'area de influencia y arroja pr\'acticamente el mismo valor en los tres casos, de modo que las tres curvas quedar\'ian superpuestas y la figura no mostrar\'ia nada. El tramo de evacuaci\'on, en cambio, es donde el efecto del proyecto se ve con claridad, y su valor absoluto se indica en cada panel para no perder la referencia de cumplimiento.
+
+Ah\'i se observa el comportamiento caracter\'istico de una l\'inea que cambia de funci\'on a lo largo del d\'ia. Al amanecer y al atardecer el tramo transporta consumo hacia el circuito, y la curva con proyecto queda \emph{por debajo} de la de carga pura porque la generaci\'on local descarga el tramo. Hacia el mediod\'ia el sentido del flujo se invierte: el proyecto exporta, y la cargabilidad sube hasta el 31\,\%. El cruce entre ambas curvas ocurre alrededor de las 9 y de las 15 horas, que es cuando generaci\'on y consumo local se compensan.
+
+El transformador del proyecto (panel inferior) reproduce fielmente la campana solar, con su m\'aximo de 80.3\,\% a la hora 12 --- coherente con 990\,kW sobre un equipo de 1250\,kVA --- y queda casi 20 puntos por debajo de su l\'imite. No aparece en los otros dos casos porque es un equipo del proyecto y solo existe cuando este se conecta.
 
 \subsection{Contribuci\'on a la corriente de cortocircuito}
 \label{sec:cortocircuito}
@@ -673,6 +762,17 @@ baja tensi\'on del centro de transformaci\'on, y lo cumplen: el barraje del tabl
 de BT tiene aisladores certificados a \textbf{25\,kA} y el interruptor autom\'atico
 principal tiene $I_{cu} = \mathbf{50\,kA}$ a 1000\,V (cotizaci\'on Ryctel
 C26-688). El margen es del 43\,\% frente al elemento m\'as exigido.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig_cortocircuito.png}
+\caption{Corriente de cortocircuito trif\'asica por barra, sin y con el proyecto conectado (izquierda), contra la capacidad de corte declarada por el OR; e incremento porcentual aportado por el proyecto en cada barra (derecha).}
+\label{fig:cortocircuito}
+\end{figure}
+
+\textbf{Lectura de la Figura~\ref{fig:cortocircuito}.} El panel izquierdo ordena las barras por nivel de falla y deja ver de un vistazo que \textbf{todas quedan holgadamente por debajo de la l\'inea de 10\,kA}. La barra m\'as exigida es el barraje de 13.2\,kV de la subestaci\'on, y a\'un ah\'i el margen es de 1.84\,kA. Las barras de una y otra condici\'on son visualmente indistinguibles a esta escala, lo que ya es en s\'i mismo el resultado: el proyecto no modifica de forma apreciable el nivel de falla de la red.
+
+El panel derecho amplifica esa diferencia para poder cuantificarla. El incremento se agrupa en dos niveles bien definidos: \textbf{$+$1.05\,\% en las barras del circuito 15344}, que es donde se conecta el proyecto, y \textbf{$+$0.53\,\% en los circuitos vecinos}, que lo ven a trav\'es del barraje com\'un de la subestaci\'on. El valor m\'as bajo, $+$0.08\,\%, corresponde al barraje de 115\,kV, el punto el\'ectricamente m\'as lejano y con la red m\'as fuerte. Este escalonamiento tan limpio es coherente con la topolog\'ia radial del sistema y con un aporte de falla acotado por la electr\'onica del inversor.
 
 \textbf{Insumo para el dise\~no de la malla de puesta a tierra.} La corriente de
 falla monof\'asica a tierra en la barra de conexi\'on del proyecto (P1 15344
@@ -770,8 +870,21 @@ p\'erdidas; las otras 11 las reducen. A las horas de generaci\'on baja
 (amanecer y atardecer) domina el primer efecto y el balance es negativo; al
 mediod\'ia, con el proyecto a plena potencia, domina el segundo.
 
-En t\'erminos relativos, el aumento m\'aximo horario (9.53\,kW) representa un
-0.96\,\% de los 990\,kW generados, magnitud normal para el transporte por un
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig_perdidas.png}
+\caption{P\'erdidas activas totales del sistema hora a hora para los tres casos de red (panel superior) y balance del proyecto frente al escenario de carga pura (panel inferior), para los dos a\~nos del horizonte.}
+\label{fig:perdidas}
+\end{figure}
+
+\textbf{Lectura de la Figura~\ref{fig:perdidas}.} El panel superior muestra que las p\'erdidas del sistema siguen fundamentalmente la curva de demanda: crecen de forma sostenida desde la ma\~nana hasta el pico de las 15--16 horas. Sobre esa tendencia, las curvas con generaci\'on se sit\'uan por debajo de la de carga pura durante la mayor parte del d\'ia.
+
+El panel inferior a\'isla el efecto del proyecto y es el que responde directamente a la pregunta del numeral 8.6. \textbf{De las 12 horas simuladas, en 9 el proyecto reduce las p\'erdidas del sistema} y solo en 3 las aumenta: las horas 11, 12 y 13, es decir la franja de m\'axima generaci\'on. El caso extremo favorable se da a la hora 9 ($-$10.3\,kW) y el desfavorable a la hora 12 ($+$11.8\,kW).
+
+Este patr\'on confirma el mecanismo descrito arriba. Cuando la generaci\'on es moderada, la energ\'ia se consume cerca de donde se produce y descarga los tramos aguas arriba, reduciendo p\'erdidas. Cuando el proyecto alcanza su potencia nominal, el excedente debe evacuarse por el tramo de conexi\'on y el balance se invierte. Integrado sobre el d\'ia, el saldo es \textbf{favorable}: el sistema con el proyecto conectado tiene menos p\'erdidas que el sistema sin ninguna generaci\'on distribuida.
+
+En t\'erminos relativos, el aumento m\'aximo horario (11.8\,kW) representa un
+1.2\,\% de los 990\,kW generados en esa hora, magnitud normal para el transporte por un
 tramo de conexi\'on de esta longitud. \textbf{En ning\'un caso el proyecto degrada
 el desempe\~no de la red de EBSA}: incluso en su hora m\'as desfavorable, el
 sistema con el proyecto conectado tiene menos p\'erdidas que el sistema sin
@@ -788,7 +901,97 @@ Condicional: solo aplica si los an\'alisis de las Secciones~\ref{sec:flujo-carga
 % ============================================================================
 \section{Conclusiones}
 \label{sec:conclusiones}
-\pendiente{Redactar al cierre del estudio.}
+
+\subsection*{Conclusi\'on general}
+
+\textbf{La conexi\'on del proyecto de generaci\'on distribuida de 990\,kW al
+circuito 15344 es t\'ecnicamente viable y no requiere obras de refuerzo en la red
+de EBSA.} Ninguno de los 72 escenarios simulados presenta incumplimiento de los
+criterios t\'ecnicos de la Resoluci\'on CREG 174 de 2021, y en consecuencia no se
+activa ninguna de las causales de rechazo de su numeral 10.1.
+
+\subsection*{Conclusiones por an\'alisis}
+
+\begin{enumerate}
+\item \textbf{Perfiles de tensi\'on.} Las tensiones permanecen entre 0.9363 y
+1.0115\,p.u.\ en todos los escenarios, con m\'argenes de 3.6 y 8.9 puntos
+porcentuales frente a los l\'imites. El escenario m\'as desfavorable en
+subtensi\'on resulta ser el de \emph{carga pura}, no el que incluye el proyecto:
+la generaci\'on distribuida sostiene el perfil de tensi\'on del alimentador en
+lugar de degradarlo.
+
+\item \textbf{Nivel de carga.} Ning\'un elemento supera el 100\,\% de
+cargabilidad en condici\'on normal. El elemento m\'as exigido de la red del OR
+alcanza el 80.2\,\% en el a\~no $t+x$, y el proyecto no altera esa cifra de forma
+apreciable. El transformador propio del proyecto opera a un m\'aximo del 80.3\,\%
+de su capacidad nominal.
+
+\item \textbf{Contribuci\'on a la corriente de cortocircuito.} El aporte del
+proyecto es marginal: entre $+$0.08\,\% y $+$1.05\,\% seg\'un la barra. El nivel
+m\'aximo de falla con el proyecto conectado es de 8.164\,kA frente a los 10\,kA
+de capacidad de corte declarados por el OR, con un margen del 18\,\%. Esta
+limitaci\'on del aporte es una propiedad de la electr\'onica de potencia del
+inversor, que acota su corriente de falla a $\sim$1.0\,p.u.
+
+\item \textbf{Funcionamiento en isla.} La generaci\'on distribuida total del
+circuito (1.650\,MW, incluyendo los dos generadores existentes) cubre apenas el
+29.3\,\% de la demanda m\'inima del \'area. El d\'eficit estructural de 3.975\,MW
+hace \textbf{f\'isicamente inviable} sostener una isla, con independencia del
+mecanismo activo de detecci\'on. Esta barrera se suma al esquema anti-isla
+certificado del inversor (Intertek CN-PV-220287) y a las funciones 27/81/81R del
+punto de conexi\'on.
+
+\item \textbf{P\'erdidas.} Frente al escenario de carga pura, el proyecto
+\textbf{reduce} las p\'erdidas totales del sistema en 2.28\,kW (a\~no $t$) y
+2.48\,kW (a\~no $t+x$). En 9 de las 12 horas simuladas el balance es favorable;
+solo en la franja de m\'axima generaci\'on (horas 11 a 13) las p\'erdidas
+aumentan, por el transporte del excedente a trav\'es del tramo de conexi\'on.
+
+\item \textbf{Coordinaci\'on de protecciones.} El aporte del proyecto desplaza la
+corriente de falla en cabecera entre $+$0.00\,\% y $+$1.05\,\% seg\'un el tipo de
+falla, manteni\'endola en la misma zona instant\'anea de la curva ya ajustada.
+\textbf{No se requiere reajuste} del reconectador de cabecera del circuito 15344.
+La protecci\'on propuesta para el punto de conexi\'on mantiene un margen de
+selectividad de 0.406\,s frente a la de cabecera, holgadamente por encima del
+criterio habitual de 0.2--0.3\,s.
+\end{enumerate}
+
+\subsection*{Recomendaciones}
+
+\begin{enumerate}
+\item \textbf{Equipo de corte en el punto de conexi\'on.} Adoptar la celda de
+media tensi\'on con reconectador e interruptor con unidades de disparo, en
+reemplazo de la celda de seccionador fusible de la cotizaci\'on original, para
+cumplir el Anexo 1 del Acuerdo CNO 2121 de 2026. Contratar por separado la
+parametrizaci\'on del rel\'e, que el proveedor excluye expl\'icitamente de su
+alcance.
+
+\item \textbf{Tiempo de desconexi\'on.} Ajustar las funciones de tensi\'on y
+frecuencia del punto de conexi\'on con temporizaciones que garanticen la
+desconexi\'on del proyecto \textbf{antes de los 2\,s} del recierre r\'apido de
+cabecera. Esta es la restricci\'on que dimensiona el esquema de protecci\'on, por
+encima de cualquier criterio de sobrecorriente.
+
+\item \textbf{Supervisi\'on de tensi\'on en el recierre.} Solicitar a EBSA la
+confirmaci\'on de si el reconectador de cabecera opera con bloqueo por presencia
+de tensi\'on en el lado de carga y, de no ser as\'i, evaluar su implementaci\'on
+como buena pr\'actica en alimentadores con generaci\'on distribuida.
+
+\item \textbf{Impedancia del transformador.} Sustituir el valor t\'ipico
+adoptado ($u_k = 6\,\%$) por el del protocolo de pruebas cuando el fabricante lo
+entregue, y verificar entonces que se mantienen las conclusiones de las
+Secciones~\ref{sec:cortocircuito} y~\ref{sec:protecciones-proyecto}.
+
+\item \textbf{Equipamiento de baja tensi\'on.} Verificar el dimensionamiento
+contra los \textbf{14.164\,kA} calculados en la barra de 800\,V, y no contra los
+11.2\,kA de la memoria de c\'alculo original. Con los equipos cotizados el
+requisito se cumple, pero con menos margen del inicialmente previsto.
+
+\item \textbf{Memoria de c\'alculo.} Actualizar la memoria con los resultados de
+este estudio. El listado completo de correcciones a trasladar, con su
+justificaci\'on, se recoge en el documento \texttt{Correcciones\_Memoria\_Calculo.md}
+que acompa\~na a este informe.
+\end{enumerate}
 
 % ============================================================================
 \appendix
