@@ -4,6 +4,121 @@ Automatización en Python del estudio de conexión simplificado (circular CREG 0
 
 Todo el cálculo de ingeniería (flujo de carga, tensiones, corrientes, cargabilidad, pérdidas) lo hace **PowerFactory**. Python solo orquesta: lee insumos de Excel, mueve parámetros hacia PowerFactory, dispara el flujo de carga, y exporta lo que PowerFactory calculó.
 
+---
+
+## 📊 Estado del proyecto
+
+*Última actualización: 2026-09-19*
+
+**El estudio técnico está cerrado.** Las simulaciones están corridas y validadas, el informe redactado y los anexos armados. Lo que falta es material de terceros y la compilación final.
+
+| Análisis | Resultado | Estado |
+|---|---|---|
+| 8.1 Validación de modelación | Desviación +0.129 % en tensión (límite 10 %) | ✅ |
+| 8.3 Perfiles de tensión | 0.9363–1.0115 p.u. (límite 0.90–1.10) | ✅ |
+| 8.3 Nivel de carga | Máximo 80.3 % (límite 100 %) | ✅ |
+| 8.4 Cortocircuito | Máximo 8.164 kA (capacidad 10 kA) | ✅ |
+| 8.5 Funcionamiento en isla | Déficit de 3.975 MW: isla inviable | ✅ |
+| 8.6 Pérdidas | Reduce 2.28 kW frente a carga pura | ✅ |
+| 9.2 Coordinación | No requiere reajuste de cabecera | ✅ |
+
+**Simulaciones:** 72 escenarios de flujo de carga (2 años × 3 casos × 12 horas) y 93 de cortocircuito. Todos convergieron.
+
+**Checklist del informe:** 19 secciones Completo · 1 Parcial · 3 No aplica
+**Causales de rechazo:** 6 Cumple · 1 Pendiente · 2 No aplica
+
+---
+
+## 🚧 Lo que falta
+
+### 🔴 Bloqueante para radicar
+
+**1. Compilar los anexos a PDF.**
+Los tres anexos están escritos en LaTeX y con todas sus figuras convertidas, pero **no hay PDF** porque esta máquina no tiene motor de LaTeX instalado. Dos caminos:
+
+- **Overleaf:** sube la carpeta `informe/anexos/` completa (los tres `.tex` + la subcarpeta `figuras/`) y compila cada uno con pdfLaTeX.
+- **Local:** instala un motor de LaTeX (`brew install basictex`) y vuelve a correr `python3 scripts/Anexos.py` — el script detecta `pdflatex` y compila solo.
+
+**2. Verificar el plazo de radicación.**
+EBSA emitió el documento de insumos el **11/08/2026** y otorga **5 meses**, es decir hasta **~11/01/2027**. Nadie ha confirmado esta fecha contra el Anexo 5 de CREG 174. Es causal de rechazo automática, independiente de toda la ingeniería.
+
+### 🟠 Datos de terceros pendientes
+
+| # | Qué falta | A quién | Impacto |
+|---|---|---|---|
+| 1 | **Protocolo de pruebas del transformador** (impedancia real) | Ryctel / Tesla | Hoy va con `u_k = 6 %` **asumido**. Al recibirlo hay que sustituirlo y re-verificar 8.4 |
+| 2 | **Curva real del reconectador** de cabecera | EBSA | Hoy se usan los ajustes de la ficha (pág. 4). Sirve para la coordinación definitiva |
+| 3 | **¿El recierre tiene supervisión de tensión?** | EBSA | Se asumió que **no** (hipótesis conservadora). Confirmarlo solo puede mejorar el margen |
+| 4 | **Marca y modelo del relé** + su parametrización | Tú / proveedor | Es el único `\pendiente{}` que queda en el informe |
+
+### 🟡 Revisión manual en Overleaf
+
+El informe compila sin errores (entornos balanceados, sin referencias rotas, todas las imágenes presentes), pero conviene revisar a mano:
+
+- Saltos de página y ubicación de figuras flotantes
+- Que las tablas largas no se partan en mal sitio
+- La numeración de secciones tras los cambios recientes
+
+---
+
+## 📄 Páginas y anexos: qué existe y qué no
+
+### Informe principal — `informe/Informe_Estudio_Conexion.tex`
+
+**~1290 líneas. Completo salvo un marcador.**
+
+| Sección | Estado |
+|---|---|
+| 1. Resumen ejecutivo | ✅ Redactado |
+| 2. Descripción y ubicación | ✅ Con mapa satelital extraído de la memoria |
+| 3. Parámetros eléctricos (Tablas 1–5) | ✅ |
+| 4. Información de entrada y supuestos | ✅ Incluye modelación del despacho solar |
+| 5.1–5.6 Análisis (8.1 a 8.6) | ✅ Con 6 figuras y su análisis |
+| 5.7–5.8 Estabilidad y evaluación económica | ✅ No aplican, justificado |
+| 6. Conclusiones | ✅ 6 conclusiones + 6 recomendaciones |
+| Anexo de protecciones | ⚠️ Queda 1 `\pendiente{}`: hoja de ajustes del relé |
+| Checklist de causales de rechazo | ✅ |
+
+**Imágenes que necesita** (todas en `informe/`, ninguna falta):
+`ubicacion_proyecto.jpg` · `diagrama_unifilar.pdf` · `fig_demanda_cargas.png` · `fig_demanda_generacion.png` · `fig_tension.png` · `fig_cargabilidad.png` · `fig_perdidas.png` · `fig_cortocircuito.png` · `Curva_TCC_Cabecera_15344.png`
+
+### Anexos — `informe/anexos/`
+
+**Los tres existen en `.tex` con todas sus figuras. Falta compilarlos.**
+
+| Anexo | Líneas | Contenido | PDF |
+|---|---|---|---|
+| **A — Flujo de carga** | 2426 | Metodología, los 72 escenarios, curvas de demanda, 3 figuras de resultados, **3 diagramas unifilares** y tablas completas de nodos, líneas, transformadores y generadores | ❌ |
+| **B — Cortocircuito** | 1665 | Método IEC 60909, parametrización de secuencia cero, niveles de falla de las 16 barras × 3 tipos, **3 diagramas de falla** y tablas de aportes | ❌ |
+| **C — Coordinación** | 221 | Ajustes evaluados, curva TCC, verificación de selectividad y margen anti-isla | ❌ |
+
+`informe/anexos/figuras/` contiene **15 archivos**: los 6 diagramas de PowerFactory ya convertidos de SVG a PDF y las 9 gráficas.
+
+> **Por qué los diagramas están en PDF y no en SVG:** pdfLaTeX no lee SVG. `scripts/Anexos.py` los convierte con `svglib`.
+
+> **Por qué no están los 165 diagramas:** la simulación exporta uno por escenario (72 de flujo + 93 de cortocircuito). Incluirlos todos haría el anexo inmanejable, así que se selecciona un subconjunto representativo — configurable en las constantes `ESCENARIOS_FLUJO` y `BARRAS_CORTO` de `Anexos.py` — y el propio anexo deja constancia de cuántos hay en total y dónde están los demás.
+
+---
+
+## ✅ Correcciones ya aplicadas (no rehacer)
+
+Problemas detectados y resueltos, para que no se vuelvan a levantar:
+
+- **Falla bifásica en 0 kA** — `Cortocircuito.py` leía `m:Ikss`, que PowerFactory no puebla en fallas desbalanceadas. Ahora lee las variables por fase. Ratio Ik2/Ik3 = 0.8660 exacto (√3/2).
+- **Secuencia cero sin parametrizar** — la falla monofásica salía idéntica a la trifásica. Corregido con `Z0/Z1 = 4.867` en el equivalente de 115 kV, validado contra el dato del OR (2.622 kA).
+- **Impedancia del transformador** — el modelo tenía ~3.9 %, irreal para 1250 kVA. Ajustada a 6 % típico.
+- **Generación plana** — el despacho no seguía ningún perfil, lo que impedía construir los escenarios 8.2. Ahora sigue una campana de Gauss y existe el caso de carga pura.
+- **Conclusión de cortocircuito invertida** — el informe decía que la memoria *sobreestima* 1.5×; en realidad la **subestima un 26 %** (11.2 vs 14.164 kA).
+- **Parámetros hardcodeados** — trasladados a `inputs/Parametros_Sistema.xlsx`.
+
+---
+
+## 📋 Correcciones pendientes en la memoria de cálculo
+
+La memoria se elaboró antes del estudio y con supuestos simplificados. **Cuando ambos documentos discrepen, manda el estudio de conexión.**
+
+El listado completo de las 10 correcciones a trasladar está en **`informe/Correcciones_Memoria_Calculo.md`**. La más relevante: la memoria **subestima** el cortocircuito en 800 V (11.2 kA frente a los 14.164 kA reales).
+
 ## Modo de ejecución: asistido
 
 Todos los scripts que tocan PowerFactory se ejecutan **manualmente, dentro de PowerFactory** (Data Manager → Python Script → ejecutar), reutilizando el proyecto y el caso de estudio que ya tengas abiertos en la GUI. Ninguno se lanza en modo "engine" (headless) desde una terminal externa — eso requeriría cerrar cualquier instancia gráfica abierta y no es el flujo de trabajo que usamos aquí.
@@ -15,8 +130,9 @@ ECS/
 ├── scripts/       Código Python (ver abajo)
 ├── inputs/        Insumos en Excel (los editas tú a mano)
 ├── resultados/    Todo lo que generan los scripts (se sobrescribe en cada corrida)
-├── informe/       Estructura y seguimiento del informe de estudio de conexión (CREG 174)
-├── env_pf/        Entorno virtual Python 3.12 que usa PowerFactory para correr estos scripts
+├── informe/       El informe LaTeX, sus figuras y los anexos
+│   └── anexos/    Los tres anexos en LaTeX + figuras/ con los diagramas convertidos a PDF
+├── env_pf/        Entorno virtual Python 3.12 que usa PowerFactory (no versionado)
 └── powerfactory-tools/   Clon de referencia (github.com/ieeh-tu-dresden/powerfactory-tools),
                           consultado para ver convenciones de la API de PowerFactory
                           (nombres de atributos, clases, comandos). No se usa como dependencia:
@@ -27,7 +143,11 @@ ECS/
 ## Scripts (`scripts/`)
 
 ### Nota: GD1 y GD2 (generadores ya existentes en el circuito 15344)
-EBSA reporta (`DOC_REF_EST_1787069892338.pdf`, "Generadores Distribuidos Conectados: 2") dos generadores ya existentes en el circuito — GD1 (330kVA, barra P4_15344) y GD2 (330kVA, barra P5_15344) — que no estaban modelados. **A diferencia de los demás elementos de este proyecto, estos se montan a mano directamente en PowerFactory** (no vía script — decisión explícita del usuario), en la red base `Red_Puerto_Boyaca_15344` (no en `Network_Variations.xlsx`, porque ya existen independientemente de si el proyecto nuevo se conecta). Ver `informe/Parametros_Proyecto.xlsx` (fila `GD_existentes_circuito`) para la ficha de características genéricas acordadas (cosφ=1, despacho igual al perfil solar propio escalado a 330kW, aporte a cortocircuito = "No Short-Circuit Contribution"). **Una vez montados manualmente**, hay que repetir `Flujo_carga.py`/`Cortocircuito.py` — todos los resultados previos, calculados sin GD1/GD2, quedan desactualizados.
+EBSA reporta (`DOC_REF_EST_1787069892338.pdf`, "Generadores Distribuidos Conectados: 2") dos generadores ya existentes en el circuito, de 330 kVA cada uno. **Se montaron a mano directamente en PowerFactory** (no vía script — decisión explícita), en la red base `Red_Puerto_Boyaca_15344`, porque existen independientemente de si el proyecto nuevo se conecta.
+
+**Ya están montados y todos los resultados actuales los incluyen.** Según el modelo, `GD P4 15344` está conectado en la barra **P5 15344 13.2kV** y `GD P5 15344` en **P6 15344 13.2kV** (confirmado contra el unifilar: los nombres no coinciden con las barras, pero la conexión es la correcta).
+
+Características acordadas: cosφ=1, despacho según el mismo perfil solar del proyecto escalado a su potencia, y aporte a cortocircuito = "No Short-Circuit Contribution" — por eso aparecen con `Ikss = 0` en todos los resultados de falla, lo cual es correcto y no un error.
 
 ### `test_conexion.py`
 Prueba mínima: conecta a PowerFactory (`GetApplication()`), confirma que hay un proyecto activo. Úsalo cuando algo no conecta, para descartar problemas de PowerFactory antes de correr el script grande.
@@ -72,10 +192,69 @@ Por cada caso: por cada barra, por cada tipo de falla, ejecuta `ComShc` con esa 
 
 **Advertencia de transparencia** (léela antes de confiar en los resultados): el comando `ComShc`, los tipos de falla (`3psc`/`2psc`/`spgf`) y `m:Ikss`/`m:Skss` en barras están confirmados contra documentación y ejemplos reales de scripting de PowerFactory. Pero:
 - **Método de cálculo**: se fuerza `iopt_mde = 0` (IEC 60909 / VDE 0102 Part 0, DIN EN 60909-0) en cada ejecución de `ComShc` — es el método por defecto de esta instalación, confirmado con el usuario. El script imprime esto en la Output Window de PowerFactory al arrancar.
-- Los nombres de atributo de corriente de aporte en líneas/transformadores/generadores (`m:Ikss:bus1`, `m:Ikss:bushv`, etc.) son una extrapolación del patrón `:busX` que sí está validado para flujo de carga — no confirmados todavía en un proyecto real. Si salen vacíos, avisa para ajustarlos.
+- Los nombres de atributo de corriente de aporte en líneas/transformadores/generadores (`m:Ikss:bus1`, `m:Ikss:bushv`, etc.) **ya están confirmados** en corridas reales: las hojas `Lineas` y `Generadores` traen valores.
+- **Falla bifásica:** `m:Ikss` no se puebla en fallas desbalanceadas, así que el script prueba una lista de atributos candidatos (`ATRIBUTOS_IKSS_BARRA`) y cae a las variables por fase. La columna `Atributo_leido` de la hoja `Nodos` registra de dónde salió cada valor.
+- **Diagnóstico de secuencia:** al arrancar, el script recorre el modelo y reporta qué datos de secuencia tiene cada elemento, en qué objeto viven y cuál hay que cambiar, con ruta completa. Al terminar verifica dos relaciones físicas: `Ik2/Ik3 ≈ 0.866` y que `Ik1 ≠ Ik3`.
 - Exporta un SVG por cada combinación caso × barra fallada × tipo de falla (uno por cada cálculo de `ComShc`), en `resultados/graficos_red_corto/` — son muchos archivos, confirmado así con el usuario.
 
+### `parametros.py` — lectura centralizada de parámetros
+
+No se ejecuta solo: lo importan los demás scripts. Lee `inputs/Parametros_Sistema.xlsx` y expone los valores por su nombre:
+
+```python
+from parametros import P
+P.cabecera("PICKUP_51_A")      # 240.0
+P.red_or("CAPACIDAD_CORTE_KA") # 10.0
+P.elemento("BARRA_PC")         # "P1 15344 13.2kV"
+```
+
+**Por qué existe:** antes, valores como los ajustes de protección (240 A, dial 0.1, 1500 A), la capacidad de corte de la subestación o los nombres de las barras estaban escritos dentro de cada script, a veces repetidos en varios. Para cambiar un ajuste había que buscarlo en el código, y para saber de dónde salía un número no había forma. Ahora se edita el Excel. Si falta una clave, el error dice exactamente qué hoja y qué fila revisar.
+
+### `Graficas_Informe.py` — figuras del informe
+
+Se corre como Python normal. Lee los Excel de resultados y genera seis figuras en `informe/`:
+
+| Figura | Qué muestra |
+|---|---|
+| `fig_demanda_cargas.png` | Las 8 cargas del área, agrupadas por circuito |
+| `fig_demanda_generacion.png` | Demanda agregada vs. generación, con los escenarios 8.2 marcados |
+| `fig_tension.png` | Perfiles en el punto de conexión y en el extremo del circuito |
+| `fig_cargabilidad.png` | Tramo de evacuación y transformador del proyecto |
+| `fig_perdidas.png` | Pérdidas totales y balance frente a carga pura |
+| `fig_cortocircuito.png` | Nivel de falla por barra vs. capacidad de corte |
+
+Usa una paleta categórica validada para fondo claro y verificada contra deuteranopia y tritanopia. Los tres casos de red conservan el mismo color en todas las figuras, para no tener que releer la leyenda en cada una.
+
+**Dos decisiones de presentación que conviene conocer**, porque cambian lo que muestra cada figura:
+- **Tensión:** se grafican dos barras concretas (P1 y P6) en vez de la envolvente mín/máx del sistema. La envolvente cambia de barra de una hora a otra, así que produce una curva quebrada que no describe a ningún elemento real.
+- **Cargabilidad:** se grafica la línea de evacuación y no la más cargada del sistema. La más cargada (`Al 0.82km`) pertenece a otro circuito y da el mismo valor en los tres casos — las tres series quedaban superpuestas y la figura no mostraba nada. El valor del elemento más cargado va anotado aparte.
+
+### `Anexos.py` — los tres anexos en LaTeX
+
+Se corre como Python normal, **después** de `Graficas_Informe.py` y `Coordinacion_Protecciones.py`. Genera en `informe/anexos/`:
+
+- `Anexo_A_Flujo_Carga.tex`, `Anexo_B_Cortocircuito.tex`, `Anexo_C_Coordinacion_Protecciones.tex`
+- `figuras/` con los diagramas de PowerFactory convertidos de SVG a PDF (pdfLaTeX no lee SVG) y las gráficas copiadas
+
+Usa el mismo preámbulo que el informe principal, para que salgan con idéntica tipografía y márgenes. Si hay `pdflatex` en la máquina los compila; si no, deja los `.tex` listos para Overleaf y lo avisa.
+
 ## Inputs (`inputs/`)
+
+### `Parametros_Sistema.xlsx` — parámetros que antes estaban en el código
+
+Siete hojas, cada fila con **valor, unidad, descripción y fuente documental**:
+
+| Hoja | Qué contiene |
+|---|---|
+| `Proteccion_Cabecera` | Ajustes reales del reconectador de EBSA (curva, pickups, diales, instantáneos, recierre) |
+| `Proteccion_Proyecto` | Ajustes propuestos para el punto de conexión y criterios de margen |
+| `Datos_Proyecto` | Potencia, inversores, tensiones, datos del transformador, aporte de falla |
+| `Red_OR` | Capacidad de corte, cortocircuito del equivalente de 115 kV, límites regulatorios |
+| `Elementos_Clave` | Nombre exacto de cada barra y elemento en el modelo de PowerFactory |
+| `Despacho_Solar` | Hora pico, sigma de la campana, si se simula el caso de carga pura |
+| `Anios_Analisis` | Los años del horizonte y su factor de demanda |
+
+**Para cambiar un ajuste se edita aquí, no en el código.**
 
 ### `Parametros_Demanda.xlsx` — hoja `Demanda`
 Demanda horaria por carga. Columnas: `Carga | Hora | P_MW | Q_MW`. Formato largo (una fila por carga+hora), pensado para filtrar/dinamizar fácil en Excel.
@@ -195,10 +374,25 @@ El aporte de falla propio del sistema de generación (`Ik"3PF=238.2A` por invers
 
 ## Flujo de trabajo típico
 
-**Flujo de carga:**
-1. Editar `inputs/Parametros_Demanda.xlsx` (año base) y/o `inputs/Network_Variations.xlsx` si cambia algo. Si cambia el horizonte o la tasa de crecimiento, editar `ESCENARIOS_ANIO` en `Flujo_carga.py`.
-2. Correr `Flujo_carga.py` dentro de PowerFactory — **una sola vez**: corre los dos años seguidos, escalando la demanda por sí solo.
-3. Revisar `resultados/Resultados_Flujo_Carga.xlsx` (filtrar por la columna `Anio`) y `resultados/graficos_red/`.
+**Orden completo, de principio a fin:**
+
+```
+# 1. Dentro de PowerFactory (modo asistido)
+Flujo_carga.py          # 72 escenarios: 2 años × 3 casos × 12 horas
+Cortocircuito.py        # arranca con el diagnóstico de secuencia cero
+
+# 2. Fuera de PowerFactory (Python normal)
+python3 scripts/Coordinacion_Protecciones.py   # lee el Excel de cortocircuito
+python3 scripts/Graficas_Informe.py            # genera las 6 figuras del informe
+python3 scripts/Anexos.py                      # genera los 3 anexos en LaTeX
+```
+
+Los tres últimos **no tocan PowerFactory**: solo leen los Excel de resultados. Si cambia algo del modelo, hay que repetir la secuencia completa en ese orden, porque cada paso consume lo que produjo el anterior.
+
+**Flujo de carga en detalle:**
+1. Editar `inputs/Parametros_Demanda.xlsx` (año base) y/o `inputs/Network_Variations.xlsx` si cambia algo. El horizonte, la tasa de crecimiento y el perfil de despacho se editan en `inputs/Parametros_Sistema.xlsx`.
+2. Correr `Flujo_carga.py` dentro de PowerFactory — **una sola vez**: corre los dos años y los tres casos de red seguidos.
+3. Revisar `resultados/Resultados_Flujo_Carga.xlsx` (filtrar por `Anio` y `Caso`) y `resultados/graficos_red/`.
 
 **Cortocircuito:**
 1. Editar `inputs/Network_Variations.xlsx` si aplica (el método de cálculo IEC 60909/VDE 0102 ya lo fuerza el script, no requiere configuración previa).
